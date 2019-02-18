@@ -16,6 +16,7 @@ public class HomeActivity extends AppCompatActivity {
 //https://developer.android.com/studio/write/layout-editor
 
     Button btnOpenMap;
+    Button btnLogin;
     Button btnDeleteLocationsFromFirebase;
     TextView txtView;
     FirebaseDatabase mFirebaseDatabase;
@@ -33,6 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
         btnOpenMap = (Button) findViewById(R.id.bt);
         btnDeleteLocationsFromFirebase = (Button) findViewById(R.id.btnDel);
+        btnLogin = (Button) findViewById(R.id.btnLoginPage);
 
         btnOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +51,14 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 DatabaseReference myRef = mFirebaseDatabase.getReference("Location");
                 myRef.removeValue();
+            }
+        });
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, LoginOrRegister.class);
+                startActivity(intent);
             }
         });
 

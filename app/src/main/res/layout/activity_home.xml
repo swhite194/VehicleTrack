@@ -14,7 +14,7 @@
         android:layout_marginTop="210dp"
         android:layout_marginBottom="89dp"
         android:text="GPS Delivery Tracking System"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegister"
         app:layout_constraintHorizontal_bias="0.528"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -41,5 +41,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/btnLoginPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_editor_absoluteX="130dp"
+        tools:layout_editor_absoluteY="557dp" />
 
 </android.support.constraint.ConstraintLayout>
