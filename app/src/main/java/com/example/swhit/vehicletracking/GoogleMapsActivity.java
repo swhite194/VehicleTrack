@@ -1,6 +1,7 @@
 package com.example.swhit.vehicletracking;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
+    //making googlemap not private?
     private GoogleMap mMap;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
@@ -39,11 +43,36 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
+                //doesn't help at all https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
+                //https://stackoverflow.com/questions/47837229/getting-map-markers-from-firebase
+                    String latitude = dataSnapshot.child("Longitude").getValue(String.class);
+                    String longitude = dataSnapshot.child("Latitude").getValue(String.class);
+                    double lLatitude = Double.parseDouble(latitude);
+                    double lLongitude = Double.parseDouble(longitude);
+                    LatLng markerLoc = new LatLng(lLatitude, lLongitude);
+                    mMap.addMarker(new MarkerOptions().position(markerLoc).title(""));
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 //------------------------------------------------------------------------------------------------------------------------------
         //not currently working
@@ -123,6 +152,59 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         //passing values of clicked areas on map to firebase (stored as push)
         //hope is that they can be retrieved when map reloaded.
+
+        //https://stackoverflow.com/questions/43635994/retrieve-location-from-firebase-and-put-marker-on-google-map-api-for-android
+        //(last bit of 1st (and only) answer)l
+//        myRef.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                LatLng newLocation = new LatLng(
+//                        dataSnapshot.child("Latitude").getValue(Long.class),
+//                        dataSnapshot.child("Longitude").getValue(Long.class)
+//                );
+//
+//                mMap.addMarker(new MarkerOptions()
+//                .position(newLocation)
+//                .title(dataSnapshot.getKey()));
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
+        //https://stackoverflow.com/questions/43216708/how-to-add-google-map-marker-from-firebase-database
+//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                double location_left = dataSnapshot.child("Longitude").getValue(Double.class);
+//                double location_right = dataSnapshot.child("Latitude").getValue(Double.class);
+//                LatLng sydney = new LatLng(location_left, location_right);
+//                mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
 
 
 
