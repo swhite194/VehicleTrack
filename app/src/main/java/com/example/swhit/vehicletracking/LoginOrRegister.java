@@ -1,12 +1,15 @@
 package com.example.swhit.vehicletracking;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LoginOrRegister extends AppCompatActivity {
 //all below:
     //https://medium.com/mobiletech/firebase-authentication-sample-371b5940ba93
+
 
     EditText email, password;
     Button registerButton, loginButton;
@@ -42,6 +46,50 @@ public class LoginOrRegister extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+//        loginButton.setVisibility(View.INVISIBLE);
+//        registerButton.setVisibility(View.INVISIBLE);
+
+        //https://stackoverflow.com/questions/20743124/setting-transparency-to-buttons-in-android
+
+
+        loginButton.getBackground().setAlpha(10);
+        registerButton.getBackground().setAlpha(10);
+        loginButton.setTextColor(Color.GRAY);
+        registerButton.setTextColor(Color.GRAY);
+
+        //https://stackoverflow.com/questions/20824634/android-on-text-change-listener
+        //https://stackoverflow.com/questions/41348813/hide-button-if-text-length-is-1-in-android-studio
+        //https://stackoverflow.com/questions/43294173/android-studio-if-statement-with-and-operator (operators)
+
+
+        email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+                if(s.length() >= 10){
+//                    loginButton.setVisibility(View.VISIBLE);
+//                    registerButton.setVisibility(View.VISIBLE);
+                    loginButton.getBackground().setAlpha(100);
+                    registerButton.getBackground().setAlpha(100);
+                    loginButton.setTextColor(Color.BLACK);
+                    registerButton.setTextColor(Color.BLACK);
+
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
         registerButton.setOnClickListener(new View.OnClickListener() {
 
@@ -51,16 +99,16 @@ public class LoginOrRegister extends AppCompatActivity {
                                                   String p = password.getText().toString();
 
                                                   if (TextUtils.isEmpty(e)) {
-                                                      Toast.makeText(getApplicationContext(), "Please fill in your email address", Toast.LENGTH_SHORT).show();
+                                                      Toast.makeText(getApplicationContext(), "Please fill in your email address", Toast.LENGTH_LONG).show();
                                                       return;
                                                   }
 
                                                   if (TextUtils.isEmpty(p)) {
-                                                      Toast.makeText(getApplicationContext(), "Please fill in your password", Toast.LENGTH_SHORT).show();
+                                                      Toast.makeText(getApplicationContext(), "Please fill in your password", Toast.LENGTH_LONG).show();
                                                   }
 
                                                   if (p.length() < 10) {
-                                                      Toast.makeText(getApplicationContext(), "Please have a password of atleast 10 characters", Toast.LENGTH_SHORT).show();
+                                                      Toast.makeText(getApplicationContext(), "Please have a password of atleast 10 characters", Toast.LENGTH_LONG).show();
                                                   }
 
                                                   firebaseAuth.createUserWithEmailAndPassword(e, p)
@@ -68,17 +116,53 @@ public class LoginOrRegister extends AppCompatActivity {
                                                               @Override
                                                               public void onComplete(@NonNull Task<AuthResult> task) {
                                                                   if (task.isSuccessful()) {
-                                                                      startActivity(new Intent(getApplicationContext(), GoogleMapsActivity.class));
-                                                                      finish();
+                                                                      Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
+                                                                      return;
                                                                   }
+                                                //THIS IS COMING UP AT THE SAME TIME AS THE 10 CHARACTER VALIDATION... needs fixed; INVISIBLE-> VISIBLE login is a cop-out atm
                                                                   else {
-                                                                      Toast.makeText(getApplicationContext(), "E-mail or password is wrong", Toast.LENGTH_SHORT).show();
+                                                                      Toast.makeText(getApplicationContext(), "E-mail or password is wrong", Toast.LENGTH_LONG).show();
                                                                   }
                                                               }
                                                           });
 
                                               }
                                           });
+
+        //hybrid of above ref and https://www.androidhive.info/2016/06/android-getting-started-firebase-simple-login-registration-auth/
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String e = email.getText().toString();
+                String p = password.getText().toString();
+
+                if (TextUtils.isEmpty(e)) {
+                    Toast.makeText(getApplicationContext(), "Please fill in your email address", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (TextUtils.isEmpty(p)) {
+                    Toast.makeText(getApplicationContext(), "Please fill in your password", Toast.LENGTH_LONG).show();
+                }
+
+                firebaseAuth.signInWithEmailAndPassword(e,p).addOnCompleteListener(LoginOrRegister.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+
+                            startActivity(new Intent(getApplicationContext(), GoogleMapsActivity.class));
+                            finish();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Cannot find account with this email/password", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+                });
+            }
+        });
+
+
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
