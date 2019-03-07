@@ -149,7 +149,9 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         locationRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                long count = dataSnapshot.getChildrenCount();
+                //THIS WORKS
+                Log.d("TAG",  "CHILDREN COUNT IS: " + count);
 
                     //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
                     //doesn't help at all https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
@@ -162,13 +164,18 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 //                    Double latitude = ds.child("Latitude").getValue(Double.class);
 //                    Double longitude = ds.child("Longitude").getValue(Double.class);
 
-                    if(ds.hasChild("yeah"))
-                    {
-                        Log.d("TAG", "H E C K  Y E A H");
-                    }
-                    else{
-                        Log.d("TAG", "AHHHHHHHHHHHHHH");
-                    }
+//                    if(ds.hasChild("yeah"))
+//                    {
+//                        Log.d("TAG", "H E C K  Y E A H");
+//                    }
+//                    else{
+//                        Log.d("TAG", "AHHHHHHHHHHHHHH");
+//                    }
+
+
+                //https://stackoverflow.com/questions/35149670/how-to-set-firebase-getchildren-values-in-marker
+                //https://stackoverflow.com/questions/32886546/how-to-get-all-child-list-from-firebase-android
+                //is this worth looking at
 
 
                     //https://stackoverflow.com/questions/37257166/android-firebase-why-does-ondatachange-returns-null-values
@@ -183,7 +190,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 //                        LatLng markerLoc = new LatLng(latitude, longitude);
 //                        mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
 //                }
-                }
+
 
 //                String a = (String) dataSnapshot.getValue();
 //                Log.d("TAG", a);
