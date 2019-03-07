@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "974912921846-ltabmq3gqedtifbaokhia66lj9usocev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.swhit.vehicletracking",
+            "certificate_hash": "21ef13be8bc9a1748653ee294799ee65bc1b89ea"
+          }
+        },
+        {
           "client_id": "974912921846-f0avc4cuhrsu9t5nob0c1tf1f42h4089.apps.googleusercontent.com",
           "client_type": 3
         }

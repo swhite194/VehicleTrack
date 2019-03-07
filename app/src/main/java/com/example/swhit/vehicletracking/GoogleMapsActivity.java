@@ -1,9 +1,11 @@
 package com.example.swhit.vehicletracking;
 
+import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,11 +28,23 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     //making googlemap not private?
     private GoogleMap mMap;
 
+//    public long latitude;
+//    public long longitude;
+
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
 
+
     DatabaseReference myRef = database.getReference("Location");
+
+    //dno if it makes a diff, but going by https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase?noredirect=1&lq=1
+    DatabaseReference rootRef = database.getReference();
+    DatabaseReference locationRef = rootRef.child("Location");
+
     DatabaseReference latRef = myRef.child("Latitude");
     DatabaseReference longRef = myRef.child("Longitude");
+
+    //https://stackoverflow.com/questions/37886301/tag-has-private-access-in-android-support-v4-app-fragmentactivity
+    private static final String TAG = "GoogleMapsActivity";
 
     Double[] latArray;
     Double[] longArray;
@@ -47,30 +61,142 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     }
 
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        //https://stackoverflow.com/questions/46351725/retrieve-map-coordinates-from-firebase-and-plot-on-google-maps
+//        final double[] latitude = new double[0];
+//        final double[] longitude = new double[0];
+//
+//        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("Location");
+//        mRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                latitude[0] = (double) dataSnapshot.child("Latitude").getValue();
+//                longitude[0] = (double) dataSnapshot.child("Longitude").getValue();
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//        LatLng markerLoc = new LatLng(latitude[0], longitude[0]);
+//        mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
+
+
+
+
+
+
+
+
+
+        //https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase?noredirect=1&lq=1
+        //https://stackoverflow.com/questions/42540400/android-app-crashes-when-google-maps-connected-to-firebase TYPES?
+
+//        ValueEventListener eventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot ds : dataSnapshot.getChildren()){
+//                    latitude = (long)ds.child("Latitude").getValue();
+//                    longitude = (long)ds.child("Longitude").getValue();
+//
+////                    Log.d("TAG", latitude + " / " + longitude);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        };
+//
+//        locationRef.addListenerForSingleValueEvent(eventListener);
+//        LatLng markerLoc = new LatLng(latitude, longitude);
+//        mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
+
+
+        //GOING OFF THE FIREBASE GUIDE FROM TOOLS (regarding event listener)
+//        locationRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                //GIVES THE HASHMAP ERROR IN LOGCAT
+//                String latitude = dataSnapshot.getValue(String.class);
+//                String longitude = dataSnapshot.getValue(String.class);
+//                Double lLat = Double.parseDouble(latitude);
+//                Double lLong = Double.parseDouble(longitude);
+//        LatLng markerLoc = new LatLng(lLat, lLong);
+//        mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//
+//        });
+
+
+        //https://stackoverflow.com/questions/32886546/how-to-get-all-child-list-from-firebase-android
+        //COULD HELP with stuff idk.
+
+        locationRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
-                //doesn't help at all https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
-                //https://stackoverflow.com/questions/47837229/getting-map-markers-from-firebase
-                    String latitude = dataSnapshot.child("Longitude").getValue(String.class);
-                    String longitude = dataSnapshot.child("Latitude").getValue(String.class);
-                    double lLatitude = Double.parseDouble(latitude);
-                    double lLongitude = Double.parseDouble(longitude);
-                    LatLng markerLoc = new LatLng(lLatitude, lLongitude);
-                    mMap.addMarker(new MarkerOptions().position(markerLoc).title(""));
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
 
+                    //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
+                    //doesn't help at all https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
+                    //https://stackoverflow.com/questions/47837229/getting-map-markers-from-firebase
+//                    String latitude = dataSnapshot.child("Longitude").getValue(String.class);
+//                    String longitude = dataSnapshot.child("Latitude").getValue(String.class);
+                    //https://stackoverflow.com/questions/43216708/how-to-add-google-map-marker-from-firebase-database?noredirect=1&lq=1
+                    //https://stackoverflow.com/questions/49766208/android-studio-unboxing-of-xxx-may-produce-java-lang-nullpointerexception (why i called them Int? so confusing!)
+//https://stackoverflow.com/questions/49351853/how-to-fix-unboxing-may-produce-nullpointer-exception-with-firebase
+//                    Double latitude = ds.child("Latitude").getValue(Double.class);
+//                    Double longitude = ds.child("Longitude").getValue(Double.class);
+
+                    if(ds.hasChild("yeah"))
+                    {
+                        Log.d("TAG", "H E C K  Y E A H");
+                    }
+                    else{
+                        Log.d("TAG", "AHHHHHHHHHHHHHH");
+                    }
+
+
+                    //https://stackoverflow.com/questions/37257166/android-firebase-why-does-ondatachange-returns-null-values
+                    //i might want to make them store as hashmaps...
+
+                    //this is saying NULL/NULL in logcat
+//                    Log.d("TAG", latitude + " / " + longitude);
+//
+//
+//
+//                    if ((latitude != null) && (longitude != null)){
+//                        LatLng markerLoc = new LatLng(latitude, longitude);
+//                        mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
+//                }
+                }
+
+//                String a = (String) dataSnapshot.getValue();
+//                Log.d("TAG", a);
+                    //log could only be recognised by doing "Import class" for it
+                    //tag had to be made a constant
+                    //valueeventlistener had a red underline oncancelled needed to be imported or something,
+                    //but it was already here? so i deleted it and it should be the same layout as the stackoverflow example idk what diff was
 
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
 
