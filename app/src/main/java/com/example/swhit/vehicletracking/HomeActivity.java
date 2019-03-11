@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
-        DatabaseReference myRef = mFirebaseDatabase.getReference("Location");
+        DatabaseReference myRef = mFirebaseDatabase.getReference("Users");
 
 
         btnOpenMap = (Button) findViewById(R.id.bt);

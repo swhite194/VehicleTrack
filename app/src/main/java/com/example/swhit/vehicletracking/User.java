@@ -10,14 +10,16 @@ public class User {
 
     //   //andy gave me idea to do this but also
     //    //https://firebase.google.com/docs/database/android/read-and-write
+    //except im not even using it right because im saying (Long.class) when im reading in data not even (User.class)
     //    //and other sources have said
     //    //https://stackoverflow.com/questions/50114944/why-we-need-an-empty-constructor-to-passing-save-a-data-from-firebase
     //    //not sure that that really gave me the idea, i mean it was mainly andy and im going blindly off that
 
     public String name;
     public String email;
-    public double longitude;
     public double latitude;
+    public double longitude;
+
 
     public String getName() {
         return name;
@@ -48,11 +50,11 @@ public class User {
     }
 
     //leaving id out?
-    public User(String name, String email, double longitude, double latitude) {
+    public User(String name, String email, double latitude, double longitude) {
         this.name = name;
         this.email = email;
-        this.longitude = longitude;
         this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getEmail() {
@@ -63,6 +65,14 @@ public class User {
         this.email = email;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     public double getLongitude() {
         return longitude;
     }
@@ -71,11 +81,5 @@ public class User {
         this.longitude = longitude;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
 }
