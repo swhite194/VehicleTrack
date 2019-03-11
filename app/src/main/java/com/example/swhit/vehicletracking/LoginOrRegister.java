@@ -20,11 +20,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginOrRegister extends AppCompatActivity {
 //all below:
     //https://medium.com/mobiletech/firebase-authentication-sample-371b5940ba93
 
+    FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
+
+
+    DatabaseReference myRef = database.getReference("Location");
 
     EditText email, password;
     Button registerButton, loginButton;
@@ -95,8 +101,11 @@ public class LoginOrRegister extends AppCompatActivity {
 
                                               @Override
                                               public void onClick(View v) {
-                                                  String e = email.getText().toString();
+                                                  //made this final for "writenewuser" but idk
+                                                  final String e = email.getText().toString();
                                                   String p = password.getText().toString();
+
+                                                  String name, latitude, longitude;
 
                                                   if (TextUtils.isEmpty(e)) {
                                                       Toast.makeText(getApplicationContext(), "Please fill in your email address", Toast.LENGTH_LONG).show();
@@ -117,6 +126,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                               public void onComplete(@NonNull Task<AuthResult> task) {
                                                                   if (task.isSuccessful()) {
                                                                       Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
+                                                                      writeNewUser(null, e, 0, 0);
                                                                       return;
                                                                   }
                                                 //THIS IS COMING UP AT THE SAME TIME AS THE 10 CHARACTER VALIDATION... needs fixed; INVISIBLE-> VISIBLE login is a cop-out atm
@@ -174,4 +184,18 @@ public class LoginOrRegister extends AppCompatActivity {
 
 
     }
+
+    private void writeNewUser(String name, String email, double latitude, double longitude) {
+        User user = new User(name, email, latitude, longitude);
+
+
+        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //is this needed?
+        myRef.child("users").child(user.id).setValue(user);
+
+
+    }
+
 }

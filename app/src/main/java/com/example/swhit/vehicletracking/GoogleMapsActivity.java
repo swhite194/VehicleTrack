@@ -358,6 +358,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 user.setLongitude(latLng.longitude);
                 myRef.child("Users").child(user.id).setValue(user);
 
+
                 mMap.addMarker(markerOptions);
             }
         });

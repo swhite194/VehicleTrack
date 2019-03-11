@@ -35,7 +35,7 @@ public class UserInfo extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
     DatabaseReference myRef = database.getReference("Location");
 
-    EditText name, email, latitude, longitude;
+    EditText uname, email, latitude, longitude;
     Button submit_button;
     FirebaseAuth firebaseAuth;
 
@@ -44,25 +44,38 @@ public class UserInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
-        name = findViewById(R.id.txtName);
+
+        uname = findViewById(R.id.txtName);
         email = findViewById(R.id.txtEmail);
         latitude = findViewById(R.id.txtLatitude);
         longitude = findViewById(R.id.txtLongitude);
+
+
+
+        //need to figure out how to use Getter to keep this populated (with User class data?)
+
+        User user = new User();
+        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+//        userName = myRef.child("users").child(user.id).child("name");
+        user.setName(myRef.child("users").child(user.id).child("name").getV);
+
 
        submit_button = findViewById(R.id.btnSubmit);
 
        submit_button.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               String n = name.getText().toString();
+               String n = uname.getText().toString();
                String e = email.getText().toString();
                String la = latitude.getText().toString();
                String lo = longitude.getText().toString();
 
+               //https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
                double doLa = Double.parseDouble(la);
                double doLo = Double.parseDouble(lo);
 
-
+                //if im continuing to use this... then https://firebase.google.com/docs/database/android/read-and-write amongst other sources.
                writeNewUser(n, e, doLa, doLo);
            }
        });
@@ -81,6 +94,15 @@ public class UserInfo extends AppCompatActivity {
 
         //is this needed?
         myRef.child("users").child(user.id).setValue(user);
+
+
+    }
+
+    private void populateUserTextFields(String name, String email, double latitude, double longitude){
+        User user = new User(name, email, latitude, longitude);
+        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        user.setName(myRef.child("users").child(user.id).toString());
+        uname.setText(user.getName());
 
 
     }
