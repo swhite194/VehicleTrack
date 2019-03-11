@@ -17,6 +17,7 @@ public class HomeActivity extends AppCompatActivity {
 
     Button btnOpenMap;
     Button btnLogin;
+    Button btnEdit;
     Button btnDeleteLocationsFromFirebase;
     TextView txtView;
     FirebaseDatabase mFirebaseDatabase;
@@ -35,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         btnOpenMap = (Button) findViewById(R.id.bt);
         btnDeleteLocationsFromFirebase = (Button) findViewById(R.id.btnDel);
         btnLogin = (Button) findViewById(R.id.btnLoginPage);
+        btnEdit = (Button) findViewById(R.id.btnUserInfo);
 
         btnOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override

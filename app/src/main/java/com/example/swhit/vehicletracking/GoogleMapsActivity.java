@@ -15,6 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -344,11 +345,18 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
+
+                User user = new User();
+                //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+                user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 markerOptions.title("Latitude: " + latLng.latitude + " : " + "Longitude: " + latLng.longitude);
-                myRef.child("Latitude").push().setValue(latLng.latitude);
-                myRef.child("Longitude").push().setValue(latLng.longitude);
+//                myRef.child("Latitude").push().setValue(latLng.latitude);
+//                myRef.child("Longitude").push().setValue(latLng.longitude);
+                user.setLatitude(latLng.latitude);
+                user.setLongitude(latLng.longitude);
+                myRef.child("Users").child(user.id).setValue(user);
 
                 mMap.addMarker(markerOptions);
             }
@@ -369,4 +377,9 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         }
         return false;
     }
+
+//    private void writeNewUser(String userId, String email, double latitude, double longitude){
+//        User user = new User (email, latitude, longitude);
+//        myRef.child("Users").child(userId).setValue(user);
+//    }
 }
