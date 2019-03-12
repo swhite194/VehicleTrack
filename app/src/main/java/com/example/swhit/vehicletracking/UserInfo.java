@@ -57,6 +57,7 @@ public class UserInfo extends AppCompatActivity {
 
         User user = new User();
 
+
         user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         uname = findViewById(R.id.txtName);
