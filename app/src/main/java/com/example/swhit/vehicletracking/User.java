@@ -7,7 +7,7 @@ public class User {
 
     //id: https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
     public String id;
-
+//
     //   //andy gave me idea to do this but also
     //    //https://firebase.google.com/docs/database/android/read-and-write
     //although ive done the firebase website one no justice (so not really)
