@@ -190,6 +190,7 @@ public class LoginOrRegister extends AppCompatActivity {
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
         user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //is this needed?

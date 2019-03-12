@@ -29,12 +29,13 @@ public class DisplayUserRecord extends AppCompatActivity {
         setContentView(R.layout.activity_display_user_record);
 
         User user = new User();
+        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
         user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         textEmail = findViewById(R.id.txtEmailBox);
 
         DatabaseReference currentUser = myRef.child("users").child(user.id);
-
+//https://stackoverflow.com/questions/47144080/firebase-retrieve-and-assign-data-from-parent-and-children-to-class
         currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

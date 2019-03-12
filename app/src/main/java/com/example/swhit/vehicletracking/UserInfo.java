@@ -51,7 +51,12 @@ public class UserInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
+
+        //        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+
+
         User user = new User();
+
         user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         uname = findViewById(R.id.txtName);
@@ -69,7 +74,7 @@ public class UserInfo extends AppCompatActivity {
 
         //https://www.firebase.com/docs/java-api/javadoc/com/firebase/client/DataSnapshot.html#getValue(java.lang.Class)
         //https://stackoverflow.com/questions/37830692/parsing-from-datasnapshot-to-java-class-in-firebase-using-getvalue
-
+//https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
         DatabaseReference currentUser = myRef.child("users").child(user.id);
 
         //https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase

@@ -10,6 +10,11 @@ public class User {
 
     //   //andy gave me idea to do this but also
     //    //https://firebase.google.com/docs/database/android/read-and-write
+    //although ive done the firebase website one no justice (so not really)
+    //http://myfirebasemaps.ga/?i=1 (same with this)
+    //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+    //feel the urge to say https://stackoverflow.com/questions/37773384/android-firebase-cant-get-userid-using-getuid-error-on-null-object-refere for the id thing but cant.. here anyway.
+
 
     //HOW HEAVILY HAS THAT FIREBASE THING BEEN LOOKED AT? IT TALKS ABOUT USERID and idk where its really from, the quora might be of relevance
     //but honestly im just copying and pasting the stuff ive got up/looking at other examples so idk.
@@ -20,6 +25,8 @@ public class User {
     //    //not sure that that really gave me the idea, i mean it was mainly andy and im going blindly off that
 
     //I DONT UNDERSTAND HOW getId works, its not in the constructor... get calling it always works.
+    //i dont get how Id gets pushed to firebase either (is that a built in thing?)
+    //really should go over my references to figure that out
 
     public String name;
     public String email;
