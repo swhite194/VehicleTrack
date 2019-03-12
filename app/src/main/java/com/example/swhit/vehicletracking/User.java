@@ -10,10 +10,16 @@ public class User {
 
     //   //andy gave me idea to do this but also
     //    //https://firebase.google.com/docs/database/android/read-and-write
+
+    //HOW HEAVILY HAS THAT FIREBASE THING BEEN LOOKED AT? IT TALKS ABOUT USERID and idk where its really from, the quora might be of relevance
+    //but honestly im just copying and pasting the stuff ive got up/looking at other examples so idk.
+
     //except im not even using it right because im saying (Long.class) when im reading in data not even (User.class)
     //    //and other sources have said
     //    //https://stackoverflow.com/questions/50114944/why-we-need-an-empty-constructor-to-passing-save-a-data-from-firebase
     //    //not sure that that really gave me the idea, i mean it was mainly andy and im going blindly off that
+
+    //I DONT UNDERSTAND HOW getId works, its not in the constructor... get calling it always works.
 
     public String name;
     public String email;

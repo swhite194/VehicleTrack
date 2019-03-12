@@ -23,6 +23,9 @@ public class HomeActivity extends AppCompatActivity {
     FirebaseDatabase mFirebaseDatabase;
     DatabaseReference mDatabaseReference;
 
+    Button btnUserRecordPage;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class HomeActivity extends AppCompatActivity {
         btnDeleteLocationsFromFirebase = (Button) findViewById(R.id.btnDel);
         btnLogin = (Button) findViewById(R.id.btnLoginPage);
         btnEdit = (Button) findViewById(R.id.btnUserInfo);
+
+        btnUserRecordPage = (Button) findViewById(R.id.btnUserRecord);
 
         btnOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +73,15 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, UserInfo.class);
+                startActivity(intent);
+            }
+        });
+
+        //can i do the display user stuff just by this click (instead of opening a new page?)
+        btnUserRecordPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, DisplayUserRecord.class);
                 startActivity(intent);
             }
         });

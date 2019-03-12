@@ -60,4 +60,13 @@
         app:layout_constraintBottom_toTopOf="@+id/textView"
         tools:layout_editor_absoluteX="177dp" />
 
+    <Button
+        android:id="@+id/btnUserRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="Go to User's Record"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginPage"
+        tools:layout_editor_absoluteX="133dp" />
+
 </android.support.constraint.ConstraintLayout>
