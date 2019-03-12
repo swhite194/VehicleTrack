@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -36,6 +37,8 @@ public class LoginOrRegister extends AppCompatActivity {
     Button registerButton, loginButton;
     FirebaseAuth firebaseAuth;
 
+    CheckBox chkDriver, chkAdmin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,9 @@ public class LoginOrRegister extends AppCompatActivity {
         password = findViewById(R.id.txtPassword);
         registerButton = findViewById(R.id.btnRegister);
         loginButton = findViewById(R.id.btnLogin);
+
+        chkDriver = findViewById(R.id.checkDriver);
+        chkAdmin = findViewById(R.id.checkAdmin);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -125,9 +131,19 @@ public class LoginOrRegister extends AppCompatActivity {
                                                               @Override
                                                               public void onComplete(@NonNull Task<AuthResult> task) {
                                                                   if (task.isSuccessful()) {
-                                                                      Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
-                                                                      writeNewUser(null, e, 0, 0);
-                                                                      return;
+                                                                      //https://stackoverflow.com/questions/27423485/java-check-if-checkbox-is-checked
+                                                                      if (chkDriver.isChecked()){
+                                                                          Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
+                                                                          writeNewDriver(null, e, 0, 0, false);
+                                                                      }
+
+                                                                      else {
+                                                                          Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
+//                                                                          writeNewCustomer(null, e, 0, 0, null);
+                                                                          writeNewCustomer(null, e, 0, 0, null);
+
+                                                                          return;
+                                                                      }
                                                                   }
                                                 //THIS IS COMING UP AT THE SAME TIME AS THE 10 CHARACTER VALIDATION... needs fixed; INVISIBLE-> VISIBLE login is a cop-out atm
                                                                   else {
@@ -185,18 +201,65 @@ public class LoginOrRegister extends AppCompatActivity {
 
     }
 
-    private void writeNewUser(String name, String email, double latitude, double longitude) {
-        User user = new User(name, email, latitude, longitude);
+//    private void writeNewUser(String name, String email, double latitude, double longitude) {
+//        User user = new User(name, email, latitude, longitude);
+//
+//
+//        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+//        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//        //is this needed?
+//        myRef.child("users").child(user.id).setValue(user);
+//
+//
+//    }
+
+    private void writeNewCustomer(String name, String email, double latitude, double longitude, String address) {
+        //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
+        Customer customer = new Customer(name, email, latitude, longitude, address);
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
-        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //is this needed?
-        myRef.child("users").child(user.id).setValue(user);
+        myRef.child("users").child("Customers").child(customer.id).setValue(customer);
 
 
     }
+
+    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute) {
+
+        //this shouldnt be here because its not really making use of it (atleast not setter/getter)
+        Driver driver = new Driver(name, email, latitude, longitude, isEnroute);
+
+        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //is this needed?
+        myRef.child("users").child("Drivers").child(driver.id).setValue(driver);
+
+
+    }
+
+//    private void writeNewAdmin(String name, String email, double latitude, double longitude, boolean isEnroute) {
+//        Driver driver = new Driver(name, email, latitude, longitude, isEnroute);
+//
+//
+//        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+//        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//        //is this needed?
+//        myRef.child("users").child("Drivers").child(user.id).setValue(user);
+//
+//
+//    }
+
 
 }

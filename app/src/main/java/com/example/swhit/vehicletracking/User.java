@@ -5,8 +5,7 @@ public class User {
 
 
 
-    //id: https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
-    public String id;
+
 //
     //   //andy gave me idea to do this but also
     //    //https://firebase.google.com/docs/database/android/read-and-write
@@ -28,20 +27,13 @@ public class User {
     //i dont get how Id gets pushed to firebase either (is that a built in thing?)
     //really should go over my references to figure that out
 
+    //id: https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+    public String id;
+
     public String name;
     public String email;
     public double latitude;
     public double longitude;
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 
 
     public User(){
@@ -54,20 +46,22 @@ public class User {
 //        this.latitude = latitude;
 //    }
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
+//https://www.geksforgeeks.org/inheritance-in-java/
     //leaving id out?
     public User(String name, String email, double latitude, double longitude) {
         this.name = name;
         this.email = email;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -94,5 +88,12 @@ public class User {
         this.longitude = longitude;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
 }
