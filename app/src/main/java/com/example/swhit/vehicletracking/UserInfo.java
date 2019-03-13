@@ -48,6 +48,8 @@ public class UserInfo extends AppCompatActivity {
     Button submit_button;
     FirebaseAuth firebaseAuth;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +110,11 @@ public class UserInfo extends AppCompatActivity {
                 //https://stackoverflow.com/questions/42519755/populate-textview-from-firebase-database
                 //m/questions/45173499/retrieve-and-display-firebase-data-in-edittext-and-edit-content-save-again
 
-
+//whats the difference between getid and customer.id
+                //https://stackoverflow.com/questions/37397205/google-firebase-check-if-child-exists
+                //did i use that
+                //https://stackoverflow.com/questions/40066901/check-if-child-exists-in-firebase
+                //im scared of looking like a cheat
 
                 if(dataSnapshot.child("Customers").hasChild(customer.id)) {
                     //is this fruitless? whats the point in transforming it into a class? i dont use it anywhere else.
@@ -127,6 +133,8 @@ public class UserInfo extends AppCompatActivity {
                 }
                 if (dataSnapshot.child("Drivers").hasChild(driver.id)){
 
+                    //did i kind of use this?
+                    //https://stackoverflow.com/questions/45173499/retrieve-and-display-firebase-data-in-edittext-and-edit-content-save-again
                     Driver aDriver = dataSnapshot.child("Drivers").child(driver.id).getValue(Driver.class);
 
 //                    isDriver = true;

@@ -50,10 +50,22 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     Double[] latArray;
     Double[] longArray;
 
+    double latitude;
+    double longitude;
+
+
+
+
+//    customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//    driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_maps);
+
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -66,6 +78,61 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        final Customer customer = new Customer();
+        final Driver driver = new Driver();
+
+        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+        customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        myRef.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //whats the difference between getid and customer.id
+                //https://stackoverflow.com/questions/37397205/google-firebase-check-if-child-exists
+                //did i use that
+                //https://stackoverflow.com/questions/40066901/check-if-child-exists-in-firebase
+                //im scared of looking like a cheat
+                if(dataSnapshot.child("Customers").hasChild(customer.id)){
+                    Customer aCustomer = dataSnapshot.child("Customers").child(customer.id).getValue(Customer.class);
+                    latitude = aCustomer.getLatitude();
+                    longitude = aCustomer.getLongitude();
+
+                    LatLng markerLoc = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
+                }
+                if(dataSnapshot.child("Drivers").hasChild(driver.id)){
+                    Driver aDriver = dataSnapshot.child("Drivers").child(driver.id).getValue(Driver.class);
+                    latitude = aDriver.getLatitude();
+                    longitude = aDriver.getLongitude();
+
+                    LatLng markerLoc = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+//        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//            if (dataSnapshot.child("Customers").hasChild(customer.id)){
+//                //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
+//                //could this all be made more efficient
+//                //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
+//                writeNewCustomer(n, e, doLa, doLo, ad);
+//
+//            }
+//            if (dataSnapshot.child("Drivers").hasChild(driver.id)){
+//                writeNewDriver(n, e, doLa, doLo, boEnr);
+//            }
+//        }
+
+
+
+
 
         //https://stackoverflow.com/questions/46351725/retrieve-map-coordinates-from-firebase-and-plot-on-google-maps
 //        final double[] latitude = new double[0];

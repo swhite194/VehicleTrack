@@ -39,6 +39,8 @@ public class DisplayUserRecord extends AppCompatActivity {
         currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //      //did i kind of use this?
+                //                    //https://stackoverflow.com/questions/45173499/retrieve-and-display-firebase-data-in-edittext-and-edit-content-save-again
                 User user1 = dataSnapshot.getValue(User.class);
 
                 //this works, although is it okay that im calling user twice? when i want the same one? should it matter.
