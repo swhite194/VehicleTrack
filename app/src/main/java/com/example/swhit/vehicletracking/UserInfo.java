@@ -1,5 +1,7 @@
 package com.example.swhit.vehicletracking;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -33,7 +35,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.sql.SQLOutput;
+import java.util.List;
+import java.util.Locale;
 
 public class UserInfo extends AppCompatActivity {
 
@@ -43,10 +48,11 @@ public class UserInfo extends AppCompatActivity {
     DatabaseReference myRef = database.getReference("Location");
 
 
-
-    EditText uname, uemail, ulatitude, ulongitude, uAddress, uEnroute;
+    EditText uname, uemail, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute;
     Button submit_button;
     FirebaseAuth firebaseAuth;
+
+
 
 
 
@@ -60,6 +66,7 @@ public class UserInfo extends AppCompatActivity {
 
 
         User user = new User();
+
 //
 //
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -73,13 +80,84 @@ public class UserInfo extends AppCompatActivity {
 
         uname = findViewById(R.id.txtName);
         uemail = findViewById(R.id.txtEmail);
+        uaddress = findViewById(R.id.txtAddress);
+        ucity = findViewById(R.id.txtCity);
+        upostcode = findViewById(R.id.txtPostcode);
         ulatitude = findViewById(R.id.txtLatitude);
         ulongitude = findViewById(R.id.txtLongitude);
-
-        uAddress = findViewById(R.id.txtAddress);
         uEnroute = findViewById(R.id.txtEnroute);
 
         submit_button = findViewById(R.id.btnSubmit);
+
+
+//        String userAddress = uaddress.getText().toString();
+//        String userCity = ucity.getText().toString();
+//        String userPostcode = upostcode.getText().toString();
+//
+//        String completeAddress = userAddress + " " + userCity + " " + userPostcode;
+
+//https://stackoverflow.com/questions/9409195/how-to-get-complete-address-from-latitude-and-longitude
+        //first answer, but this is for Reverse Geocoding; so I switched it to getFromLocationName (because I want address -> coordinates)
+        //combined with this
+        // https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
+
+
+
+//
+//        geocoder = new Geocoder(this, Locale.getDefault());
+//        //needed to be in a try catch as suggested by android studio
+//        try {
+//            addresses = geocoder.getFromLocationName(completeAddress, 1);
+//            double longitude = addresses.get(0).getLongitude();
+//            double latitude = addresses.get(0).getLatitude();
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
+        //trying this way: https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android (last example!)
+
+//        ucity.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                Geocoder geocoder = new Geocoder(this);
+//                List<Address> addresses = null;
+//
+//                //needed to be in a try catch as suggested by android studio
+//                try {
+//                    addresses = geocoder.getFromLocationName(completeAddress, 1);
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                if (addresses.size()>0) {
+//
+//                    double latitude = addresses.get(0).getLatitude();
+//                    double longitude = addresses.get(0).getLongitude();
+//
+//                    String lat = String.valueOf(latitude);
+//                    String lon = String.valueOf(longitude);
+//
+//                    ulatitude.setText(lat);
+//                    ulongitude.setText(lon);
+//
+//                }
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
+
 
 
 
@@ -127,9 +205,12 @@ public class UserInfo extends AppCompatActivity {
 
                     uname.setText(aCustomer.getName());
                     uemail.setText(aCustomer.getEmail());
+                    uaddress.setText(aCustomer.getAddress());
+                    ucity.setText(aCustomer.getCity());
+                    upostcode.setText(aCustomer.getPostcode());
                     ulatitude.setText(String.valueOf(aCustomer.getLatitude()));
                     ulongitude.setText(String.valueOf(aCustomer.getLongitude()));
-                    uAddress.setText(String.valueOf(aCustomer.getAddress()));
+
                 }
                 if (dataSnapshot.child("Drivers").hasChild(driver.id)){
 
@@ -231,6 +312,11 @@ public class UserInfo extends AppCompatActivity {
 
 
 
+
+
+
+
+
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -249,15 +335,24 @@ public class UserInfo extends AppCompatActivity {
                 //annoys me that the first reference refers to something which wasnt my issue.
 
 
+
+
+
                 currentUser.addValueEventListener(new ValueEventListener() {
                     String n = uname.getText().toString();
                     String e = uemail.getText().toString();
+                    String ad = uaddress.getText().toString();
+                    String ci = ucity.getText().toString();
+                    String po = upostcode.getText().toString();
                     String la = ulatitude.getText().toString();
                     String lo = ulongitude.getText().toString();
 
-                    String ad = uAddress.getText().toString();
+
                     //should this be the case, its a boolean? will it work
                     String enr = uEnroute.getText().toString();
+
+//                    //combination of address, city and postcode
+//                    String completeAddress = ad + " " + ci + " " + po;
 
                     //https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
                     double doLa = Double.parseDouble(la);
@@ -269,7 +364,8 @@ public class UserInfo extends AppCompatActivity {
                             //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
                             //could this all be made more efficient
                             //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
-                            writeNewCustomer(n, e, doLa, doLo, ad);
+
+                            writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 
                         }
                         if (dataSnapshot.child("Drivers").hasChild(driver.id)){
@@ -306,9 +402,9 @@ public class UserInfo extends AppCompatActivity {
 //
 //    }
 
-    private void writeNewCustomer(String name, String email, double latitude, double longitude, String address) {
+    private void writeNewCustomer(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Customer customer = new Customer(name, email, latitude, longitude, address);
+        Customer customer = new Customer(name, email, latitude, longitude, address, city, postcode);
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap

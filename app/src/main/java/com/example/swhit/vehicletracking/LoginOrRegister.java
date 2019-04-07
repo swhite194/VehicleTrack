@@ -140,7 +140,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       else {
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
 //                                                                          writeNewCustomer(null, e, 0, 0, null);
-                                                                          writeNewCustomer(null, e, 0, 0, null);
+                                                                          writeNewCustomer(null, e, 0, 0, null, null, null);
 
                                                                           return;
                                                                       }
@@ -215,9 +215,9 @@ public class LoginOrRegister extends AppCompatActivity {
 //
 //    }
 
-    private void writeNewCustomer(String name, String email, double latitude, double longitude, String address) {
+    private void writeNewCustomer(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Customer customer = new Customer(name, email, latitude, longitude, address);
+        Customer customer = new Customer(name, email, latitude, longitude, address, city, postcode);
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
