@@ -11,179 +11,146 @@
         android:id="@+id/textViewEnroute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="272dp"
         android:text="Enroute"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        tools:layout_editor_absoluteX="17dp"
+        tools:layout_editor_absoluteY="351dp" />
 
     <EditText
         android:id="@+id/txtEnroute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="288dp"
         android:ems="10"
+        android:hint="Enroute"
         android:inputType="textPersonName"
-        android:text="Enroute"
-        app:layout_constraintStart_toStartOf="@+id/txtEmail"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="339dp" />
 
     <EditText
         android:id="@+id/txtLongitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
         android:ems="10"
         android:hint="Longitude"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/txtEnroute"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtLatitude" />
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="293dp" />
 
     <EditText
         android:id="@+id/txtLatitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
         android:ems="10"
         android:hint="Latitude"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/txtLongitude"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPostcode" />
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="247dp" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="4dp"
         android:text="Location"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPostcode" />
+        tools:layout_editor_absoluteX="24dp"
+        tools:layout_editor_absoluteY="165dp" />
 
     <Button
         android:id="@+id/btnSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginBottom="16dp"
         android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/txtLongitude" />
+        tools:layout_editor_absoluteX="133dp"
+        tools:layout_editor_absoluteY="447dp" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="29dp"
-        android:layout_marginLeft="29dp"
-        android:layout_marginTop="10dp"
         android:text="Name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="10dp" />
 
     <EditText
         android:id="@+id/txtName"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginBottom="11dp"
+        android:layout_height="46dp"
         android:ems="10"
         android:hint="Your Name"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/txtEmail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="6dp" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginBottom="19dp"
         android:text="Email"
-        app:layout_constraintBottom_toBottomOf="@+id/txtEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtName" />
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="71dp" />
 
     <EditText
         android:id="@+id/txtEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="63dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginBottom="14dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/txtAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="63dp" />
 
     <TextView
         android:id="@+id/textViewAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
         android:text="Address"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtAddress" />
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="119dp" />
 
     <EditText
         android:id="@+id/txtAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
         android:ems="10"
         android:hint="Address"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/txtCity"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="109dp" />
 
     <EditText
         android:id="@+id/txtCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginBottom="7dp"
         android:ems="10"
         android:hint="City"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/txtPostcode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtAddress" />
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="155dp" />
 
     <EditText
         android:id="@+id/txtPostcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginBottom="4dp"
         android:ems="10"
         android:hint="Postcode"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/txtLatitude"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCity" />
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="201dp" />
+
+    <TextView
+        android:id="@+id/textViewAvailableToBook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AvailableToBook"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="402dp" />
+
+    <EditText
+        android:id="@+id/txtAvailability"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Availability"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="385dp" />
 
 </android.support.constraint.ConstraintLayout>

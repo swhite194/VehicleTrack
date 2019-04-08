@@ -48,7 +48,7 @@ public class UserInfo extends AppCompatActivity {
     DatabaseReference myRef = database.getReference("Location");
 
 
-    EditText uname, uemail, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute;
+    EditText uname, uemail, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uAvailability;
     Button submit_button;
     FirebaseAuth firebaseAuth;
 
@@ -86,6 +86,7 @@ public class UserInfo extends AppCompatActivity {
         ulatitude = findViewById(R.id.txtLatitude);
         ulongitude = findViewById(R.id.txtLongitude);
         uEnroute = findViewById(R.id.txtEnroute);
+        uAvailability = findViewById(R.id.txtAvailability);
 
         submit_button = findViewById(R.id.btnSubmit);
 
@@ -225,6 +226,8 @@ public class UserInfo extends AppCompatActivity {
                     ulatitude.setText(String.valueOf(aDriver.getLatitude()));
                     ulongitude.setText(String.valueOf(aDriver.getLongitude()));
                     uEnroute.setText(String.valueOf(aDriver.isEnroute()));
+                    //change this wording, availability isn't great
+                    uAvailability.setText(String.valueOf(aDriver.bookable));
 
                 }
 
