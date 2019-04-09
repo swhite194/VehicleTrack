@@ -140,7 +140,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       else {
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
 //                                                                          writeNewCustomer(null, e, 0, 0, null);
-                                                                          writeNewCustomer(null, e, 0, 0, null, null, null);
+                                                                          writeNewCustomer(null, e, 0, 0, "place", null, null);
 
                                                                           return;
                                                                       }

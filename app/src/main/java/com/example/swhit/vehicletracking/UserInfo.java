@@ -1,5 +1,6 @@
 package com.example.swhit.vehicletracking;
 
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -43,21 +45,19 @@ import java.util.Locale;
 public class UserInfo extends AppCompatActivity {
 
 
-
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
     DatabaseReference myRef = database.getReference("Location");
 
 
     EditText uname, uemail, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uBookable;
+    EditText utest;
     Button submit_button;
     FirebaseAuth firebaseAuth;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
@@ -87,6 +87,7 @@ public class UserInfo extends AppCompatActivity {
         ulongitude = findViewById(R.id.txtLongitude);
         uEnroute = findViewById(R.id.txtEnroute);
         uBookable = findViewById(R.id.txtBookable);
+        utest = findViewById(R.id.txtTest);
 
         submit_button = findViewById(R.id.btnSubmit);
 
@@ -101,7 +102,6 @@ public class UserInfo extends AppCompatActivity {
         //first answer, but this is for Reverse Geocoding; so I switched it to getFromLocationName (because I want address -> coordinates)
         //combined with this
         // https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
-
 
 
 //
@@ -160,10 +160,7 @@ public class UserInfo extends AppCompatActivity {
 //        });
 
 
-
-
         //need to figure out how to use Getter to keep this populated (with User class data?)
-
 
 
 //        userName = myRef.child("users").child(user.id).child("name");
@@ -182,7 +179,7 @@ public class UserInfo extends AppCompatActivity {
 
 
         //https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
-        currentUser.addValueEventListener(new ValueEventListener(){
+        currentUser.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -195,10 +192,9 @@ public class UserInfo extends AppCompatActivity {
                 //https://stackoverflow.com/questions/40066901/check-if-child-exists-in-firebase
                 //im scared of looking like a cheat
 
-                if(dataSnapshot.child("Customers").hasChild(customer.id)) {
+                if (dataSnapshot.child("Customers").hasChild(customer.id)) {
                     //is this fruitless? whats the point in transforming it into a class? i dont use it anywhere else.
                     Customer aCustomer = dataSnapshot.child("Customers").child(customer.id).getValue(Customer.class);
-
 
 
                     //shouldn't need to repeat this should I
@@ -212,8 +208,39 @@ public class UserInfo extends AppCompatActivity {
                     ulatitude.setText(String.valueOf(aCustomer.getLatitude()));
                     ulongitude.setText(String.valueOf(aCustomer.getLongitude()));
 
+//                    utest.setText(getLocationFromAddress(context, aCustomer.getAddress()));
+
+                    //a combination of: https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
+                    //and https://stackoverflow.com/questions/24352192/android-google-maps-add-marker-by-address (devgrg's answer)
+                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                    String address = aCustomer.getAddress();
+                    List<Address> fromLocationName = null;
+                    //perhaps weirdly done because, considering this textbox is at the bottom, it makes it look like it automatically updates when you finish typing in the address; which isn't the case (it updates on submit)
+
+                    //THIS SEEMS TO CAUSE USERINFO TO EITHER CRASH IF ITS FROM A COLD BOOT OR ONLY SHOW THE DETAILS FOR customers@gmail.com.. custpassword IF THEY'VE BEEN LOGGED IN PRIOR
+                    try {
+                        fromLocationName = geocoder.getFromLocationName(address, 1);
+                        if(fromLocationName != null && fromLocationName.size()>0){
+                            Address a = fromLocationName.get(0);
+                            a.getLatitude();
+                            a.getLongitude();
+
+//                            p1 = new LatLng(a.getLatitude(), a.getLongitude());
+
+                            utest.setText(a.getLatitude() + "," + a.getLongitude());
+//                            a = null;
+//                            fromLocationName = null;
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+
                 }
-                if (dataSnapshot.child("Drivers").hasChild(driver.id)){
+                if (dataSnapshot.child("Drivers").hasChild(driver.id)) {
 
                     //did i kind of use this?
                     //https://stackoverflow.com/questions/45173499/retrieve-and-display-firebase-data-in-edittext-and-edit-content-save-again
@@ -289,9 +316,8 @@ public class UserInfo extends AppCompatActivity {
 //                ulongitude.setText(sLongitude);
 
 
-
-
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -313,13 +339,6 @@ public class UserInfo extends AppCompatActivity {
 //        user.setName(myRef.child("users").child(user.id).child("name").get
 
 
-
-
-
-
-
-
-
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -337,11 +356,10 @@ public class UserInfo extends AppCompatActivity {
                 //also good, https://stackoverflow.com/questions/40184797/retrieve-data-from-firebase-database-on-button-click but he makes use of blah.Class a lot and i dont
                 //annoys me that the first reference refers to something which wasnt my issue.
 
-
-
-
-
-                currentUser.addValueEventListener(new ValueEventListener() {
+//IMPORTANT: SEE MY FACEBOOK NOTEPAD MSG FOR THE KIND OF THINGS THIS WAS CAUSING WHEN THE OTHER WAY ROUND.
+//set this to SingleValue; ValueEventListener causes a bug where new accounts will be reverted to the same details as the account which you originally press Submit on
+                //I WANT TO SAY THAT THIS WILL HAVE NO IMPACT ON A DRIVERS LOCATION WHEN IT COMES TO LOGGING INTO OTHER DRIVER ACCOUNTS OR WHENEVER THEY GO FROM STATIC TO MOVING?
+                currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                     String n = uname.getText().toString();
                     String e = uemail.getText().toString();
                     String ad = uaddress.getText().toString();
@@ -364,33 +382,41 @@ public class UserInfo extends AppCompatActivity {
                     double doLo = Double.parseDouble(lo);
                     boolean boEnr = Boolean.parseBoolean(enr);
                     boolean boBook = Boolean.parseBoolean(book);
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child("Customers").hasChild(customer.id)){
+                        if (dataSnapshot.child("Customers").hasChild(customer.id)) {
                             //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
                             //could this all be made more efficient
                             //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
 
                             writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 
+
                         }
-                        if (dataSnapshot.child("Drivers").hasChild(driver.id)){
+                        if (dataSnapshot.child("Drivers").hasChild(driver.id)) {
                             writeNewDriver(n, e, doLa, doLo, boEnr, boBook);
+                            //i assume i include this; ive not started trying to edit drivers details yet..
+                            //enr = null;
+                            //book = null;
+                            //
                         }
+
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
+
                 });
 
                 //not making use of getters to plug those values in.. instead im parsing in the text fields? is that all i can do?
 
             }
+
         });
     }
-
 
 
     //https://firebase.google.com/docs/database/android/read-and-write
@@ -422,6 +448,7 @@ public class UserInfo extends AppCompatActivity {
         myRef.child("users").child("Customers").child(customer.id).setValue(customer);
 
 
+
     }
 
     private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, boolean bookable) {
@@ -440,7 +467,7 @@ public class UserInfo extends AppCompatActivity {
 
     }
 
-    private void populateUserTextFields(String name, String email, double latitude, double longitude){
+    private void populateUserTextFields(String name, String email, double latitude, double longitude) {
         User user = new User(name, email, latitude, longitude);
         user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 //        user.setName(myRef.child("users").child(user.id).toString());
@@ -448,4 +475,35 @@ public class UserInfo extends AppCompatActivity {
 
 
     }
+
+
+//    public LatLng getLocationFromAddress(Context context, String strAddress) {
+//
+//        Geocoder geocoder = new Geocoder(context);
+//        List<Address> address;
+//        LatLng p1 = null;
+//        //needed to be in a try catch as suggested by android studio
+//        try {
+//            address = geocoder.getFromLocationName(strAddress, 5);
+//            if(address==null)
+//            {
+//                return null;
+//            }
+//            Address location = address.get(0);
+//            location.getLatitude();
+//            location.getLongitude();
+//
+//            p1 = new LatLng(location.getLatitude(), location.getLongitude());
+////            double longitude = addresses.get(0).getLongitude();
+////            double latitude = addresses.get(0).getLatitude();
+//
+//
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        return p1;
+//
+//    }
 }

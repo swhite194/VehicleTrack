@@ -57,11 +57,11 @@ public class PlaceOrder extends AppCompatActivity {
 //this is a bad name for it here. considering its used for current user BUT also to see into driver.
 //        final DatabaseReference currentUser = myRef.child("users");
 //        final DatabaseReference driverRef = myRef.child("users").child("Drivers").child(driver.id);
-        //https://stackoverflow.com/questions/43265668/checking-if-field-data-changed-rather-than-any-field-in-child-data/43265932
+        //https://stackoverflow.com/questions/43265668/checking-if-field-data-changed-rather-than-any-field-in-child-data/43265932 -WHAT DOES THIS APPLY TO? just this paragraph or the next?
         DatabaseReference drivers = myRef.child("users").child("Drivers");
         DatabaseReference customers = myRef.child("users").child("Customers");
 
-
+//should this be value rather than single? yeah?
         customers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -81,15 +81,39 @@ public class PlaceOrder extends AppCompatActivity {
             }
         });
 
-        drivers.addValueEventListener(new ValueEventListener() {
+        //https://stackoverflow.com/questions/40366717/firebase-for-android-how-can-i-loop-through-a-child-for-each-child-x-do-y based off
+//        drivers.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+////ITERATE THROUGH ALL DRIVERS TO SEE WHO IS AVAILABLE
+//            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+//                if(snapshot.child("bookable").equals(true)){
+//                    aDriver = snapshot.getValue(Driver.class);
+//                }
+//            }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
+        //based on question https://stackoverflow.com/questions/52128852/getting-data-from-firebase-using-orderbychild-query
+//but i made it SingleValue like this https://stackoverflow.com/questions/40366717/firebase-for-android-how-can-i-loop-through-a-child-for-each-child-x-do-y
+        //check both!
+        drivers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//ITERATE THROUGH ALL DRIVERS TO SEE WHO IS AVAILABLE
-            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                if(snapshot.child("bookable").equals("true")){
-                    aDriver = snapshot.getValue(Driver.class);
+                boolean check;
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    check = snapshot.child("bookable").getValue(Boolean.class);
+                    if (check = true){
+                        aDriver = snapshot.getValue(Driver.class);
+                        break;
+                    }
+                    //NEED TO SAY ELSE HERE.
                 }
-            }
             }
 
             @Override
@@ -116,6 +140,7 @@ public class PlaceOrder extends AppCompatActivity {
 
 
                 item_id = "Pixel";
+                System.out.println(aDriver.getEmail());
 
             }
         });
