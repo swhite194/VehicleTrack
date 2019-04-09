@@ -27,10 +27,11 @@ public class PlaceOrder extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
 
 
-    String item_id;
+    String item_id = "1";
     int item_quantity = 1;
     Customer aCustomer = new Customer();
     Driver aDriver = new Driver();
+    String custID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class PlaceOrder extends AppCompatActivity {
 
         //calling it custID here instead of customer.id (the problem lies more in UserInfo's use of saying Customer customer TWICE.. THAT needs to be fixed.. this wasn't such a big deal - check fb messenger)
         //this is what id prefer for UserInfo.
-        final String custID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
 
         utime = findViewById(R.id.txtDeliveryTime);
@@ -64,9 +65,10 @@ public class PlaceOrder extends AppCompatActivity {
         customers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("Customers").hasChild(custID)) {
+                if(dataSnapshot.hasChild(custID)) {
          //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
-                    aCustomer = dataSnapshot.child("Customers").child(custID).getValue(Customer.class);
+                    aCustomer = dataSnapshot.child(custID).getValue(Customer.class);
+
                     //how do i then make use of this data???
 
 
@@ -107,9 +109,32 @@ public class PlaceOrder extends AppCompatActivity {
             }
         });
 
+        pixel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //does this go here
+
+
+                item_id = "Pixel";
+
+            }
+        });
+
+        iphone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //does this go here
+
+
+                item_id = "iPhone";
+
+            }
+        });
+
         place_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("LETS TRY THIS: " + aCustomer.getEmail());
                 writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), item_id, item_quantity);
             }
         });
@@ -127,12 +152,15 @@ public class PlaceOrder extends AppCompatActivity {
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        order.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
 
 
         //is this needed?
-        myRef.child("orders").child(customerid).setValue(order);
+        //is push the best option?
+        //id still like to categorise them by CUSTOMER id WITHIN FIREBASE ITSELF, for ease of access instead of sorting
+        //SHOULD i consider that if their address changes.. should it affect the orders table in Firebase? (considering that archived might be diff)
+        myRef.child("orders").child("Orders").push().setValue(order);
 
 
     }
