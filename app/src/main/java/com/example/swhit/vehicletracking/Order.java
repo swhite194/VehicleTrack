@@ -9,25 +9,25 @@ public class Order {
     public String customerEmail;
     public String customerAddress;
     public String customerCity;
-    public String customerPostode;
+    public String customerPostcode;
 
     public String driverID;
     public String driverName;
 
-    public int itemID;
+    public String itemID;
     public int itemQuantity;
 
     public Order(){
         //
     }
 
-    public Order(String customerID, String customerName, String customerEmail, String customerAddress, String customerCity, String customerPostode, String driverID, String driverName, int itemID, int itemQuantity) {
+    public Order(String customerID, String customerName, String customerEmail, String customerAddress, String customerCity, String customerPostcode, String driverID, String driverName, String itemID, int itemQuantity) {
         this.customerID = customerID;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.customerAddress = customerAddress;
         this.customerCity = customerCity;
-        this.customerPostode = customerPostode;
+        this.customerPostcode = customerPostcode;
         this.driverID = driverID;
         this.driverName = driverName;
         this.itemID = itemID;
@@ -76,12 +76,12 @@ public class Order {
         this.customerCity = customerCity;
     }
 
-    public String getCustomerPostode() {
-        return customerPostode;
+    public String getCustomerPostcode() {
+        return customerPostcode;
     }
 
-    public void setCustomerPostode(String customerPostode) {
-        this.customerPostode = customerPostode;
+    public void setCustomerPostcode(String customerPostcode) {
+        this.customerPostcode = customerPostcode;
     }
 
     public String getDriverID() {

@@ -134,7 +134,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       //https://stackoverflow.com/questions/27423485/java-check-if-checkbox-is-checked
                                                                       if (chkDriver.isChecked()){
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
-                                                                          writeNewDriver(null, e, 0, 0, false);
+                                                                          writeNewDriver(null, e, 0, 0, false, true);
                                                                       }
 
                                                                       else {

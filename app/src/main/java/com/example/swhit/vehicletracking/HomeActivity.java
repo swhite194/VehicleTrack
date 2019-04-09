@@ -19,6 +19,7 @@ public class HomeActivity extends AppCompatActivity {
     Button btnLogin;
     Button btnEdit;
     Button btnDeleteLocationsFromFirebase;
+    Button btnOrderPg;
     TextView txtView;
     FirebaseDatabase mFirebaseDatabase;
     DatabaseReference mDatabaseReference;
@@ -40,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         btnDeleteLocationsFromFirebase = (Button) findViewById(R.id.btnDel);
         btnLogin = (Button) findViewById(R.id.btnLoginPage);
         btnEdit = (Button) findViewById(R.id.btnUserInfo);
+        btnOrderPg = (Button) findViewById(R.id.btnOrderPage);
 
         btnUserRecordPage = (Button) findViewById(R.id.btnUserRecord);
 
@@ -82,6 +84,14 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, DisplayUserRecord.class);
+                startActivity(intent);
+            }
+        });
+
+        btnOrderPg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, PlaceOrder.class);
                 startActivity(intent);
             }
         });

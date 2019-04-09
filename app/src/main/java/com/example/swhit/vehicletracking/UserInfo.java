@@ -48,7 +48,7 @@ public class UserInfo extends AppCompatActivity {
     DatabaseReference myRef = database.getReference("Location");
 
 
-    EditText uname, uemail, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uAvailability;
+    EditText uname, uemail, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uBookable;
     Button submit_button;
     FirebaseAuth firebaseAuth;
 
@@ -86,7 +86,7 @@ public class UserInfo extends AppCompatActivity {
         ulatitude = findViewById(R.id.txtLatitude);
         ulongitude = findViewById(R.id.txtLongitude);
         uEnroute = findViewById(R.id.txtEnroute);
-        uAvailability = findViewById(R.id.txtAvailability);
+        uBookable = findViewById(R.id.txtBookable);
 
         submit_button = findViewById(R.id.btnSubmit);
 
@@ -227,7 +227,7 @@ public class UserInfo extends AppCompatActivity {
                     ulongitude.setText(String.valueOf(aDriver.getLongitude()));
                     uEnroute.setText(String.valueOf(aDriver.isEnroute()));
                     //change this wording, availability isn't great
-                    uAvailability.setText(String.valueOf(aDriver.bookable));
+                    uBookable.setText(String.valueOf(aDriver.bookable));
 
                 }
 
@@ -354,6 +354,8 @@ public class UserInfo extends AppCompatActivity {
                     //should this be the case, its a boolean? will it work
                     String enr = uEnroute.getText().toString();
 
+                    String book = uBookable.getText().toString();
+
 //                    //combination of address, city and postcode
 //                    String completeAddress = ad + " " + ci + " " + po;
 
@@ -361,6 +363,7 @@ public class UserInfo extends AppCompatActivity {
                     double doLa = Double.parseDouble(la);
                     double doLo = Double.parseDouble(lo);
                     boolean boEnr = Boolean.parseBoolean(enr);
+                    boolean boBook = Boolean.parseBoolean(book);
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.child("Customers").hasChild(customer.id)){
@@ -372,7 +375,7 @@ public class UserInfo extends AppCompatActivity {
 
                         }
                         if (dataSnapshot.child("Drivers").hasChild(driver.id)){
-                            writeNewDriver(n, e, doLa, doLo, boEnr);
+                            writeNewDriver(n, e, doLa, doLo, boEnr, boBook);
                         }
                     }
 
@@ -421,10 +424,10 @@ public class UserInfo extends AppCompatActivity {
 
     }
 
-    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute) {
+    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, boolean bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver driver = new Driver(name, email, latitude, longitude, isEnroute);
+        Driver driver = new Driver(name, email, latitude, longitude, isEnroute, bookable);
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase

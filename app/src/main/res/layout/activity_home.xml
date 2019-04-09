@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="124dp"
-        android:text="Button"
+        android:text="Log In/Register"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="177dp" />
 
@@ -68,5 +68,16 @@
         android:text="Go to User's Record"
         app:layout_constraintBottom_toTopOf="@+id/btnLoginPage"
         tools:layout_editor_absoluteX="133dp" />
+
+    <Button
+        android:id="@+id/btnOrderPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="40dp"
+        android:text="Place an Order"
+        app:layout_constraintStart_toStartOf="@+id/bt"
+        app:layout_constraintTop_toBottomOf="@+id/bt" />
 
 </android.support.constraint.ConstraintLayout>

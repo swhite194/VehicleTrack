@@ -27,9 +27,10 @@ public class PlaceOrder extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
 
 
-    int item_id=0;
-    Customer customer = new Customer();
-    Driver driver = new Driver();
+    String item_id;
+    int item_quantity = 1;
+    Customer aCustomer = new Customer();
+    Driver aDriver = new Driver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +55,18 @@ public class PlaceOrder extends AppCompatActivity {
 
 //this is a bad name for it here. considering its used for current user BUT also to see into driver.
 //        final DatabaseReference currentUser = myRef.child("users");
-        final DatabaseReference currentCustomer = myRef.child("users").child("Customers").child(customer.id);
-        final DatabaseReference driverRef = myRef.child("users").child("Drivers").child(driver.id);
+//        final DatabaseReference driverRef = myRef.child("users").child("Drivers").child(driver.id);
+        //https://stackoverflow.com/questions/43265668/checking-if-field-data-changed-rather-than-any-field-in-child-data/43265932
+        DatabaseReference drivers = myRef.child("users").child("Drivers");
+        DatabaseReference customers = myRef.child("users").child("Customers");
 
 
-        currentCustomer.addValueEventListener(new ValueEventListener() {
+        customers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child("Customers").hasChild(custID)) {
          //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
-                    customer = dataSnapshot.child("Customers").child(custID).getValue(Customer.class);
+                    aCustomer = dataSnapshot.child("Customers").child(custID).getValue(Customer.class);
                     //how do i then make use of this data???
 
 
@@ -76,17 +79,22 @@ public class PlaceOrder extends AppCompatActivity {
             }
         });
 
-        driverRef.addValueEventListener(new ValueEventListener() {
+        drivers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //ITERATE THROUGH ALL DRIVERS TO SEE WHO IS AVAILABLE
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                if(snapshot.child("bookable").equals("true")){
+                    aDriver = snapshot.getValue(Driver.class);
+                }
+            }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        })
+        });
 
         huawei.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +102,7 @@ public class PlaceOrder extends AppCompatActivity {
                 //does this go here
 
 
-                item_id = 1;
+                item_id = "huawei_P30_Pro";
 
             }
         });
@@ -102,7 +110,7 @@ public class PlaceOrder extends AppCompatActivity {
         place_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                writeNewOrder(custID,);
+                writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), item_id, item_quantity);
             }
         });
 
@@ -110,7 +118,7 @@ public class PlaceOrder extends AppCompatActivity {
 
 
     }
-    private void writeNewOrder(String customerid, String customername, String customeremail, String customeraddress, String customercity, String customerpostcode, String driverid, String drivername, int itemid, int itemquantity) {
+    private void writeNewOrder(String customerid, String customername, String customeremail, String customeraddress, String customercity, String customerpostcode, String driverid, String drivername, String itemid, int itemquantity) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
         Order order = new Order(customerid, customername, customeremail, customeraddress, customercity, customerpostcode, driverid, drivername, itemid, itemquantity);
