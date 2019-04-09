@@ -55,8 +55,8 @@
         app:layout_constraintEnd_toStartOf="@+id/imgbtnPixel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/huawei"
-        tools:srcCompat="@drawable/huawei" />
+        app:srcCompat="@mipmap/huawei"
+        tools:srcCompat="@mipmap/huawei" />
 
     <ImageButton
         android:id="@+id/imgbtnPixel"
@@ -70,8 +70,8 @@
         app:layout_constraintBottom_toTopOf="@+id/txtDeliveryTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/pixel"
-        tools:srcCompat="@drawable/pixel" />
+        app:srcCompat="@mipmap/pixel"
+        tools:srcCompat="@mipmap/pixel" />
 
     <ImageButton
         android:id="@+id/imgbtnIphone"
@@ -85,7 +85,7 @@
         app:layout_constraintBottom_toTopOf="@+id/txtDeliveryTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/iphone"
-        tools:srcCompat="@drawable/iphone" />
+        app:srcCompat="@mipmap/iphone"
+        tools:srcCompat="@mipmap/iphone" />
 
 </android.support.constraint.ConstraintLayout>

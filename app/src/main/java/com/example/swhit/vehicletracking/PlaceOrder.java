@@ -81,7 +81,7 @@ public class PlaceOrder extends AppCompatActivity {
             }
         });
 
-        drivers.addListenerForSingleValueEvent(new ValueEventListener() {
+        drivers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //ITERATE THROUGH ALL DRIVERS TO SEE WHO IS AVAILABLE
