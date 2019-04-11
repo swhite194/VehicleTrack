@@ -26,6 +26,7 @@ public class HomeActivity extends AppCompatActivity {
 
     Button btnUserRecordPage;
 
+    Button btnTestPage;
 
 
     @Override
@@ -44,6 +45,8 @@ public class HomeActivity extends AppCompatActivity {
         btnOrderPg = (Button) findViewById(R.id.btnOrderPage);
 
         btnUserRecordPage = (Button) findViewById(R.id.btnUserRecord);
+
+        btnTestPage = (Button) findViewById(R.id.btnTestPage);
 
         btnOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +98,16 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnTestPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ReferenceWork.class);
+                startActivity(intent);
+            }
+        });
+
+
 
 
     }

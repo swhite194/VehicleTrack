@@ -80,4 +80,12 @@
         app:layout_constraintStart_toStartOf="@+id/bt"
         app:layout_constraintTop_toBottomOf="@+id/bt" />
 
+    <Button
+        android:id="@+id/btnTestPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Page"
+        tools:layout_editor_absoluteX="27dp"
+        tools:layout_editor_absoluteY="84dp" />
+
 </android.support.constraint.ConstraintLayout>

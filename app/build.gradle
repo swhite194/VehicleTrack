@@ -37,6 +37,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
 
+    //www.northborder-software.com/location_provider_client_1.html
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+
     //https://stackoverflow.com/questions/37360126/getting-exception-java-lang-noclassdeffounderror-com-google-firebase-firebaseop
     implementation 'com.android.support:multidex:1.0.3'
 }
