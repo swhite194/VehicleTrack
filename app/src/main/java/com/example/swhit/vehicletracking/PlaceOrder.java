@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,11 +28,14 @@ public class PlaceOrder extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
 
 
-    String item_id = "1";
-    int item_quantity = 1;
+    String item_id;
+    int item_quantity;
     Customer aCustomer = new Customer();
     Driver aDriver = new Driver();
     String custID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+    //used to check availability status of driver
+    String check;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,7 @@ public class PlaceOrder extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(custID)) {
-         //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
+                    //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
                     aCustomer = dataSnapshot.child(custID).getValue(Customer.class);
 
                     //how do i then make use of this data???
@@ -102,16 +106,18 @@ public class PlaceOrder extends AppCompatActivity {
         //based on question https://stackoverflow.com/questions/52128852/getting-data-from-firebase-using-orderbychild-query
 //but i made it SingleValue like this https://stackoverflow.com/questions/40366717/firebase-for-android-how-can-i-loop-through-a-child-for-each-child-x-do-y
         //check both!
-        drivers.addListenerForSingleValueEvent(new ValueEventListener() {
+        drivers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                boolean check;
+
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    check = snapshot.child("bookable").getValue(Boolean.class);
-                    if (check = true){
+                    check = snapshot.child("bookable").getValue(String.class);
+                    //works backwards but is fine... or is it the submit/writeorder stuff that does?
+                    if (check.equals("available")){
                         aDriver = snapshot.getValue(Driver.class);
-                        break;
+                        System.out.println(check);
                     }
+
                     //NEED TO SAY ELSE HERE.
                 }
             }
@@ -159,8 +165,16 @@ public class PlaceOrder extends AppCompatActivity {
         place_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("LETS TRY THIS: " + aCustomer.getEmail());
-                writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), item_id, item_quantity);
+                if(check.equals("available")) {
+                    writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), item_id, item_quantity);
+//                aDriver.setBookable(false);
+                    aDriver.setBookable("unavailable");
+                    myRef.child("users").child("Drivers").child(aDriver.getId()).setValue(aDriver);
+                }
+                if(check.equals("unavailable")){
+                    Toast.makeText(getApplicationContext(), "Sorry no drivers are available!", Toast.LENGTH_LONG).show();
+                }
+                //should i have an else?
             }
         });
 

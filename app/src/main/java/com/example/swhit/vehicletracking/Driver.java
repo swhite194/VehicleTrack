@@ -1,20 +1,20 @@
 package com.example.swhit.vehicletracking;
 
-public class Driver extends User{
+public class Driver extends User {
 
-public boolean isEnroute;
-public boolean bookable;
+    public boolean isEnroute;
+    public String bookable;
 
-    public Driver(){
+    public Driver() {
         //
     }
 
-//https://www.geeksforgeeks.org/inheritance-in-java/
-public Driver(String name, String email, double latitude, double longitude, boolean isEnroute, boolean bookable) {
-    super(name, email, latitude, longitude);
-    this.isEnroute = isEnroute;
-    this.bookable = bookable;
-}
+    //https://www.geeksforgeeks.org/inheritance-in-java/
+    public Driver(String name, String email, double latitude, double longitude, boolean isEnroute, String bookable) {
+        super(name, email, latitude, longitude);
+        this.isEnroute = isEnroute;
+        this.bookable = bookable;
+    }
 
 
     public boolean isEnroute() {
@@ -25,11 +25,14 @@ public Driver(String name, String email, double latitude, double longitude, bool
         isEnroute = enroute;
     }
 
-    public boolean isBookable() {
+    public String getBookable() {
         return bookable;
     }
 
-    public void setBookable(boolean bookable) {
+    public void setBookable(String bookable) {
         this.bookable = bookable;
     }
 }
+
+
+

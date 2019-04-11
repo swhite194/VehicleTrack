@@ -254,7 +254,7 @@ public class UserInfo extends AppCompatActivity {
                     ulongitude.setText(String.valueOf(aDriver.getLongitude()));
                     uEnroute.setText(String.valueOf(aDriver.isEnroute()));
                     //change this wording, availability isn't great
-                    uBookable.setText(String.valueOf(aDriver.bookable));
+                    uBookable.setText(aDriver.getBookable());
 
                 }
 
@@ -368,11 +368,12 @@ public class UserInfo extends AppCompatActivity {
                     String la = ulatitude.getText().toString();
                     String lo = ulongitude.getText().toString();
 
+                    String book = uBookable.getText().toString();
 
                     //should this be the case, its a boolean? will it work
                     String enr = uEnroute.getText().toString();
-
-                    String book = uBookable.getText().toString();
+//
+//                    String book = uBookable.getText().toString();
 
 //                    //combination of address, city and postcode
 //                    String completeAddress = ad + " " + ci + " " + po;
@@ -381,7 +382,7 @@ public class UserInfo extends AppCompatActivity {
                     double doLa = Double.parseDouble(la);
                     double doLo = Double.parseDouble(lo);
                     boolean boEnr = Boolean.parseBoolean(enr);
-                    boolean boBook = Boolean.parseBoolean(book);
+
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -395,7 +396,7 @@ public class UserInfo extends AppCompatActivity {
 
                         }
                         if (dataSnapshot.child("Drivers").hasChild(driver.id)) {
-                            writeNewDriver(n, e, doLa, doLo, boEnr, boBook);
+                            writeNewDriver(n, e, doLa, doLo, boEnr, book);
                             //i assume i include this; ive not started trying to edit drivers details yet..
                             //enr = null;
                             //book = null;
@@ -451,7 +452,7 @@ public class UserInfo extends AppCompatActivity {
 
     }
 
-    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, boolean bookable) {
+    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, String bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
         Driver driver = new Driver(name, email, latitude, longitude, isEnroute, bookable);

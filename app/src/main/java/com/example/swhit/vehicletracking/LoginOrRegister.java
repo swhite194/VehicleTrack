@@ -134,7 +134,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       //https://stackoverflow.com/questions/27423485/java-check-if-checkbox-is-checked
                                                                       if (chkDriver.isChecked()){
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
-                                                                          writeNewDriver(null, e, 0, 0, false, true);
+                                                                          writeNewDriver(null, e, 0, 0, false, "available");
                                                                       }
 
                                                                       else {
@@ -231,7 +231,7 @@ public class LoginOrRegister extends AppCompatActivity {
 
     }
 
-    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, boolean bookable) {
+    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, String bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
         Driver driver = new Driver(name, email, latitude, longitude, isEnroute, bookable);
