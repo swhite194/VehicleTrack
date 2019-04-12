@@ -228,7 +228,12 @@ public class UserInfo extends AppCompatActivity {
 
 //                            p1 = new LatLng(a.getLatitude(), a.getLongitude());
 
-                            utest.setText(a.getLatitude() + "," + a.getLongitude());
+                            String lat = String.valueOf(a.getLatitude());
+                            String lon = String.valueOf(a.getLongitude());
+
+                            ulatitude.setText(lat);
+                            ulongitude.setText(lon);
+//                            utest.setText(a.getLatitude() + "," + a.getLongitude());
 //                            a = null;
 //                            fromLocationName = null;
 
