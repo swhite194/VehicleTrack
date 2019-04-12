@@ -19,6 +19,12 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ReferenceWork extends AppCompatActivity {
 
@@ -44,6 +50,20 @@ public class ReferenceWork extends AppCompatActivity {
     private LocationCallback locationCallback;
     private boolean updatesOn = false;
 
+    FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
+    DatabaseReference myRef = database.getReference("Location");
+
+    Driver driverUser = new Driver();
+
+    //we need to make it so that only drivers can do this; saying id makes it sound like theres validation in place already but thats not the case.
+    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+    //its only fair to put in validation when u decipher what ref you're using.. instead of just making it 1 way to suit a use case with no validation
+    DatabaseReference drivers = myRef.child("users").child("Drivers");
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +85,28 @@ public class ReferenceWork extends AppCompatActivity {
         //tells provider which sensor it will use
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
+
+
+        //find current driver - no validation..
+        drivers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(id)) {
+                    //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
+                    driverUser = dataSnapshot.child(id).getValue(Driver.class);
+
+                    //how do i then make use of this data???
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         switchGpsBalanced.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +125,7 @@ public class ReferenceWork extends AppCompatActivity {
         locationOnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (locationOnOff.isChecked()) {
                     //location updates on
                     //starts picking up continuous locations! :D lockito works well!!
@@ -103,9 +146,22 @@ public class ReferenceWork extends AppCompatActivity {
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
+                    //are we worried about failure?
+
                     if (location != null) {
+                        //if we know the last known location, set the text fields to it; although this might be a security issue? considering different users
+                        //however, it can be assumed that there wouldn't be different users on it
+                        //should these be set to fetch from firebase or leave it how it is?
                         latitude.setText(String.valueOf(location.getLatitude()));
                         longitude.setText(String.valueOf(location.getLongitude()));
+
+                        ///should this be left alone? bit confused! no i wouldn't put it in here actually.. it would affect the position of the truck if you're reading that value from firebase.
+//                        driverUser.setLatitude(location.getLatitude());
+//                        driverUser.setLongitude(location.getLongitude());
+
+                        //should this be in here - it works as it is
+//                        myRef.child("users").child("Drivers").child(driverUser.getId()).setValue(driverUser);
+
                         accuracy.setText(String.valueOf(location.getAccuracy()));
                         if (location.hasAltitude()) {
                             altitude.setText(String.valueOf(location.getAltitude()));
@@ -140,6 +196,12 @@ public class ReferenceWork extends AppCompatActivity {
                     if (location != null) {
                         latitude.setText(String.valueOf(location.getLatitude()));
                         longitude.setText(String.valueOf(location.getLongitude()));
+
+                        driverUser.setLatitude(location.getLatitude());
+                        driverUser.setLongitude(location.getLongitude());
+
+                        myRef.child("users").child("Drivers").child(driverUser.getId()).setValue(driverUser);
+
                         accuracy.setText(String.valueOf(location.getAccuracy()));
                         if (location.hasAltitude()) {
                             altitude.setText(String.valueOf(location.getAltitude()));

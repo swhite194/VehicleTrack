@@ -32,6 +32,8 @@ public class PlaceOrder extends AppCompatActivity {
     int item_quantity;
     Customer aCustomer = new Customer();
     Driver aDriver = new Driver();
+    //this should maybe be called something else, its a bit confusing..
+    //i need to add validation in so that it cant be a driver that does this; "custID" almost makes it sound like thats the case already.
     String custID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     //used to check availability status of driver
