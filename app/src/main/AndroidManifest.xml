@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- https://medium.com/mobiletech/firebase-authentication-sample-371b5940ba93 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
@@ -22,6 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ReferenceWork2"></activity>
         <activity android:name=".DisplayUserRecord" />
         <activity android:name=".UserInfo" />
         <activity
@@ -52,6 +55,10 @@
             android:label="@string/title_activity_google_maps" />
         <activity android:name=".PlaceOrder" />
         <activity android:name=".ReferenceWork" />
+
+        <service android:name=".services.LocationService"
+            android:stopWithTask="true"/>
+
     </application>
 
 </manifest>

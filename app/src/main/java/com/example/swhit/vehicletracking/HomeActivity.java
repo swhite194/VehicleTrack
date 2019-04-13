@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.swhit.vehicletracking.services.LocationService;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -27,6 +28,9 @@ public class HomeActivity extends AppCompatActivity {
     Button btnUserRecordPage;
 
     Button btnTestPage;
+    Button btnTestPage2;
+    Button btnRunService;
+
 
 
     @Override
@@ -47,6 +51,8 @@ public class HomeActivity extends AppCompatActivity {
         btnUserRecordPage = (Button) findViewById(R.id.btnUserRecord);
 
         btnTestPage = (Button) findViewById(R.id.btnTestPage);
+        btnTestPage2 = (Button) findViewById(R.id.btnTestPage2);
+        btnRunService = (Button) findViewById(R.id.btnRunService);
 
         btnOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,8 +113,21 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        btnTestPage2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ReferenceWork2.class);
+                startActivity(intent);
+            }
+        });
 
-
+        btnRunService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, LocationService.class);
+                startService(intent);
+            }
+        });
 
     }
 }
