@@ -42,7 +42,9 @@ public class LocationService extends Service {
     Driver driverUser = new Driver();
 
     //we need to make it so that only drivers can do this; saying id makes it sound like theres validation in place already but thats not the case.
+
     String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
 
     //its only fair to put in validation when u decipher what ref you're using.. instead of just making it 1 way to suit a use case with no validation

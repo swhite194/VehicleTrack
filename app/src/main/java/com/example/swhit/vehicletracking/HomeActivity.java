@@ -47,7 +47,17 @@ public class HomeActivity extends AppCompatActivity {
     DatabaseReference currentUser = myRef.child("users");
 
 
+
+
+
+
+
+    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
 //    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
 
     //northgate
     private static final int MY_PERMISSION_REQUEST_FINE_LOCATION = 101;
@@ -195,6 +205,33 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                if (dataSnapshot.child("Customers").hasChild(id)) {
+
+                    btnDeleteLocationsFromFirebase.setVisibility(View.INVISIBLE);
+                    btnRunService.setVisibility(View.INVISIBLE);
+                    btnOrderPg.setVisibility(View.VISIBLE);
+                    Toast.makeText(getApplicationContext(), "Customer " + id, Toast.LENGTH_LONG).show();
+                }
+                if (dataSnapshot.child("Drivers").hasChild(id)) {
+                    btnDeleteLocationsFromFirebase.setVisibility(View.INVISIBLE);
+                    btnOrderPg.setVisibility(View.INVISIBLE);
+                    btnRunService.setVisibility(View.VISIBLE);
+                    Toast.makeText(getApplicationContext(), "Driver " + id, Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     //northgate
@@ -217,15 +254,15 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    //
+
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
 //
-//////THIS DOESN'T WORK IF YOU DELETE ALL OF THE FIREBASE STUFF FFS.
-//        currentUser.addValueEventListener(new ValueEventListener() {
+//////THIS DOESN'T WORK IF YOU DELETE ALL OF THE FIREBASE STUFF FFS / or if they're "logged" out..
+//        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
 //
-//            String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+////            String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 //
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -251,4 +288,9 @@ public class HomeActivity extends AppCompatActivity {
 //            }
 //        });
 //    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }

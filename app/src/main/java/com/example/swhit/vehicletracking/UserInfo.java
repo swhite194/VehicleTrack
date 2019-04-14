@@ -178,8 +178,10 @@ public class UserInfo extends AppCompatActivity {
         final DatabaseReference currentDriver = myRef.child("users").child("Drivers").child(driver.id);
 
 
+
         //https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
-        currentUser.addValueEventListener(new ValueEventListener() {
+        //made this single so that it wouldn't keep overwriting while running LocationService
+        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -396,9 +398,14 @@ public class UserInfo extends AppCompatActivity {
                             //could this all be made more efficient
                             //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
 
+                            //THIS DOESNT DO ANYTHING; I NEED VALIDATION CHECKS.
+//                            if(n.equals("")||e.equals("")||ad.equals("")||ci.equals("")||po.equals(""))
+//                            {
+//                                Toast.makeText(getApplicationContext(), "Please fill in all values before submitting", Toast.LENGTH_SHORT).show();
+//                            } else {
+//                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
+//                            }
                             writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
-
-
                         }
                         if (dataSnapshot.child("Drivers").hasChild(driver.id)) {
                             writeNewDriver(n, e, doLa, doLo, boEnr, book);
@@ -419,6 +426,8 @@ public class UserInfo extends AppCompatActivity {
 
                 //not making use of getters to plug those values in.. instead im parsing in the text fields? is that all i can do?
 
+                Intent intent = new Intent(UserInfo.this, HomeActivity.class);
+                startActivity(intent);
             }
 
         });

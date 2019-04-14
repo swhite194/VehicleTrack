@@ -22,8 +22,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginOrRegister extends AppCompatActivity {
 //all below:
@@ -37,6 +41,12 @@ public class LoginOrRegister extends AppCompatActivity {
     EditText email, password;
     Button registerButton, loginButton;
     FirebaseAuth firebaseAuth;
+
+
+    DatabaseReference currentUser = myRef.child("users");
+
+//    //https://stackoverflow.com/questions/44583834/firebase-how-to-check-if-user-is-logged-in#
+//    FirebaseAuth.AuthStateListener mAuthListener;
 
     CheckBox chkDriver, chkAdmin;
 
@@ -54,6 +64,17 @@ public class LoginOrRegister extends AppCompatActivity {
         chkAdmin = findViewById(R.id.checkAdmin);
 
         firebaseAuth = FirebaseAuth.getInstance();
+//        mAuthListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                if(user != null){
+//                    Intent intent = new Intent(LoginOrRegister.this, HomeActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            }
+//        };
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -118,7 +139,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                   String name, latitude, longitude;
 
                                                   //this probably isn't needed.
-                                                  FirebaseAuth.getInstance().signOut();
+//                                                  FirebaseAuth.getInstance().signOut();
 
                                                   if (TextUtils.isEmpty(e)) {
                                                       Toast.makeText(getApplicationContext(), "Please fill in your email address", Toast.LENGTH_LONG).show();
@@ -127,10 +148,12 @@ public class LoginOrRegister extends AppCompatActivity {
 
                                                   if (TextUtils.isEmpty(p)) {
                                                       Toast.makeText(getApplicationContext(), "Please fill in your password", Toast.LENGTH_LONG).show();
+                                                      return;
                                                   }
 
                                                   if (p.length() < 10) {
                                                       Toast.makeText(getApplicationContext(), "Please have a password of atleast 10 characters", Toast.LENGTH_LONG).show();
+                                                      return;
                                                   }
 
                                                   firebaseAuth.createUserWithEmailAndPassword(e, p)
@@ -142,12 +165,19 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       if (chkDriver.isChecked()){
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
                                                                           writeNewDriver(null, e, 0, 0, false, "available");
+
+                                                                          Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
+                                                                          startActivity(intent);
                                                                       }
 
                                                                       else {
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
 //                                                                          writeNewCustomer(null, e, 0, 0, null);
                                                                           writeNewCustomer(null, e, 0, 0, "place", null, null);
+
+                                                                          Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
+                                                                          startActivity(intent);
+
 
                                                                           return;
                                                                       }
@@ -168,9 +198,31 @@ public class LoginOrRegister extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                //https://stackoverflow.com/questions/16876538/android-stop-start-service-created-in-oncreate slightly different but yeah
+                //find a better source because they're different.
+
                 Intent intent = new Intent(LoginOrRegister.this, LocationService.class);
                 stopService(intent);
 
+
+//                currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        if (dataSnapshot.child("Customers").hasChild(id)) {
+////                            Customer aCustomer = dataSnapshot.child("Customers").child(id).getValue(Customer.class);
+////                            if ((aCustomer.getName() == null) || (aCustomer.getEmail() == null) || (aCustomer.getAddress() == null) || (aCustomer.getPostcode() == null) || ){
+////
+////                        }
+//                            if(dataSnapshot.child("Customers").child(id)
+//                    }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
 
                 String e = email.getText().toString();
                 String p = password.getText().toString();
@@ -189,7 +241,7 @@ public class LoginOrRegister extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
 
-                            startActivity(new Intent(getApplicationContext(), GoogleMapsActivity.class));
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                             finish();
                         }
                         else{
