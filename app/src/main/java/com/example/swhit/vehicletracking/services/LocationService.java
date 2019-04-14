@@ -44,6 +44,7 @@ public class LocationService extends Service {
     //we need to make it so that only drivers can do this; saying id makes it sound like theres validation in place already but thats not the case.
     String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+
     //its only fair to put in validation when u decipher what ref you're using.. instead of just making it 1 way to suit a use case with no validation
     DatabaseReference drivers = myRef.child("users").child("Drivers");
 
@@ -79,16 +80,33 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(getApplicationContext(), "YO", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "GO", Toast.LENGTH_SHORT).show();
         getLocation();
         return START_NOT_STICKY;
 
     }
 
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+        Toast.makeText(getApplicationContext(), "STOP", Toast.LENGTH_SHORT).show();
+        //unsure if this is "correct" but Akhil's line in https://stackoverflow.com/questions/47708178/fusedlocationproviderclient-removelocationupdates-always-returns-failure
+        //should i include the IF statement? im
+//        if(fusedLocationProviderClient != null){
+
+        //THIS NEEDS LOCATION PERMISSIONS;WITHOUT IT IT DOESN'T RUN.
+        //FOR NOW, I CAN GRANT THEM FROM THE NORTHFACE TEST ACTIVITY but IT SHOULD BE WITHIN THIS ACTIVITY..
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+//}
+
+
+    }
 
     private void getLocation() {
 
         drivers.addValueEventListener(new ValueEventListener() {
+            //            String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(id)) {
@@ -125,13 +143,14 @@ public class LocationService extends Service {
                 //override result?
                 super.onLocationResult(locationResult);
                 for (Location location : locationResult.getLocations()) {
+//                    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     //update UI with location data
                     if (location != null) {
 
                         driverUser.setLatitude(location.getLatitude());
                         driverUser.setLongitude(location.getLongitude());
 
-                        myRef.child("users").child("Drivers").child(driverUser.getId()).setValue(driverUser);
+                        myRef.child("users").child("Drivers").child(id).setValue(driverUser);
 
                     }
                 }
@@ -145,7 +164,7 @@ public class LocationService extends Service {
 
 
 
-}
+    }
 
 
 

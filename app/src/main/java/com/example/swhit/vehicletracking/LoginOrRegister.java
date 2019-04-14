@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.example.swhit.vehicletracking.services.LocationService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -111,7 +112,13 @@ public class LoginOrRegister extends AppCompatActivity {
                                                   final String e = email.getText().toString();
                                                   String p = password.getText().toString();
 
+                                                  Intent intent = new Intent(LoginOrRegister.this, LocationService.class);
+                                                  stopService(intent);
+
                                                   String name, latitude, longitude;
+
+                                                  //this probably isn't needed.
+                                                  FirebaseAuth.getInstance().signOut();
 
                                                   if (TextUtils.isEmpty(e)) {
                                                       Toast.makeText(getApplicationContext(), "Please fill in your email address", Toast.LENGTH_LONG).show();
@@ -152,6 +159,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                               }
                                                           });
 
+
                                               }
                                           });
 
@@ -159,6 +167,11 @@ public class LoginOrRegister extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent intent = new Intent(LoginOrRegister.this, LocationService.class);
+                stopService(intent);
+
+
                 String e = email.getText().toString();
                 String p = password.getText().toString();
 
