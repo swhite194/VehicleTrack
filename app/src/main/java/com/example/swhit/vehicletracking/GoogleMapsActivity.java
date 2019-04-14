@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,6 +55,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     double latitude;
     double longitude;
 
+    Button btnTest;
+
 
 
 
@@ -65,7 +69,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_maps);
 
-
+        btnTest = (Button) findViewById(R.id.btnTestForMap);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -98,6 +102,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                     Customer aCustomer = dataSnapshot.child("Customers").child(customer.id).getValue(Customer.class);
                     latitude = aCustomer.getLatitude();
                     longitude = aCustomer.getLongitude();
+
+                    btnTest.setVisibility(View.INVISIBLE);
 
                     LatLng markerLoc = new LatLng(latitude, longitude);
                     mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
