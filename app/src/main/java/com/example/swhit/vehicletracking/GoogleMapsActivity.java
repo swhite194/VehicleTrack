@@ -25,6 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
@@ -42,6 +45,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     //dno if it makes a diff, but going by https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase?noredirect=1&lq=1
     DatabaseReference rootRef = database.getReference();
     DatabaseReference locationRef = rootRef.child("Location");
+    DatabaseReference userRef = locationRef.child("users");
+    DatabaseReference driversRef = locationRef.child("users").child("Drivers");
 
     DatabaseReference latRef = myRef.child("Latitude");
     DatabaseReference longRef = myRef.child("Longitude");
@@ -56,6 +61,11 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     double longitude;
 
     Button btnTest;
+
+    Map<String, Marker> markers = new HashMap();
+
+    Customer cust;
+    Driver drive;
 
 
 
@@ -83,39 +93,52 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        final Customer customer = new Customer();
-        final Driver driver = new Driver();
-
-        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
-        customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        myRef.child("users").addValueEventListener(new ValueEventListener() {
+        //this is an admin view
+        //took it from https://stackoverflow.com/questions/42466483/how-to-see-other-markers-in-google-map-moving-android-studio-google-maps
+        //this helped too for things like calling in the lat/long  andhttps://stackoverflow.com/questions/55567149/change-marker-position-by-realtime-lat-lang-in-firebase-database-without-added
+        //for consistency sake if you want to make them ValueEvent listeners like you've done everywhere else; you could use: ttps://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase
+        driversRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //whats the difference between getid and customer.id
-                //https://stackoverflow.com/questions/37397205/google-firebase-check-if-child-exists
-                //did i use that
-                //https://stackoverflow.com/questions/40066901/check-if-child-exists-in-firebase
-                //im scared of looking like a cheat
-                if(dataSnapshot.child("Customers").hasChild(customer.id)){
-                    Customer aCustomer = dataSnapshot.child("Customers").child(customer.id).getValue(Customer.class);
-                    latitude = aCustomer.getLatitude();
-                    longitude = aCustomer.getLongitude();
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    btnTest.setVisibility(View.INVISIBLE);
+                latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                longitude = dataSnapshot.child("longitude").getValue(Double.class);
 
-                    LatLng markerLoc = new LatLng(latitude, longitude);
-                    mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
+                LatLng location = new LatLng(latitude, longitude);
+
+                Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+                markers.put(dataSnapshot.getKey(), uMarker);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                longitude = dataSnapshot.child("longitude").getValue(Double.class);
+
+                LatLng location = new LatLng(latitude, longitude);
+
+                if(markers.containsKey(dataSnapshot.getKey())){
+                    Marker marker = markers.get(dataSnapshot.getKey());
+                    marker.remove();
+                    //makes it show twice
+//                    marker.setPosition(location);
                 }
-                if(dataSnapshot.child("Drivers").hasChild(driver.id)){
-                    Driver aDriver = dataSnapshot.child("Drivers").child(driver.id).getValue(Driver.class);
-                    latitude = aDriver.getLatitude();
-                    longitude = aDriver.getLongitude();
+                Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+                markers.put(dataSnapshot.getKey(), uMarker);
 
-                    LatLng markerLoc = new LatLng(latitude, longitude);
-                    mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                if(markers.containsKey(dataSnapshot.getKey())){
+                    Marker marker = markers.get(dataSnapshot.getKey());
+                    marker.remove();
                 }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override
@@ -123,6 +146,129 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
             }
         });
+
+        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+
+//        myRef.child("users").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//                //whats the difference between getid and customer.id
+//                //https://stackoverflow.com/questions/37397205/google-firebase-check-if-child-exists
+//                //did i use that
+//                //https://stackoverflow.com/questions/40066901/check-if-child-exists-in-firebase
+//                //im scared of looking like a cheat
+//                if(dataSnapshot.child("Customers").hasChild(id)){
+//                    cust = dataSnapshot.child("Customers").child(id).getValue(Customer.class);
+//                    latitude = cust.getLatitude();
+//                    longitude = cust.getLongitude();
+//
+//                    btnTest.setVisibility(View.INVISIBLE);
+//
+//                    LatLng markerLoc = new LatLng(latitude, longitude);
+//                    mMap.addMarker(new MarkerOptions().position(markerLoc).title("customer"));
+//                }
+//                if(dataSnapshot.child("Drivers").hasChild(id)){
+//                    drive = dataSnapshot.child("Drivers").child(id).getValue(Driver.class);
+//                    latitude = drive.getLatitude();
+//                    longitude = drive.getLongitude();
+//
+//                    LatLng markerLoc = new LatLng(latitude, longitude);
+//                    mMap.addMarker(new MarkerOptions().position(markerLoc).title("drive"));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
+
+
+
+
+
+
+
+
+
+        //https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase
+        //kind of based off that, but mainly off my other usages of for ds:datanspshot.getchild
+        //alongside the knowledge from above for the latter half
+//        driversRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot ds : dataSnapshot.getChildren()){
+//                    //put in checks
+//                    double lat = ds.child("latitude").getValue(Double.class);
+//                    double lon = ds.child("longitude").getValue(Double.class);
+//
+//                    LatLng markLoc = new LatLng(lat, lon);
+//                    mMap.addMarker(new MarkerOptions().position(markLoc).title(ds.getKey()));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
+//        driversRef.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                String key = dataSnapshot.getKey();
+//
+//                Double lat = dataSnapshot.child("latitude").getValue(Double.class);
+//                Double lon = dataSnapshot.child("longitude").getValue(Double.class);
+//
+//                LatLng location = new LatLng(lat, lon);
+//
+//                Marker mark = mMap.addMarker(new MarkerOptions().position(location).title(key));
+//                markers.put(dataSnapshot.getKey(), mark);
+//
+//                }
+//
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                if (markers.containsValue(dataSnapshot.getKey())) {
+//                    String key = dataSnapshot.getKey();
+//                    Marker amark = markers.get(dataSnapshot.getKey());
+//
+//                    Double lat = dataSnapshot.child("latitude").getValue(Double.class);
+//                    Double lon = dataSnapshot.child("longitude").getValue(Double.class);
+//
+//                    LatLng location = new LatLng(lat, lon);
+//
+//
+//                    amark.remove();
+//                    amark.setPosition(location);
+//
+////                    Marker mark = mMap.addMarker(new MarkerOptions().position(location).title(key));
+////                    markers.put(dataSnapshot.getKey(), mark);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
 //        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //            if (dataSnapshot.child("Customers").hasChild(customer.id)){
 //                //does calling this method make up for the fact that i'm not calling those textfields directly into classes?

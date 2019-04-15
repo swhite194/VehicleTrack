@@ -428,6 +428,7 @@ public class UserInfo extends AppCompatActivity {
 
                 Intent intent = new Intent(UserInfo.this, HomeActivity.class);
                 startActivity(intent);
+
             }
 
         });
