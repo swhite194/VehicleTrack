@@ -152,8 +152,11 @@ public class LocationService extends Service {
                         driverUser.setLatitude(location.getLatitude());
                         driverUser.setLongitude(location.getLongitude());
 
-                        myRef.child("users").child("Drivers").child(id).setValue(driverUser);
+                        //overwrites it and drops the name etc (woops)
+//                        myRef.child("users").child("Drivers").child(id).setValue(driverUser);
 
+                        myRef.child("users").child("Drivers").child(id).child("latitude").setValue(driverUser.getLatitude());
+                        myRef.child("users").child("Drivers").child(id).child("longitude").setValue(driverUser.getLongitude());
                     }
                 }
             }
