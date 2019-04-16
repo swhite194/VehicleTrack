@@ -14,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -91,7 +92,6 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     }
 
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -101,84 +101,274 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         //this helped too for things like calling in the lat/long  andhttps://stackoverflow.com/questions/55567149/change-marker-position-by-realtime-lat-lang-in-firebase-database-without-added
         //for consistency sake if you want to make them ValueEvent listeners like you've done everywhere else; you could use: ttps://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase
 
-userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        //this works for showing admins only.. if I change it to userRef.addchild it screws up a lil.
 
-    @Override
-    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-        if (dataSnapshot.child("Admins").hasChild(id)) {
+//userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//
+//    @Override
+//    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//        if (dataSnapshot.child("Admins").hasChild(id)) {
+//
+//            driversRef.addChildEventListener(new ChildEventListener() {
+//                @Override
+//                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    //this is a good example of how classes do nothing in my project
+//                    drive = dataSnapshot.getValue(Driver.class);
+//
+////                    latitude = dataSnapshot.child("latitude").getValue(Double.class);
+////                    longitude = dataSnapshot.child("longitude").getValue(Double.class);
+//
+//                    latitude = drive.getLatitude();
+//                    longitude = drive.getLongitude();
+//
+//                    LatLng location = new LatLng(latitude, longitude);
+//
+//                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+//                    markers.put(dataSnapshot.getKey(), uMarker);
+//                }
+//
+//                @Override
+//                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    drive = dataSnapshot.getValue(Driver.class);
+//
+//                    latitude = drive.getLatitude();
+//                    longitude = drive.getLongitude();
+//
+//                    LatLng location = new LatLng(latitude, longitude);
+//
+//                    if (markers.containsKey(dataSnapshot.getKey())) {
+//                        Marker marker = markers.get(dataSnapshot.getKey());
+//                        marker.remove();
+//                        //makes it show twice
+////                    marker.setPosition(location);
+//                    }
+//                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+//                    markers.put(dataSnapshot.getKey(), uMarker);
+//
+//                }
+//
+//                @Override
+//                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//                    if (markers.containsKey(dataSnapshot.getKey())) {
+//                        Marker marker = markers.get(dataSnapshot.getKey());
+//                        marker.remove();
+//                    }
+//                }
+//
+//                @Override
+//                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//        } else{
+//            Toast.makeText(getApplicationContext(), "Yeeterbix", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    @Override
+//    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//    }
+//});
 
-            driversRef.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    //this is a good example of how classes do nothing in my project
-                    drive = dataSnapshot.getValue(Driver.class);
+//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//
+//    @Override
+//    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//        if (dataSnapshot.child("Admins").hasChild(id)) {
+//
+//            driversRef.addChildEventListener(new ChildEventListener() {
+//                @Override
+//                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    //this is a good example of how classes do nothing in my project
+//                    drive = dataSnapshot.getValue(Driver.class);
+//
+////                    latitude = dataSnapshot.child("latitude").getValue(Double.class);
+////                    longitude = dataSnapshot.child("longitude").getValue(Double.class);
+//
+//                    latitude = drive.getLatitude();
+//                    longitude = drive.getLongitude();
+//
+//                    LatLng location = new LatLng(latitude, longitude);
+//
+//                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+//                    markers.put(dataSnapshot.getKey(), uMarker);
+//                }
+//
+//                @Override
+//                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    drive = dataSnapshot.getValue(Driver.class);
+//
+//                    latitude = drive.getLatitude();
+//                    longitude = drive.getLongitude();
+//
+//                    LatLng location = new LatLng(latitude, longitude);
+//
+//                    if (markers.containsKey(dataSnapshot.getKey())) {
+//                        Marker marker = markers.get(dataSnapshot.getKey());
+//                        marker.remove();
+//                        //makes it show twice
+////                    marker.setPosition(location);
+//                    }
+//                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+//                    markers.put(dataSnapshot.getKey(), uMarker);
+//
+//                }
+//
+//                @Override
+//                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//                    if (markers.containsKey(dataSnapshot.getKey())) {
+//                        Marker marker = markers.get(dataSnapshot.getKey());
+//                        marker.remove();
+//                    }
+//                }
+//
+//                @Override
+//                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//        } else{
+//            Toast.makeText(getApplicationContext(), "Yeeterbix", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    @Override
+//    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//    }
+//});
 
-//                    latitude = dataSnapshot.child("latitude").getValue(Double.class);
-//                    longitude = dataSnapshot.child("longitude").getValue(Double.class);
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    latitude = drive.getLatitude();
-                    longitude = drive.getLongitude();
+        /////////THIS WORKS FOR SHOWING EVERYONE BUT ITS SUPER INEFFICIENT
+        //ITD BE BEST IMPLEMENTING THIS INTO THE CHILD LISTENER
 
-                    LatLng location = new LatLng(latitude, longitude);
 
-                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
-                    markers.put(dataSnapshot.getKey(), uMarker);
-                }
 
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    drive = dataSnapshot.getValue(Driver.class);
+                if (dataSnapshot.child("Admins").hasChild(id)) {
 
-                    latitude = drive.getLatitude();
-                    longitude = drive.getLongitude();
+//https://stackoverflow.com/questions/46382925/android-firebase-getting-child-of-child-data
+                    //and //took it from https://stackoverflow.com/questions/42466483/how-to-see-other-markers-in-google-map-moving-android-studio-google-maps
+                    //        //this helped too for things like calling in the lat/long  andhttps://stackoverflow.com/questions/55567149/change-marker-position-by-realtime-lat-lang-in-firebase-database-without-added
+                    //        //for consistency sake if you want to make them ValueEvent listeners like you've done everywhere else; you could use: ttps://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase
+                    userRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            String userId = dataSnapshot.getKey();
+//        DatabaseReference users= dataSnapshot.child(userId);
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    LatLng location = new LatLng(latitude, longitude);
+                                for (DataSnapshot dataS : ds.getChildren()) {
+                                    latitude = dataS.child("latitude").getValue(Double.class);
+                                    longitude = dataS.child("longitude").getValue(Double.class);
 
-                    if (markers.containsKey(dataSnapshot.getKey())) {
-                        Marker marker = markers.get(dataSnapshot.getKey());
-                        marker.remove();
-                        //makes it show twice
+                                    LatLng location = new LatLng(latitude, longitude);
+////
+
+                                    Marker uMarker;
+
+                                    //https://stackoverflow.com/questions/16598169/changing-colour-of-markers-google-map-v2-android
+                                    System.out.println(ds.getKey());
+
+//                                    if (ds.getKey() == "Admin"){
+//
+//                                    }
+
+
+                                    //need to figure out how to to change them based on their ds... it says uMarker may not have been initialised at the bottom if i dont..
+
+                                    uMarker = mMap.addMarker(new MarkerOptions().position(location).title(ds.getKey() + " " + dataS.getKey()));
+
+                                    //removing the trail behind existing, moving markers.
+                                    if (markers.containsKey(dataS.getKey())) {
+                                        Marker marker = markers.get(dataS.getKey());
+                                        marker.remove();
+                                        //makes it show twice
 //                    marker.setPosition(location);
                     }
-                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
-                    markers.put(dataSnapshot.getKey(), uMarker);
+                                        markers.put(dataS.getKey(), uMarker);
+                                    }
 
-                }
 
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    if (markers.containsKey(dataSnapshot.getKey())) {
-                        Marker marker = markers.get(dataSnapshot.getKey());
-                        marker.remove();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled (@NonNull DatabaseError databaseError){
+
+                            }
+                        });
                     }
                 }
 
                 @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                public void onCancelled (@NonNull DatabaseError databaseError){
 
                 }
             });
-        } else{
-            Toast.makeText(getApplicationContext(), "Yeeterbix", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-    }
-});
 
 
-        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
+//userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//    @Override
+//    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//        userRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String userId = dataSnapshot.getKey();
+////        DatabaseReference users= dataSnapshot.child(userId);
+//                for(DataSnapshot ds : dataSnapshot.getChildren()){
+//                    latitude = drive.getLatitude();
+//                    longitude = drive.getLongitude();
+//
+//                    LatLng location = new LatLng(latitude, longitude);
+////
+//                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+//                    markers.put(dataSnapshot.getKey(), uMarker);
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//    }
+//});
+
+
+            //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 
 //        myRef.child("users").addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -217,17 +407,9 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //        });
 
 
-
-
-
-
-
-
-
-
-        //https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase
-        //kind of based off that, but mainly off my other usages of for ds:datanspshot.getchild
-        //alongside the knowledge from above for the latter half
+            //https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase
+            //kind of based off that, but mainly off my other usages of for ds:datanspshot.getchild
+            //alongside the knowledge from above for the latter half
 //        driversRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -314,10 +496,7 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //        }
 
 
-
-
-
-        //https://stackoverflow.com/questions/46351725/retrieve-map-coordinates-from-firebase-and-plot-on-google-maps
+            //https://stackoverflow.com/questions/46351725/retrieve-map-coordinates-from-firebase-and-plot-on-google-maps
 //        final double[] latitude = new double[0];
 //        final double[] longitude = new double[0];
 //
@@ -340,15 +519,8 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //        mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
 
 
-
-
-
-
-
-
-
-        //https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase?noredirect=1&lq=1
-        //https://stackoverflow.com/questions/42540400/android-app-crashes-when-google-maps-connected-to-firebase TYPES?
+            //https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase?noredirect=1&lq=1
+            //https://stackoverflow.com/questions/42540400/android-app-crashes-when-google-maps-connected-to-firebase TYPES?
 
 //        ValueEventListener eventListener = new ValueEventListener() {
 //            @Override
@@ -372,7 +544,7 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //        mMap.addMarker(new MarkerOptions().position(markerLoc).title("yeet"));
 
 
-        //GOING OFF THE FIREBASE GUIDE FROM TOOLS (regarding event listener)
+            //GOING OFF THE FIREBASE GUIDE FROM TOOLS (regarding event listener)
 //        locationRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -394,23 +566,25 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //        });
 
 
-        //https://stackoverflow.com/questions/32886546/how-to-get-all-child-list-from-firebase-android
-        //COULD HELP with stuff idk.
+            //https://stackoverflow.com/questions/32886546/how-to-get-all-child-list-from-firebase-android
+            //COULD HELP with stuff idk.
 
-        locationRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long count = dataSnapshot.getChildrenCount();
-                //THIS WORKS
-                Log.d("TAG",  "CHILDREN COUNT IS: " + count);
+        locationRef.addListenerForSingleValueEvent(new
 
-                //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
-                //doesn't help at all https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
-                //https://stackoverflow.com/questions/47837229/getting-map-markers-from-firebase
+            ValueEventListener() {
+                @Override
+                public void onDataChange (@NonNull DataSnapshot dataSnapshot){
+                    long count = dataSnapshot.getChildrenCount();
+                    //THIS WORKS
+                    Log.d("TAG", "CHILDREN COUNT IS: " + count);
+
+                    //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
+                    //doesn't help at all https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
+                    //https://stackoverflow.com/questions/47837229/getting-map-markers-from-firebase
 //                    String latitude = dataSnapshot.child("Longitude").getValue(String.class);
 //                    String longitude = dataSnapshot.child("Latitude").getValue(String.class);
-                //https://stackoverflow.com/questions/43216708/how-to-add-google-map-marker-from-firebase-database?noredirect=1&lq=1
-                //https://stackoverflow.com/questions/49766208/android-studio-unboxing-of-xxx-may-produce-java-lang-nullpointerexception (why i called them Int? so confusing!)
+                    //https://stackoverflow.com/questions/43216708/how-to-add-google-map-marker-from-firebase-database?noredirect=1&lq=1
+                    //https://stackoverflow.com/questions/49766208/android-studio-unboxing-of-xxx-may-produce-java-lang-nullpointerexception (why i called them Int? so confusing!)
 //https://stackoverflow.com/questions/49351853/how-to-fix-unboxing-may-produce-nullpointer-exception-with-firebase
 //                    Double latitude = ds.child("Latitude").getValue(Double.class);
 //                    Double longitude = ds.child("Longitude").getValue(Double.class);
@@ -424,15 +598,15 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //                    }
 
 
-                //https://stackoverflow.com/questions/35149670/how-to-set-firebase-getchildren-values-in-marker
-                //https://stackoverflow.com/questions/32886546/how-to-get-all-child-list-from-firebase-android
-                //is this worth looking at
+                    //https://stackoverflow.com/questions/35149670/how-to-set-firebase-getchildren-values-in-marker
+                    //https://stackoverflow.com/questions/32886546/how-to-get-all-child-list-from-firebase-android
+                    //is this worth looking at
 
 
-                //https://stackoverflow.com/questions/37257166/android-firebase-why-does-ondatachange-returns-null-values
-                //i might want to make them store as hashmaps...
+                    //https://stackoverflow.com/questions/37257166/android-firebase-why-does-ondatachange-returns-null-values
+                    //i might want to make them store as hashmaps...
 
-                //this is saying NULL/NULL in logcat
+                    //this is saying NULL/NULL in logcat
 //                    Log.d("TAG", latitude + " / " + longitude);
 //
 //
@@ -445,26 +619,26 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
 //                String a = (String) dataSnapshot.getValue();
 //                Log.d("TAG", a);
-                //log could only be recognised by doing "Import class" for it
-                //tag had to be made a constant
-                //valueeventlistener had a red underline oncancelled needed to be imported or something,
-                //but it was already here? so i deleted it and it should be the same layout as the stackoverflow example idk what diff was
+                    //log could only be recognised by doing "Import class" for it
+                    //tag had to be made a constant
+                    //valueeventlistener had a red underline oncancelled needed to be imported or something,
+                    //but it was already here? so i deleted it and it should be the same layout as the stackoverflow example idk what diff was
 
 
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+                @Override
+                public void onCancelled (@NonNull DatabaseError databaseError){
+                }
+            });
 
 //------------------------------------------------------------------------------------------------------------------------------
-        //not currently working
-        // firstly, an attempt to read through all the longitudes and latitudes and compile them into an array.
-        //(from firebase to app)
-        //https://stackoverflow.com/questions/49324085/retrieve-location-from-firebase-and-put-marker-on-google-map-api-for-android-app
-        //needs look at more with something like https://stackoverflow.com/questions/30564735/android-firebase-simply-get-one-child-objects-data
-        //would be best sorted into couples under a child name instead of current structure
+            //not currently working
+            // firstly, an attempt to read through all the longitudes and latitudes and compile them into an array.
+            //(from firebase to app)
+            //https://stackoverflow.com/questions/49324085/retrieve-location-from-firebase-and-put-marker-on-google-map-api-for-android-app
+            //needs look at more with something like https://stackoverflow.com/questions/30564735/android-firebase-simply-get-one-child-objects-data
+            //would be best sorted into couples under a child name instead of current structure
 
 
 //
@@ -518,9 +692,9 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //        }
 //        }
 
-        //does not work when I try to parse the value of an individual (generated) ID (result of pushing).
-        //there are guides to get this all working. could do with sorting out my structure so that it is paired Latitude, Longitude, in child
-        //fields.. as this is more compliant with guides.
+            //does not work when I try to parse the value of an individual (generated) ID (result of pushing).
+            //there are guides to get this all working. could do with sorting out my structure so that it is paired Latitude, Longitude, in child
+            //fields.. as this is more compliant with guides.
 
 //        mLat = myRef.child("Latitude").child("LWEs6OloRzLSdZnQcND").toString();
 //        double lLat = Double.parseDouble(mLat);
@@ -532,13 +706,13 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //        mMap.addMarker(new MarkerOptions().position(testPos).title("test position"));
 
 //-----------------------------------------------------------------------------------------------------------------------------
-        //http://wptrafficanalyzer.in/blog/adding-marker-on-touched-location-of-google-maps-using-android-api-v2-with-supportmapfragment/
+            //http://wptrafficanalyzer.in/blog/adding-marker-on-touched-location-of-google-maps-using-android-api-v2-with-supportmapfragment/
 
-        //passing values of clicked areas on map to firebase (stored as push)
-        //hope is that they can be retrieved when map reloaded.
+            //passing values of clicked areas on map to firebase (stored as push)
+            //hope is that they can be retrieved when map reloaded.
 
-        //https://stackoverflow.com/questions/43635994/retrieve-location-from-firebase-and-put-marker-on-google-map-api-for-android
-        //(last bit of 1st (and only) answer)l
+            //https://stackoverflow.com/questions/43635994/retrieve-location-from-firebase-and-put-marker-on-google-map-api-for-android
+            //(last bit of 1st (and only) answer)l
 //        myRef.addChildEventListener(new ChildEventListener() {
 //            @Override
 //            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -573,7 +747,7 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //            }
 //        });
 
-        //https://stackoverflow.com/questions/43216708/how-to-add-google-map-marker-from-firebase-database
+            //https://stackoverflow.com/questions/43216708/how-to-add-google-map-marker-from-firebase-database
 //        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -590,11 +764,11 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //        });
 
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener()
 
-
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
+            {
+                @Override
+                public void onMapClick (LatLng latLng){
 
                 User user = new User();
                 //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
@@ -611,29 +785,29 @@ userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
                 mMap.addMarker(markerOptions);
             }
-        });
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-
-        double markerLat = marker.getPosition().latitude;
-        double markerLong = marker.getPosition().longitude;
-
-        if (marker.equals(this)) {
-
-            Toast.makeText(this,
-                    "Latitude: " + markerLat + " : " + "Longitude: " + markerLong,
-                    Toast.LENGTH_SHORT).show();
+            });
         }
-        return false;
-    }
+
+        @Override
+        public boolean onMarkerClick (Marker marker){
+
+            double markerLat = marker.getPosition().latitude;
+            double markerLong = marker.getPosition().longitude;
+
+            if (marker.equals(this)) {
+
+                Toast.makeText(this,
+                        "Latitude: " + markerLat + " : " + "Longitude: " + markerLong,
+                        Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        }
 
 //    private void writeNewUser(String userId, String email, double latitude, double longitude){
 //        User user = new User (email, latitude, longitude);
 //        myRef.child("Users").child(userId).setValue(user);
 //    }
-}
+    }
 
 
 ///yoo

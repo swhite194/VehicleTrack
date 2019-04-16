@@ -47,7 +47,7 @@ public class LoginOrRegister extends AppCompatActivity {
 //    //https://stackoverflow.com/questions/44583834/firebase-how-to-check-if-user-is-logged-in#
 //    FirebaseAuth.AuthStateListener mAuthListener;
 
-    CheckBox chkDriver, chkAdmin;
+    CheckBox chkCustomer, chkDriver, chkAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +59,7 @@ public class LoginOrRegister extends AppCompatActivity {
         registerButton = findViewById(R.id.btnRegister);
         loginButton = findViewById(R.id.btnLogin);
 
+        chkCustomer = findViewById(R.id.checkCustomer);
         chkDriver = findViewById(R.id.checkDriver);
         chkAdmin = findViewById(R.id.checkAdmin);
 
@@ -177,7 +178,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                           startActivity(intent);
                                                                       }
 
-                                                                      else {
+                                                                      if (chkCustomer.isChecked()) {
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
 //                                                                          writeNewCustomer(null, e, 0, 0, null);
                                                                           writeNewCustomer(null, e, 0, 0, "place", null, null);
@@ -186,7 +187,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                           startActivity(intent);
 
 
-                                                                          return;
+//                                                                          return;
                                                                       }
                                                                   }
                                                 //THIS IS COMING UP AT THE SAME TIME AS THE 10 CHARACTER VALIDATION... needs fixed; INVISIBLE-> VISIBLE login is a cop-out atm
