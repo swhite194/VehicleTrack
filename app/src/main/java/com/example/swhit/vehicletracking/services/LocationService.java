@@ -131,6 +131,7 @@ public class LocationService extends Service {
         locationRequest.setInterval(4000);//use slower one in future
         locationRequest.setFastestInterval(3000);//used in cases where something else would be updating the locs? yt
 
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);

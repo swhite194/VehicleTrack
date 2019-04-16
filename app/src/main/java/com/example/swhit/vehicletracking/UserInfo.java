@@ -52,7 +52,18 @@ public class UserInfo extends AppCompatActivity {
     EditText uname, uemail, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uBookable;
     EditText utest;
     Button submit_button;
-    FirebaseAuth firebaseAuth;
+//    FirebaseAuth firebaseAuth;
+
+    Customer customer = new Customer();
+    Driver driver = new Driver();
+    Admin admin = new Admin();
+
+    DatabaseReference currentUser = myRef.child("users");
+
+//    DatabaseReference currentCustomer = myRef.child("users").child("Customers").child(customer.id);
+//    DatabaseReference currentDriver = myRef.child("users").child("Drivers").child(driver.id);
+
+    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
     @Override
@@ -65,18 +76,12 @@ public class UserInfo extends AppCompatActivity {
         //        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 
 
-        User user = new User();
-
 //
 //
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //why does it ask for these to be final?
-        final Customer customer = new Customer();
-        final Driver driver = new Driver();
 
-        customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         uname = findViewById(R.id.txtName);
         uemail = findViewById(R.id.txtEmail);
@@ -173,11 +178,6 @@ public class UserInfo extends AppCompatActivity {
 
         //should it be customer.getid? that would prove if its linked with the class.. worth checking
 
-        final DatabaseReference currentUser = myRef.child("users");
-        final DatabaseReference currentCustomer = myRef.child("users").child("Customers").child(customer.id);
-        final DatabaseReference currentDriver = myRef.child("users").child("Drivers").child(driver.id);
-
-
 
         //https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
         //made this single so that it wouldn't keep overwriting while running LocationService
@@ -194,21 +194,21 @@ public class UserInfo extends AppCompatActivity {
                 //https://stackoverflow.com/questions/40066901/check-if-child-exists-in-firebase
                 //im scared of looking like a cheat
 
-                if (dataSnapshot.child("Customers").hasChild(customer.id)) {
+                if (dataSnapshot.child("Customers").hasChild(id)) {
                     //is this fruitless? whats the point in transforming it into a class? i dont use it anywhere else.
-                    Customer aCustomer = dataSnapshot.child("Customers").child(customer.id).getValue(Customer.class);
+                    customer = dataSnapshot.child("Customers").child(id).getValue(Customer.class);
 
 
                     //shouldn't need to repeat this should I
 //                    isDriver = false;
 
-                    uname.setText(aCustomer.getName());
-                    uemail.setText(aCustomer.getEmail());
-                    uaddress.setText(aCustomer.getAddress());
-                    ucity.setText(aCustomer.getCity());
-                    upostcode.setText(aCustomer.getPostcode());
-                    ulatitude.setText(String.valueOf(aCustomer.getLatitude()));
-                    ulongitude.setText(String.valueOf(aCustomer.getLongitude()));
+                    uname.setText(customer.getName());
+                    uemail.setText(customer.getEmail());
+                    uaddress.setText(customer.getAddress());
+                    ucity.setText(customer.getCity());
+                    upostcode.setText(customer.getPostcode());
+                    ulatitude.setText(String.valueOf(customer.getLatitude()));
+                    ulongitude.setText(String.valueOf(customer.getLongitude()));
 
 //                    utest.setText(getLocationFromAddress(context, aCustomer.getAddress()));
 
@@ -216,14 +216,14 @@ public class UserInfo extends AppCompatActivity {
                     //and https://stackoverflow.com/questions/24352192/android-google-maps-add-marker-by-address (devgrg's answer)
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-                    String address = aCustomer.getAddress();
+                    String address = customer.getAddress();
                     List<Address> fromLocationName = null;
                     //perhaps weirdly done because, considering this textbox is at the bottom, it makes it look like it automatically updates when you finish typing in the address; which isn't the case (it updates on submit)
 
                     //THIS SEEMS TO CAUSE USERINFO TO EITHER CRASH IF ITS FROM A COLD BOOT OR ONLY SHOW THE DETAILS FOR customers@gmail.com.. custpassword IF THEY'VE BEEN LOGGED IN PRIOR
                     try {
                         fromLocationName = geocoder.getFromLocationName(address, 1);
-                        if(fromLocationName != null && fromLocationName.size()>0){
+                        if (fromLocationName != null && fromLocationName.size() > 0) {
                             Address a = fromLocationName.get(0);
                             a.getLatitude();
                             a.getLongitude();
@@ -245,25 +245,80 @@ public class UserInfo extends AppCompatActivity {
                     }
 
 
-
                 }
-                if (dataSnapshot.child("Drivers").hasChild(driver.id)) {
+                if (dataSnapshot.child("Drivers").hasChild(id)) {
 
                     //did i kind of use this?
                     //https://stackoverflow.com/questions/45173499/retrieve-and-display-firebase-data-in-edittext-and-edit-content-save-again
-                    Driver aDriver = dataSnapshot.child("Drivers").child(driver.id).getValue(Driver.class);
+                    driver = dataSnapshot.child("Drivers").child(id).getValue(Driver.class);
 
 //                    isDriver = true;
 
-                    uname.setText(aDriver.getName());
-                    uemail.setText(aDriver.getEmail());
-                    ulatitude.setText(String.valueOf(aDriver.getLatitude()));
-                    ulongitude.setText(String.valueOf(aDriver.getLongitude()));
-                    uEnroute.setText(String.valueOf(aDriver.isEnroute()));
+                    uname.setText(driver.getName());
+                    uemail.setText(driver.getEmail());
+                    ulatitude.setText(String.valueOf(driver.getLatitude()));
+                    ulongitude.setText(String.valueOf(driver.getLongitude()));
+                    uEnroute.setText(String.valueOf(driver.isEnroute()));
                     //change this wording, availability isn't great
-                    uBookable.setText(aDriver.getBookable());
+                    uBookable.setText(driver.getBookable());
 
                 }
+
+                if (dataSnapshot.child("Admins").hasChild(id)) {
+                    //is this fruitless? whats the point in transforming it into a class? i dont use it anywhere else.
+                    admin = dataSnapshot.child("Admins").child(id).getValue(Admin.class);
+
+
+                    //shouldn't need to repeat this should I
+//                    isDriver = false;
+
+                    uname.setText(admin.getName());
+                    uemail.setText(admin.getEmail());
+                    uaddress.setText(admin.getAddress());
+                    ucity.setText(admin.getCity());
+                    upostcode.setText(admin.getPostcode());
+                    ulatitude.setText(String.valueOf(admin.getLatitude()));
+                    ulongitude.setText(String.valueOf(admin.getLongitude()));
+
+//                    utest.setText(getLocationFromAddress(context, aCustomer.getAddress()));
+
+                    //a combination of: https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
+                    //and https://stackoverflow.com/questions/24352192/android-google-maps-add-marker-by-address (devgrg's answer)
+                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                    String address = admin.getAddress();
+                    List<Address> fromLocationName = null;
+                    //perhaps weirdly done because, considering this textbox is at the bottom, it makes it look like it automatically updates when you finish typing in the address; which isn't the case (it updates on submit)
+
+                    //THIS SEEMS TO CAUSE USERINFO TO EITHER CRASH IF ITS FROM A COLD BOOT OR ONLY SHOW THE DETAILS FOR customers@gmail.com.. custpassword IF THEY'VE BEEN LOGGED IN PRIOR
+                    try {
+                        fromLocationName = geocoder.getFromLocationName(address, 1);
+                        if (fromLocationName != null && fromLocationName.size() > 0) {
+                            Address a = fromLocationName.get(0);
+                            a.getLatitude();
+                            a.getLongitude();
+
+//                            p1 = new LatLng(a.getLatitude(), a.getLongitude());
+
+                            String lat = String.valueOf(a.getLatitude());
+                            String lon = String.valueOf(a.getLongitude());
+
+                            ulatitude.setText(lat);
+                            ulongitude.setText(lon);
+//                            utest.setText(a.getLatitude() + "," + a.getLongitude());
+//                            a = null;
+//                            fromLocationName = null;
+
+                            Toast.makeText(getApplicationContext(), "hmmm", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "ha", Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+
+
+                }
+
 
 //                String name = dataSnapshot.child("name").getValue(String.class);
 //                String email = dataSnapshot.child("email").getValue(String.class);
@@ -331,20 +386,6 @@ public class UserInfo extends AppCompatActivity {
             }
         });
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-//        user.setName(myRef.child("users").child(user.id).child("name").get
-
 
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -393,7 +434,7 @@ public class UserInfo extends AppCompatActivity {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child("Customers").hasChild(customer.id)) {
+                        if (dataSnapshot.child("Customers").hasChild(id)) {
                             //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
                             //could this all be made more efficient
                             //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
@@ -407,12 +448,31 @@ public class UserInfo extends AppCompatActivity {
 //                            }
                             writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
                         }
-                        if (dataSnapshot.child("Drivers").hasChild(driver.id)) {
-                            writeNewDriver(n, e, doLa, doLo, boEnr, book);
+                        if (dataSnapshot.child("Drivers").hasChild(id)) {
+
+                            Double driverLat =  dataSnapshot.child("Drivers").child(id).child("latitude").getValue(Double.class);
+                            Double driverLong = dataSnapshot.child("Drivers").child(id).child("longitude").getValue(Double.class);
+
+                            writeNewDriver(n, e, driverLat, driverLong, boEnr, book);
                             //i assume i include this; ive not started trying to edit drivers details yet..
                             //enr = null;
                             //book = null;
                             //
+                        }
+
+                        if (dataSnapshot.child("Admins").hasChild(id)) {
+                            //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
+                            //could this all be made more efficient
+                            //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
+
+                            //THIS DOESNT DO ANYTHING; I NEED VALIDATION CHECKS.
+//                            if(n.equals("")||e.equals("")||ad.equals("")||ci.equals("")||po.equals(""))
+//                            {
+//                                Toast.makeText(getApplicationContext(), "Please fill in all values before submitting", Toast.LENGTH_SHORT).show();
+//                            } else {
+//                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
+//                            }
+                            writeNewAdmin(n, e, doLa, doLo, ad, ci, po);
                         }
 
                     }
@@ -452,17 +512,17 @@ public class UserInfo extends AppCompatActivity {
 
     private void writeNewCustomer(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Customer customer = new Customer(name, email, latitude, longitude, address, city, postcode);
+        Customer cus = new Customer(name, email, latitude, longitude, address, city, postcode);
 
+        //without this, the id drops off the child in firebase
+        cus.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //is this needed?
-        myRef.child("users").child("Customers").child(customer.id).setValue(customer);
-
+        myRef.child("users").child("Customers").child(customer.id).setValue(cus);
 
 
     }
@@ -470,27 +530,44 @@ public class UserInfo extends AppCompatActivity {
     private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, String bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver driver = new Driver(name, email, latitude, longitude, isEnroute, bookable);
+        Driver dri = new Driver(name, email, latitude, longitude, isEnroute, bookable);
+
+        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+        //without this, the id drops off the child in firebase
+//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        dri.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        //is this needed?
+        myRef.child("users").child("Drivers").child(id).setValue(dri);
+
+
+    }
+
+    private void writeNewAdmin(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
+        //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
+        Admin ad = new Admin(name, email, latitude, longitude, address, city, postcode);
+        //without this, the id drops off the child in firebase
+        ad.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //is this needed?
-        myRef.child("users").child("Drivers").child(driver.id).setValue(driver);
+        myRef.child("users").child("Admins").child(id).setValue(ad);
 
 
     }
+}
 
-    private void populateUserTextFields(String name, String email, double latitude, double longitude) {
-        User user = new User(name, email, latitude, longitude);
-        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//        user.setName(myRef.child("users").child(user.id).toString());
-        uname.setText(user.getName());
+//    private void populateUserTextFields(String name, String email, double latitude, double longitude) {
+////        User user = new User(name, email, latitude, longitude);
+//        id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+////        user.setName(myRef.child("users").child(user.id).toString());
+//        uname.setText(user.getName());
 
 
-    }
+
 
 
 //    public LatLng getLocationFromAddress(Context context, String strAddress) {
@@ -522,4 +599,4 @@ public class UserInfo extends AppCompatActivity {
 //        return p1;
 //
 //    }
-}
+

@@ -214,6 +214,7 @@ public class HomeActivity extends AppCompatActivity {
 
                     btnDeleteLocationsFromFirebase.setVisibility(View.INVISIBLE);
                     btnRunService.setVisibility(View.INVISIBLE);
+                    btnStopService.setVisibility(View.INVISIBLE);
                     btnOrderPg.setVisibility(View.VISIBLE);
                     Toast.makeText(getApplicationContext(), "Customer " + id, Toast.LENGTH_LONG).show();
                 }
@@ -221,8 +222,17 @@ public class HomeActivity extends AppCompatActivity {
                     btnDeleteLocationsFromFirebase.setVisibility(View.INVISIBLE);
                     btnOrderPg.setVisibility(View.INVISIBLE);
                     btnRunService.setVisibility(View.VISIBLE);
+                    btnStopService.setVisibility(View.VISIBLE);
                     Toast.makeText(getApplicationContext(), "Driver " + id, Toast.LENGTH_LONG).show();
 
+                }
+                if (dataSnapshot.child("Admins").hasChild(id)) {
+
+                    btnDeleteLocationsFromFirebase.setVisibility(View.INVISIBLE);
+                    btnRunService.setVisibility(View.INVISIBLE);
+                    btnStopService.setVisibility(View.INVISIBLE);
+                    btnOrderPg.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getApplicationContext(), "Admin " + id, Toast.LENGTH_LONG).show();
                 }
             }
 

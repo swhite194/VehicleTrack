@@ -51,6 +51,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     DatabaseReference latRef = myRef.child("Latitude");
     DatabaseReference longRef = myRef.child("Longitude");
 
+    DatabaseReference adminRef = userRef.child("Admins");
+
     //https://stackoverflow.com/questions/37886301/tag-has-private-access-in-android-support-v4-app-fragmentactivity
     private static final String TAG = "GoogleMapsActivity";
 
@@ -60,6 +62,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     double latitude;
     double longitude;
 
+
     Button btnTest;
 
     Map<String, Marker> markers = new HashMap();
@@ -67,7 +70,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     Customer cust;
     Driver drive;
 
-
+    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
 //    customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -97,55 +100,83 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         //took it from https://stackoverflow.com/questions/42466483/how-to-see-other-markers-in-google-map-moving-android-studio-google-maps
         //this helped too for things like calling in the lat/long  andhttps://stackoverflow.com/questions/55567149/change-marker-position-by-realtime-lat-lang-in-firebase-database-without-added
         //for consistency sake if you want to make them ValueEvent listeners like you've done everywhere else; you could use: ttps://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase
-        driversRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                latitude = dataSnapshot.child("latitude").getValue(Double.class);
-                longitude = dataSnapshot.child("longitude").getValue(Double.class);
+userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                LatLng location = new LatLng(latitude, longitude);
+    @Override
+    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
-                markers.put(dataSnapshot.getKey(), uMarker);
-            }
+        if (dataSnapshot.child("Admins").hasChild(id)) {
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                latitude = dataSnapshot.child("latitude").getValue(Double.class);
-                longitude = dataSnapshot.child("longitude").getValue(Double.class);
+            driversRef.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                LatLng location = new LatLng(latitude, longitude);
+                    //this is a good example of how classes do nothing in my project
+                    drive = dataSnapshot.getValue(Driver.class);
 
-                if(markers.containsKey(dataSnapshot.getKey())){
-                    Marker marker = markers.get(dataSnapshot.getKey());
-                    marker.remove();
-                    //makes it show twice
+//                    latitude = dataSnapshot.child("latitude").getValue(Double.class);
+//                    longitude = dataSnapshot.child("longitude").getValue(Double.class);
+
+                    latitude = drive.getLatitude();
+                    longitude = drive.getLongitude();
+
+                    LatLng location = new LatLng(latitude, longitude);
+
+                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+                    markers.put(dataSnapshot.getKey(), uMarker);
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    drive = dataSnapshot.getValue(Driver.class);
+
+                    latitude = drive.getLatitude();
+                    longitude = drive.getLongitude();
+
+                    LatLng location = new LatLng(latitude, longitude);
+
+                    if (markers.containsKey(dataSnapshot.getKey())) {
+                        Marker marker = markers.get(dataSnapshot.getKey());
+                        marker.remove();
+                        //makes it show twice
 //                    marker.setPosition(location);
+                    }
+                    Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
+                    markers.put(dataSnapshot.getKey(), uMarker);
+
                 }
-                Marker uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataSnapshot.getKey()));
-                markers.put(dataSnapshot.getKey(), uMarker);
 
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                if(markers.containsKey(dataSnapshot.getKey())){
-                    Marker marker = markers.get(dataSnapshot.getKey());
-                    marker.remove();
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    if (markers.containsKey(dataSnapshot.getKey())) {
+                        Marker marker = markers.get(dataSnapshot.getKey());
+                        marker.remove();
+                    }
                 }
-            }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        } else{
+            Toast.makeText(getApplicationContext(), "Yeeterbix", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+    }
+});
+
 
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 
@@ -373,13 +404,13 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 //THIS WORKS
                 Log.d("TAG",  "CHILDREN COUNT IS: " + count);
 
-                    //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
-                    //doesn't help at all https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
-                    //https://stackoverflow.com/questions/47837229/getting-map-markers-from-firebase
+                //https://stackoverflow.com/questions/43545527/how-to-retrieve-data-from-firebase-to-google-map
+                //doesn't help at all https://stackoverflow.com/questions/38017765/retrieving-child-value-firebase
+                //https://stackoverflow.com/questions/47837229/getting-map-markers-from-firebase
 //                    String latitude = dataSnapshot.child("Longitude").getValue(String.class);
 //                    String longitude = dataSnapshot.child("Latitude").getValue(String.class);
-                    //https://stackoverflow.com/questions/43216708/how-to-add-google-map-marker-from-firebase-database?noredirect=1&lq=1
-                    //https://stackoverflow.com/questions/49766208/android-studio-unboxing-of-xxx-may-produce-java-lang-nullpointerexception (why i called them Int? so confusing!)
+                //https://stackoverflow.com/questions/43216708/how-to-add-google-map-marker-from-firebase-database?noredirect=1&lq=1
+                //https://stackoverflow.com/questions/49766208/android-studio-unboxing-of-xxx-may-produce-java-lang-nullpointerexception (why i called them Int? so confusing!)
 //https://stackoverflow.com/questions/49351853/how-to-fix-unboxing-may-produce-nullpointer-exception-with-firebase
 //                    Double latitude = ds.child("Latitude").getValue(Double.class);
 //                    Double longitude = ds.child("Longitude").getValue(Double.class);
@@ -398,10 +429,10 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 //is this worth looking at
 
 
-                    //https://stackoverflow.com/questions/37257166/android-firebase-why-does-ondatachange-returns-null-values
-                    //i might want to make them store as hashmaps...
+                //https://stackoverflow.com/questions/37257166/android-firebase-why-does-ondatachange-returns-null-values
+                //i might want to make them store as hashmaps...
 
-                    //this is saying NULL/NULL in logcat
+                //this is saying NULL/NULL in logcat
 //                    Log.d("TAG", latitude + " / " + longitude);
 //
 //
@@ -414,10 +445,10 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
 //                String a = (String) dataSnapshot.getValue();
 //                Log.d("TAG", a);
-                    //log could only be recognised by doing "Import class" for it
-                    //tag had to be made a constant
-                    //valueeventlistener had a red underline oncancelled needed to be imported or something,
-                    //but it was already here? so i deleted it and it should be the same layout as the stackoverflow example idk what diff was
+                //log could only be recognised by doing "Import class" for it
+                //tag had to be made a constant
+                //valueeventlistener had a red underline oncancelled needed to be imported or something,
+                //but it was already here? so i deleted it and it should be the same layout as the stackoverflow example idk what diff was
 
 
             }
@@ -603,3 +634,6 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 //        myRef.child("Users").child(userId).setValue(user);
 //    }
 }
+
+
+///yoo

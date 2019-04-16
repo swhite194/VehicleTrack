@@ -35,7 +35,6 @@ public class LoginOrRegister extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
 
-
     DatabaseReference myRef = database.getReference("Location");
 
     EditText email, password;
@@ -165,6 +164,14 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       if (chkDriver.isChecked()){
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
                                                                           writeNewDriver(null, e, 0, 0, false, "available");
+
+                                                                          Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
+                                                                          startActivity(intent);
+                                                                      }
+
+                                                                      if (chkAdmin.isChecked()){
+                                                                          Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
+                                                                          writeNewAdmin(null, e, 0, 0, "place", null, null);
 
                                                                           Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
                                                                           startActivity(intent);
@@ -311,6 +318,24 @@ public class LoginOrRegister extends AppCompatActivity {
 
 
     }
+
+    private void writeNewAdmin(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
+        //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
+        Admin admin = new Admin(name, email, latitude, longitude, address, city, postcode);
+
+
+        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        admin.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //is this needed?
+        myRef.child("users").child("Admins").child(admin.id).setValue(admin);
+
+
+    }
+
+
 
 //    private void writeNewAdmin(String name, String email, double latitude, double longitude, boolean isEnroute) {
 //        Driver driver = new Driver(name, email, latitude, longitude, isEnroute);
