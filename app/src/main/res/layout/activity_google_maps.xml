@@ -33,7 +33,7 @@
             android:text="Speed of Driver" />
 
         <EditText
-            android:id="@+id/txtSpeed"
+            android:id="@+id/textLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
