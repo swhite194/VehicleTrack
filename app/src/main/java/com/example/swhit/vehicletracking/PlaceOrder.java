@@ -37,7 +37,7 @@ public class PlaceOrder extends AppCompatActivity {
     String custID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     //used to check availability status of driver
-    String check;
+    boolean available = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,12 +113,32 @@ public class PlaceOrder extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    check = snapshot.child("bookable").getValue(String.class);
-                    //works backwards but is fine... or is it the submit/writeorder stuff that does?
-                    if (check.equals("available")){
-                        aDriver = snapshot.getValue(Driver.class);
-                        System.out.println(check);
+
+                    //
+                    if(snapshot.child("bookable").exists()){
+                        if(snapshot.child("bookable").getValue().equals("available")){
+                            aDriver = snapshot.getValue(Driver.class);
+                            available = true;
+                            //not bad practice?
+                            break;
+                        }
+                        if(snapshot.child("bookable").getValue().equals("unavailable")){
+                            available = false;
+                        }
                     }
+                    if(!(snapshot.child("bookable").exists())){
+                        //https://stackoverflow.com/questions/11160952/goto-next-iteration-in-for-loop-in-java
+                        continue;
+                    }
+//
+//
+// check = snapshot.child("bookable").getValue(String.class);
+                    //works backwards but is fine... or is it the submit/writeorder stuff that does?
+//                    if (check.equals("available")){
+//                        aDriver = snapshot.getValue(Driver.class);
+//                        System.out.println(check);
+//                    }
+
 
                     //NEED TO SAY ELSE HERE.
                 }
@@ -167,14 +187,14 @@ public class PlaceOrder extends AppCompatActivity {
         place_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(check.equals("available")) {
+                if(available) {
                     writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), item_id, item_quantity);
 //                aDriver.setBookable(false);
                     aDriver.setBookable("unavailable");
                     myRef.child("users").child("Drivers").child(aDriver.getId()).setValue(aDriver);
                 }
-                if(check.equals("unavailable")){
-                    Toast.makeText(getApplicationContext(), "Sorry no drivers are available!", Toast.LENGTH_LONG).show();
+                if(!available){
+                    Toast.makeText(getApplicationContext(), "Sorry no drivers are available on the system!", Toast.LENGTH_LONG).show();
                 }
                 //should i have an else?
             }

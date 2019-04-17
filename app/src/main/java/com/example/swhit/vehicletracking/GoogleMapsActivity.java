@@ -1,5 +1,6 @@
 package com.example.swhit.vehicletracking;
 
+import android.content.Intent;
 import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,6 +50,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     DatabaseReference locationRef = rootRef.child("Location");
     DatabaseReference userRef = locationRef.child("users");
     DatabaseReference driversRef = locationRef.child("users").child("Drivers");
+    DatabaseReference ordersRef = locationRef;
 
     DatabaseReference latRef = myRef.child("Latitude");
     DatabaseReference longRef = myRef.child("Longitude");
@@ -64,27 +66,33 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     double latitude;
     double longitude;
 
+    String lat;
+
 
     Button btnTest;
     EditText txtLocation;
 
     Map<String, Marker> markers = new HashMap();
 
-    Map<String, Admin> admins = new HashMap();
-    Map<String, Customer> customers = new HashMap();
-    Map<String, Driver> drivers = new HashMap();
+//    Map<String, Admin> admins = new HashMap();
+//    Map<String, Customer> customers = new HashMap();
+//    Map<String, Driver> drivers = new HashMap();
 
-    Admin adm;
-    Customer cust;
-    Driver drive;
+    Map<String, Object> admins = new HashMap<>();
+    Map<String, Object> customers = new HashMap<>();
+    Map<String, Object> drivers = new HashMap<>();
+
+    Admin admin;
+    Customer customer;
+    Driver driver;
 
     Admin ad;
     Customer cus;
     Driver dri;
 
-    Admin a;
-    Customer c;
-    Driver d;
+//    Admin a;
+//    Customer c;
+//    Driver d;
 
     Marker uMarker;
 
@@ -108,7 +116,6 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         mapFragment.getMapAsync(this);
 
 
-
     }
 
 
@@ -116,6 +123,12 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 //        mMap.setOnMarkerClickListener(this);
+
+
+
+
+
+
 
         //this is an admin view
         //took it from https://stackoverflow.com/questions/42466483/how-to-see-other-markers-in-google-map-moving-android-studio-google-maps
@@ -284,7 +297,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         /////////THIS WORKS FOR SHOWING EVERYONE BUT ITS SUPER INEFFICIENT
         //ITD BE BEST IMPLEMENTING THIS INTO THE CHILD LISTENER
 
-mMap.setOnMarkerClickListener(this);
+        mMap.setOnMarkerClickListener(this);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -304,8 +317,20 @@ mMap.setOnMarkerClickListener(this);
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                                 for (DataSnapshot dataS : ds.getChildren()) {
-                                    latitude = dataS.child("latitude").getValue(Double.class);
-                                    longitude = dataS.child("longitude").getValue(Double.class);
+
+
+                                    try {
+                                        latitude = dataS.child("latitude").getValue(Double.class);
+                                        longitude = dataS.child("longitude").getValue(Double.class);
+                                    } catch (Exception e) {
+
+                                        e.printStackTrace();
+                                        Toast.makeText(getApplicationContext(), "Oops something happened! Please try again", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(GoogleMapsActivity.this, HomeActivity.class);
+                                        startActivity(intent);
+                                    }
+
+
 
                                     LatLng location = new LatLng(latitude, longitude);
 
@@ -313,30 +338,26 @@ mMap.setOnMarkerClickListener(this);
                                     //https://stackoverflow.com/questions/16598169/changing-colour-of-markers-google-map-v2-android
 //                                    System.out.println(ds.getKey());
 
-                                    if (ds.getKey().equals("Admins")){
-                                        ad = dataS.getValue(Admin.class);
+                                    if (ds.getKey().equals("Admins")) {
+                                        admin = dataS.getValue(Admin.class);
                                         //https://stackoverflow.com/questions/1789679/get-string-value-from-hashmap-depending-on-key-name (answer by shmosel/jeffporter)
-                                        admins.put(dataS.getKey(), ad);
+                                        admins.put(dataS.getKey(), admin);
                                         uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataS.getKey()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
 
                                     }
-                                    if (ds.getKey().equals("Customers")){
-                                        cus = dataS.getValue(Customer.class);
-                                        customers.put(dataS.getKey(), cus);
+                                    if (ds.getKey().equals("Customers")) {
+                                        customer = dataS.getValue(Customer.class);
+                                        customers.put(dataS.getKey(), customer);
                                         uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataS.getKey()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                                     }
-                                    if (ds.getKey().equals("Drivers")){
-                                        System.out.println(dataS.getKey() + " BROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                                        dri = dataS.getValue(Driver.class);
-                                        System.out.println(dri.getLatitude());
-                                        drivers.put(dataS.getKey(), dri);
+                                    if (ds.getKey().equals("Drivers")) {
+//                                        System.out.println(dataS.getKey() + " BROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                                        driver = dataS.getValue(Driver.class);
+//                                        System.out.println(dri.getLatitude());
+                                        drivers.put(dataS.getKey(), driver);
                                         uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataS.getKey()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
                                     }
-
-
-
-
 
 
                                     //need to figure out how to to change them based on their ds... it says uMarker may not have been initialised at the bottom if i dont..
@@ -361,21 +382,99 @@ mMap.setOnMarkerClickListener(this);
                         }
 
                         @Override
-                        public void onCancelled (@NonNull DatabaseError databaseError){
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });
                 }
+
+                if(dataSnapshot.child("Customers").hasChild(id)||dataSnapshot.child("Drivers").hasChild(id)){
+                    userRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            String userId = dataSnapshot.getKey();
+//        DatabaseReference users= dataSnapshot.child(userId);
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                for (DataSnapshot dataS : ds.getChildren()) {
+
+
+                                    try {
+                                        latitude = dataS.child("latitude").getValue(Double.class);
+                                        longitude = dataS.child("longitude").getValue(Double.class);
+                                    } catch (Exception e) {
+
+                                        e.printStackTrace();
+                                        Toast.makeText(getApplicationContext(), "Oops something happened! Please try again", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(GoogleMapsActivity.this, HomeActivity.class);
+                                        startActivity(intent);
+                                    }
+
+
+
+                                    LatLng location = new LatLng(latitude, longitude);
+
+
+                                    //https://stackoverflow.com/questions/16598169/changing-colour-of-markers-google-map-v2-android
+//                                    System.out.println(ds.getKey());
+
+                                    if (ds.getKey().equals("Admins")) {
+                                        admin = dataS.getValue(Admin.class);
+                                        //https://stackoverflow.com/questions/1789679/get-string-value-from-hashmap-depending-on-key-name (answer by shmosel/jeffporter)
+                                        admins.put(dataS.getKey(), admin);
+                                        uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataS.getKey()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+
+                                    }
+                                    if (ds.getKey().equals("Customers")) {
+                                        customer = dataS.getValue(Customer.class);
+                                        customers.put(dataS.getKey(), customer);
+                                        uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataS.getKey()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                                    }
+                                    if (ds.getKey().equals("Drivers")) {
+//                                        System.out.println(dataS.getKey() + " BROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                                        driver = dataS.getValue(Driver.class);
+//                                        System.out.println(dri.getLatitude());
+                                        drivers.put(dataS.getKey(), driver);
+                                        uMarker = mMap.addMarker(new MarkerOptions().position(location).title(dataS.getKey()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+                                    }
+
+
+                                    //need to figure out how to to change them based on their ds... it says uMarker may not have been initialised at the bottom if i dont..
+
+//                                    uMarker = mMap.addMarker(new MarkerOptions().position(location).title(ds.getKey() + " " + dataS.getKey()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+
+                                    //removing the trail behind existing, moving markers.
+                                    if (markers.containsKey(dataS.getKey())) {
+                                        Marker marker = markers.get(dataS.getKey());
+                                        marker.remove();
+                                        //makes it show twice
+//                    marker.setPosition(location);
+                                    }
+
+
+                                    markers.put(dataS.getKey(), uMarker);
+                                }
+
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+
             }
 
             @Override
-            public void onCancelled (@NonNull DatabaseError databaseError){
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-
-
-
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////
@@ -619,7 +718,7 @@ mMap.setOnMarkerClickListener(this);
 
                                                            ValueEventListener() {
                                                                @Override
-                                                               public void onDataChange (@NonNull DataSnapshot dataSnapshot){
+                                                               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                    long count = dataSnapshot.getChildrenCount();
                                                                    //THIS WORKS
                                                                    Log.d("TAG", "CHILDREN COUNT IS: " + count);
@@ -674,7 +773,7 @@ mMap.setOnMarkerClickListener(this);
                                                                }
 
                                                                @Override
-                                                               public void onCancelled (@NonNull DatabaseError databaseError){
+                                                               public void onCancelled(@NonNull DatabaseError databaseError) {
                                                                }
                                                            });
 
@@ -838,10 +937,51 @@ mMap.setOnMarkerClickListener(this);
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-int size;
-size = drivers.size();
+//        Admin ad;
 
-            Toast.makeText(getApplicationContext(), size, Toast.LENGTH_SHORT).show();
+        final String markerId = marker.getTitle();
+
+        String lon;
+
+        //https://stackoverflow.com/questions/7857935/how-to-get-an-object-from-a-hashmap-in-java
+        //weird that i can just reuse the class (like ad)
+        if (admins.containsKey(markerId)) {
+//        ad = (Admin)admins.get(id);
+            ad = (Admin) admins.get(markerId);
+            lat = String.valueOf(ad.getLatitude());
+//        Toast.makeText(getApplicationContext(), lat, Toast.LENGTH_LONG).show();
+            txtLocation.setText(lat);
+        }
+        if (customers.containsKey(markerId)) {
+            cus = (Customer) customers.get(markerId);
+            lat = String.valueOf(cus.getLatitude());
+            txtLocation.setText(lat);
+        }
+        if (drivers.containsKey(markerId)) {
+//            dri = (Driver) drivers.get(markerId);
+//            lat = String.valueOf(dri.getLatitude());
+//            txtLocation.setText(lat);
+
+            userRef.child("Drivers").child(markerId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+//                    Double l = dataSnapshot.child("latitude").getValue(Double.class);
+//                    lat = String.valueOf(l);
+//                    txtLocation.setText(lat);
+                                dri = (Driver) drivers.get(markerId);
+            lat = String.valueOf(dri.getLatitude());
+            txtLocation.setText(lat);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
 
         return false;
     }
@@ -899,4 +1039,4 @@ size = drivers.size();
 }
 
 
-///yooOAOAOAOA
+///yooOAOAOAOA--------
