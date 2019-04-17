@@ -49,6 +49,8 @@ public class LoginOrRegister extends AppCompatActivity {
 
     CheckBox chkCustomer, chkDriver, chkAdmin;
 
+    boolean checked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +165,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                   if (task.isSuccessful()) {
                                                                       //https://stackoverflow.com/questions/27423485/java-check-if-checkbox-is-checked
                                                                       if (chkDriver.isChecked()){
+                                                                          checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
                                                                           writeNewDriver(null, e, 0, 0, false, "available");
 
@@ -171,6 +174,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       }
 
                                                                       if (chkAdmin.isChecked()){
+                                                                          checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
                                                                           writeNewAdmin(null, e, 0, 0, "place", null, null);
 
@@ -179,6 +183,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       }
 
                                                                       if (chkCustomer.isChecked()) {
+                                                                          checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
 //                                                                          writeNewCustomer(null, e, 0, 0, null);
                                                                           writeNewCustomer(null, e, 0, 0, "place", null, null);
@@ -189,10 +194,15 @@ public class LoginOrRegister extends AppCompatActivity {
 
 //                                                                          return;
                                                                       }
+                                                                      if(!checked){
+                                                                          Toast.makeText(getApplicationContext(), "Please check a box!", Toast.LENGTH_LONG).show();
+                                                                      }
+
+
                                                                   }
                                                 //THIS IS COMING UP AT THE SAME TIME AS THE 10 CHARACTER VALIDATION... needs fixed; INVISIBLE-> VISIBLE login is a cop-out atm
                                                                   else {
-                                                                      Toast.makeText(getApplicationContext(), "E-mail or password is wrong", Toast.LENGTH_LONG).show();
+                                                                      Toast.makeText(getApplicationContext(), "E-mail or password poor; please ensure first time registering with this email, the email format, and that your password is 10+ characters", Toast.LENGTH_LONG).show();
                                                                   }
                                                               }
                                                           });

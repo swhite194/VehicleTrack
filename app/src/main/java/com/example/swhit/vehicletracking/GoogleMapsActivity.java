@@ -50,12 +50,13 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     DatabaseReference locationRef = rootRef.child("Location");
     DatabaseReference userRef = locationRef.child("users");
     DatabaseReference driversRef = locationRef.child("users").child("Drivers");
-    DatabaseReference ordersRef = locationRef;
 
     DatabaseReference latRef = myRef.child("Latitude");
     DatabaseReference longRef = myRef.child("Longitude");
 
     DatabaseReference adminRef = userRef.child("Admins");
+
+    DatabaseReference orderRef = myRef.child("orders");
 
     //https://stackoverflow.com/questions/37886301/tag-has-private-access-in-android-support-v4-app-fragmentactivity
     private static final String TAG = "GoogleMapsActivity";
@@ -389,6 +390,18 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 }
 
                 if(dataSnapshot.child("Customers").hasChild(id)||dataSnapshot.child("Drivers").hasChild(id)){
+
+                    orderRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     userRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

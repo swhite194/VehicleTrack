@@ -21,6 +21,10 @@ public class PlaceOrder extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
     DatabaseReference myRef = database.getReference("Location");
 
+    DatabaseReference orderRef = myRef.child("orders").child("Current Orders");
+    DatabaseReference enRouteOrderRef = myRef.child("orders").child("Enroute Orders");
+    DatabaseReference completedOrders = myRef.child("orders").child("Completed Orders");
+
 
     EditText utime;
     Button place_order;
@@ -221,7 +225,7 @@ public class PlaceOrder extends AppCompatActivity {
         //is push the best option?
         //id still like to categorise them by CUSTOMER id WITHIN FIREBASE ITSELF, for ease of access instead of sorting
         //SHOULD i consider that if their address changes.. should it affect the orders table in Firebase? (considering that archived might be diff)
-        myRef.child("orders").child("Orders").push().setValue(order);
+        orderRef.push().setValue(order);
 
 
     }
