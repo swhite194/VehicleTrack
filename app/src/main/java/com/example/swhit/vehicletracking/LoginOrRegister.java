@@ -314,10 +314,10 @@ public class LoginOrRegister extends AppCompatActivity {
 
     }
 
-    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, String bookable) {
+    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver driver = new Driver(name, email, latitude, longitude, isEnroute, bookable);
+        Driver driver = new Driver(name, email, latitude, longitude, enroute, bookable);
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase

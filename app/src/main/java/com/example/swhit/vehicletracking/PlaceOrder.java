@@ -192,7 +192,7 @@ public class PlaceOrder extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(available) {
-                    writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), item_id, item_quantity);
+                    writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), aDriver.isEnroute(), item_id, item_quantity);
 //                aDriver.setBookable(false);
                     aDriver.setBookable("unavailable");
                     myRef.child("users").child("Drivers").child(aDriver.getId()).setValue(aDriver);
@@ -208,10 +208,10 @@ public class PlaceOrder extends AppCompatActivity {
 
 
     }
-    private void writeNewOrder(String customerid, String customername, String customeremail, String customeraddress, String customercity, String customerpostcode, String driverid, String drivername, String itemid, int itemquantity) {
+    private void writeNewOrder(String customerid, String customername, String customeremail, String customeraddress, String customercity, String customerpostcode, String driverid, String drivername, boolean driverEnroute, String itemid, int itemquantity) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Order order = new Order(customerid, customername, customeremail, customeraddress, customercity, customerpostcode, driverid, drivername, itemid, itemquantity);
+        Order order = new Order(customerid, customername, customeremail, customeraddress, customercity, customerpostcode, driverid, drivername, driverEnroute,  itemid, itemquantity);
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap

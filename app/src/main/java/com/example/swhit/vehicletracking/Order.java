@@ -13,15 +13,18 @@ public class Order {
 
     public String driverID;
     public String driverName;
+    public boolean driverEnroute;
 
     public String itemID;
     public int itemQuantity;
+
+
 
     public Order(){
         //
     }
 
-    public Order(String customerID, String customerName, String customerEmail, String customerAddress, String customerCity, String customerPostcode, String driverID, String driverName, String itemID, int itemQuantity) {
+    public Order(String customerID, String customerName, String customerEmail, String customerAddress, String customerCity, String customerPostcode, String driverID, String driverName, boolean driverEnroute, String itemID, int itemQuantity) {
         this.customerID = customerID;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
@@ -30,6 +33,7 @@ public class Order {
         this.customerPostcode = customerPostcode;
         this.driverID = driverID;
         this.driverName = driverName;
+        this.driverEnroute = driverEnroute;
         this.itemID = itemID;
         this.itemQuantity = itemQuantity;
     }
@@ -100,6 +104,14 @@ public class Order {
         this.driverName = driverName;
     }
 
+    public boolean isDriverEnroute() {
+        return driverEnroute;
+    }
+
+    public void setDriverEnroute(boolean driverEnroute) {
+        this.driverEnroute = driverEnroute;
+    }
+
     public String getItemID() {
         return itemID;
     }
@@ -123,10 +135,6 @@ public class Order {
     public void setId(String id) {
         this.id = id;
     }
-
-
-
-
 
 
 }

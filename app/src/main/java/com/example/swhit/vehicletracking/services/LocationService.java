@@ -18,6 +18,7 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.example.swhit.vehicletracking.Driver;
+import com.example.swhit.vehicletracking.Order;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -40,6 +41,7 @@ public class LocationService extends Service {
     DatabaseReference myRef = database.getReference("Location");
 
     Driver driverUser = new Driver();
+    Order order = new Order();
 
     //we need to make it so that only drivers can do this; saying id makes it sound like theres validation in place already but thats not the case.
 
@@ -49,6 +51,7 @@ public class LocationService extends Service {
 
     //its only fair to put in validation when u decipher what ref you're using.. instead of just making it 1 way to suit a use case with no validation
     DatabaseReference drivers = myRef.child("users").child("Drivers");
+    DatabaseReference orders = myRef.child("orders").child("Current Orders");
 
 
     @Override
@@ -84,6 +87,7 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(getApplicationContext(), "GO", Toast.LENGTH_SHORT).show();
         getLocation();
+        updateOrder();
         return START_NOT_STICKY;
 
     }
@@ -172,6 +176,97 @@ public class LocationService extends Service {
 
     }
 
+    private void updateOrder() {
+        //https://stackoverflow.com/questions/42423779/android-firebase-orderbychild-query OR SOMETHING BETTER? crappy example
+        //WHAT IF THEY DONT EXIST?
+        orders.orderByChild("driverID").equalTo(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String key = dataSnapshot.getKey();
+                order = dataSnapshot.getValue(Order.class);
+
+                drivers.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild(id)){
+                            //should this be a different class? you dont even make use of classes so dont make it the same
+                            driverUser = dataSnapshot.child(id).getValue(Driver.class);
+                            //if enroute is false.. does this all work fine? check all cases.
+                            if(!driverUser.isEnroute()){
+                                driverUser.setEnroute(true);
+                                drivers.child(id).setValue(driverUser);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                orders.child(key).setValue(order);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
-}
+
+//        drivers.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if(dataSnapshot.hasChild(id)){
+//                    //should this be different?
+//                    driverUser = dataSnapshot.child(id).getValue(Driver.class);
+//                    //if driver is not "enroute"
+//                    //although we might not need these statements.. considering if they press it they're probably not enroute..
+//                    if(!driverUser.isEnroute()){
+//                        Toast.makeText(getApplicationContext(), "JOLENE!!!", Toast.LENGTH_SHORT).show();
+//                        driverUser.setEnroute(true);
+//                        //https://stackoverflow.com/questions/43706540/update-child-value-in-firebase
+//                        //if not enroute, now enroute!
+//                        drivers.child(id).setValue(driverUser);
+//                        orders.addValueEventListener(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+    }
+
+//    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, String bookable) {
+//
+//        //this shouldnt be here because its not really making use of it (atleast not setter/getter)
+//        Driver driver = new Driver(name, email, latitude, longitude, isEnroute, bookable);
+//
+//        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+//        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+////        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//
+//        myRef.child("users").child("Drivers").child(id).setValue(driver);
+//
+//
+//    }
+
+
+

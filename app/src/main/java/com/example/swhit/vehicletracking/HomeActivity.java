@@ -41,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
     Button btnTestPage2;
     Button btnRunService;
     Button btnStopService;
+    Button btnGoEnroute;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
     DatabaseReference myRef = database.getReference("Location");
@@ -81,6 +82,7 @@ public class HomeActivity extends AppCompatActivity {
         btnTestPage2 = (Button) findViewById(R.id.btnTestPage2);
         btnRunService = (Button) findViewById(R.id.btnRunService);
         btnStopService = (Button) findViewById(R.id.btnStopService);
+        btnGoEnroute = (Button) findViewById(R.id.btnEnroute);
 
 //        btnDeleteLocationsFromFirebase.setVisibility(View.INVISIBLE);
 //        btnRunService.setVisibility(View.INVISIBLE);
@@ -204,6 +206,22 @@ public class HomeActivity extends AppCompatActivity {
                 stopService(intent);
             }
         });
+
+        btnGoEnroute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//northgate but I changed this to HomeActivity.this (the line below this comment)
+                if (ActivityCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(HomeActivity.this, LocationService.class);
+                    startService(intent);
+                } else{
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);
+                    }
+                }
+            }
+        });
+
 
         currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
