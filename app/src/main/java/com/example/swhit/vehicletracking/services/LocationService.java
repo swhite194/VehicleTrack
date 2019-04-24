@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -176,35 +177,20 @@ public class LocationService extends Service {
 
     }
 
-    private void updateOrder() {
-        //https://stackoverflow.com/questions/42423779/android-firebase-orderbychild-query OR SOMETHING BETTER? crappy example
-        //WHAT IF THEY DONT EXIST?
-        orders.orderByChild("driverID").equalTo(id).addValueEventListener(new ValueEventListener() {
+    private void updateOrder(){
+        orders.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String key = dataSnapshot.getKey();
-                order = dataSnapshot.getValue(Order.class);
-
-                drivers.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.hasChild(id)){
-                            //should this be a different class? you dont even make use of classes so dont make it the same
-                            driverUser = dataSnapshot.child(id).getValue(Driver.class);
-                            //if enroute is false.. does this all work fine? check all cases.
-                            if(!driverUser.isEnroute()){
-                                driverUser.setEnroute(true);
-                                drivers.child(id).setValue(driverUser);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-                orders.child(key).setValue(order);
+                                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                    String driverId = String.valueOf(ds.child("driverID").getValue());
+                                    if(driverId.equals(id)){
+                                        Toast.makeText(getApplicationContext(), "SUCCESS; " + order.getDriverID(), Toast.LENGTH_SHORT).show();
+                                    }
+                                    if(!driverId.equals(id)){
+                                        Toast.makeText(getApplicationContext(), "FAILED; " + order.getDriverID(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
             }
 
             @Override
@@ -213,6 +199,93 @@ public class LocationService extends Service {
             }
         });
     }
+//
+//    private void updateOrder(){
+//        orders.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot ds : dataSnapshot.getChildren()){
+//                    if(ds.child("driverID").exists()){
+//                        order = ds.getValue(Order.class);
+    //better examples used order by child https://stackoverflow.com/questions/37579872/android-firebase-query
+    //better still ones used childeventlistener etc..
+    //similar almost but not really https://stackoverflow.com/questions/43742366/firebase-check-if-child-value-in-node-a-matches-child-value-in-node-b
+////https://stackoverflow.com/questions/31847080/how-to-convert-any-object-to-string
+//                        String driverId = String.valueOf(ds.child("driverID").getValue());
+//                        if (driverId.equals(id)){
+//                            Toast.makeText(getApplicationContext(), "SUCCESS; " + order.getDriverID(), Toast.LENGTH_SHORT).show();
+//                        }
+//                        if (!driverId.equals(id)){
+//                            Toast.makeText(getApplicationContext(), "FAILED; " + order.getDriverID(), Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    }
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+//    Query query = orders.orderByChild("driverID").equalTo(id);
+//
+//    private void updateOrder(){
+//        query.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String key = dataSnapshot.getKey();
+//                Toast.makeText(getApplicationContext(), key, Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+//    private void updateOrder() {
+//        //https://stackoverflow.com/questions/42423779/android-firebase-orderbychild-query OR SOMETHING BETTER? crappy example
+//        //WHAT IF THEY DONT EXIST?
+//        orders.orderByChild("driverID").equalTo(id).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String key = dataSnapshot.getKey();
+//                Toast.makeText(getApplicationContext(), key, Toast.LENGTH_SHORT).show();
+//                order = dataSnapshot.getValue(Order.class);
+//
+//                drivers.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        if(dataSnapshot.hasChild(id)){
+//                            //should this be a different class? you dont even make use of classes so dont make it the same
+//                            driverUser = dataSnapshot.child(id).getValue(Driver.class);
+//                            //if enroute is false.. does this all work fine? check all cases.
+//                            if(!driverUser.isEnroute()){
+//                                driverUser.setEnroute(true);
+//                                drivers.child(id).setValue(driverUser);
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//                orders.child(key).setValue(order);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 
 
