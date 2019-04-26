@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.SmsManager;
 import android.widget.Toast;
 
 import com.example.swhit.vehicletracking.Driver;
@@ -49,10 +50,10 @@ public class LocationService extends Service {
     String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-
     //its only fair to put in validation when u decipher what ref you're using.. instead of just making it 1 way to suit a use case with no validation
     DatabaseReference drivers = myRef.child("users").child("Drivers");
     DatabaseReference orders = myRef.child("orders").child("Current Orders");
+
 
 
     @Override
@@ -112,11 +113,12 @@ public class LocationService extends Service {
 
     private void getLocation() {
 
+        //should i make this single?
         drivers.addValueEventListener(new ValueEventListener() {
             //            String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild(id)) {
+                if (dataSnapshot.hasChild(id)) {
                     //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
                     driverUser = dataSnapshot.child(id).getValue(Driver.class);
 
@@ -173,31 +175,197 @@ public class LocationService extends Service {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
 
-
-
     }
 
-    private void updateOrder(){
-        orders.addValueEventListener(new ValueEventListener() {
+//
+//    private void updateOrder(){
+//        drivers.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot ds : dataSnapshot.getChildren()){
+////                    if(!ds.hasChild(id)){
+////                        System.out.println("nope");
+//////                        continue;
+////                    }
+//                    //why isn't this working?
+//                    if (ds.hasChild(id)) {
+//                        driverUser = ds.getValue(Driver.class);
+//                        System.out.println("---------------------------");
+//                        System.out.println(driverUser.getId());
+//                        System.out.println("---------------------------");
+//                    }
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+////        System.out.println("---------------------------");
+////        System.out.println(driverUser.getId());
+////        System.out.println("---------------------------");
+//
+//        orders.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot dataS : dataSnapshot.getChildren()){
+//                    String driverId = String.valueOf(dataS.child("driverID").getValue());
+//                    if(driverId.equals(id)){
+//                        order = dataS.getValue(Order.class);
+//                        driverUser.setEnroute(true);
+//
+//                        break;
+//                    }
+////                    System.out.println(driverId);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                                    String driverId = String.valueOf(ds.child("driverID").getValue());
-                                    if(driverId.equals(id)){
-                                        Toast.makeText(getApplicationContext(), "SUCCESS; " + order.getDriverID(), Toast.LENGTH_SHORT).show();
-                                    }
-                                    if(!driverId.equals(id)){
-                                        Toast.makeText(getApplicationContext(), "FAILED; " + order.getDriverID(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+//    private void updateOrder() {
+//
+//        //already called in getLocation
+////        drivers.addListenerForSingleValueEvent(new ValueEventListener() {
+////            @Override
+////            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+////                if(dataSnapshot.hasChild(id)){
+////                    driverUser = dataSnapshot.getValue(Driver.class);
+////                }
+////            }
+////
+////            @Override
+////            public void onCancelled(@NonNull DatabaseError databaseError) {
+////
+////            }
+////        });
+//        System.out.println("----------------------------------------------");
+//        orders.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+////                    String driverId = String.valueOf(ds.child("driverID").getValue());
+////                    String dID = String.valueOf(driverUser.getId());
+//                    System.out.println(driverUser.getId());
+////                    String driverID = String.valueOf(ds.child("driverID"));
+//                    System.out.println(ds.child("driverID"));
+//                    //https://stackoverflow.com/questions/42518637/how-to-compare-the-firebase-retrieved-value-with-a-string
+//                    String drID = (String) ds.child("driverID").getValue();
+//                    if (driverUser.getId().equals(drID)) {
+//                        System.out.println("MATCH!");
+//                        order = ds.getValue(Order.class);
+//                        String key = ds.getKey();
+////                        System.out.println("key: " + key);
+////
+//                        driverUser.setEnroute(true);
+//                        order.setDriverEnroute(true);
+//
+//                        //should these be their own methods like where everything else is
+//                        //my use of updating things in methods is a bit redundant.. what with calling a new class etc..
+//                        drivers.child(id).setValue(driverUser);
+//                        orders.child(key).setValue(order);
+//
+//
+//                        //DO I NEED THIS?
+//                        //does this needs to break here... thought so because i'm comparing a class string to a snapshot
+//                        //another reason why classes are bad.
+//                        //reason for break is so that drID doesn't get overwritten... does that even matter
+//                        break;
+//                    }
+//                    if (!driverUser.getId().equals(drID)) {
+//                        Toast.makeText(getApplicationContext(), "You don't have any Current Orders" + order.getDriverID(), Toast.LENGTH_SHORT).show();
+//                    }
+//
+//
+//
+////
+////                    if(dID.equals(driverID)){
+////                        System.out.println("Driver exists in a Current Order");
+////
+////                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//
+////        orders.addValueEventListener(new ValueEventListener() {
+////
+////            @Override
+////            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+////                                for(DataSnapshot ds : dataSnapshot.getChildren()){
+////                                    String driverId = String.valueOf(ds.child("driverID").getValue());
+////                                    String key = String.valueOf(ds.getKey());
+//////                                    Toast.makeText(getApplicationContext(), driverId + order.getDriverID(), Toast.LENGTH_SHORT).show();
+////                                    if(driverId.equals(id)){
+////                                        System.out.println("IT DO");
+////                                        drivers.addValueEventListener(new ValueEventListener() {
+////                                            @Override
+////                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+////                                                for(DataSnapshot ds : dataSnapshot.getChildren()){
+////                                                    String dId = String.valueOf(ds.child("id").getValue());
+////
+////                                                    if(ds.child(id))
+////
+//////                                                    if(!ds.hasChild(id)){
+//////                                                        System.out.println("nope");
+////////                                                        continue;
+//////                                                    }
+////////                                                    if (ds.hasChild(id)) {
+////////                                                        //this never gets called..
+////////                                                        System.out.println("yup");
+////////                                                        driverUser = ds.getValue(Driver.class);
+////////                                                        System.out.println(driverUser.getId());
+////////                                                    }
+//////                                                    if(ds.child("id").equals(id)){
+//////                                                        System.out.println("yup");
+//////                                                        driverUser = ds.getValue(Driver.class);
+//////                                                        System.out.println(driverUser.getId());
+//////                                                    }
+//////                                                    if(ds.child)
+////
+////                                                }
+////                                            }
+////
+////                                            @Override
+////                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+////
+////                                            }
+////                                        });
+////                                        order = ds.getValue(Order.class);
+////                                        //this works without "order" being declared.. huh
+////                                        Toast.makeText(getApplicationContext(), "SUCCESS; " + order.getDriverID(), Toast.LENGTH_SHORT).show();
+////                                        order.setDriverEnroute(true);
+////                                        orders.child(key).setValue(order);
+////
+////                                    }
+////                                    else if(!driverId.equals(id)){
+////                                        Toast.makeText(getApplicationContext(), "FAILED; " + order.getDriverID(), Toast.LENGTH_SHORT).show();
+////                                    }
+////                                }
+////            }
+////
+////            @Override
+////            public void onCancelled(@NonNull DatabaseError databaseError) {
+////
+////            }
+////        });
+//    }
 
-            }
-        });
+    private void checkDistance{
+
     }
 //
 //    private void updateOrder(){
@@ -288,7 +456,6 @@ public class LocationService extends Service {
 //    }
 
 
-
 //        drivers.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -323,9 +490,9 @@ public class LocationService extends Service {
 //
 //            }
 //        });
-    }
 
-//    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, String bookable) {
+
+    //    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean isEnroute, String bookable) {
 //
 //        //this shouldnt be here because its not really making use of it (atleast not setter/getter)
 //        Driver driver = new Driver(name, email, latitude, longitude, isEnroute, bookable);
@@ -340,6 +507,23 @@ public class LocationService extends Service {
 //
 //
 //    }
+    private void UpdateDriver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
+
+        //this shouldnt be here because its not really making use of it (atleast not setter/getter)
+        Driver dri = new Driver(name, email, latitude, longitude, enroute, bookable);
+
+        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+        //without this, the id drops off the child in firebase
+//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        dri.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        //is this needed?
+        myRef.child("users").child("Drivers").child(id).setValue(dri);
+
+
+    }
+
+}
 
 
 

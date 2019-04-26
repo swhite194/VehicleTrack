@@ -446,14 +446,14 @@ public class UserInfo extends AppCompatActivity {
 //                            } else {
 //                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 //                            }
-                            writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
+                            UpdateCustomer(n, e, doLa, doLo, ad, ci, po);
                         }
                         if (dataSnapshot.child("Drivers").hasChild(id)) {
 
                             Double driverLat =  dataSnapshot.child("Drivers").child(id).child("latitude").getValue(Double.class);
                             Double driverLong = dataSnapshot.child("Drivers").child(id).child("longitude").getValue(Double.class);
 
-                            writeNewDriver(n, e, driverLat, driverLong, boEnr, book);
+                            UpdateDriver(n, e, driverLat, driverLong, boEnr, book);
                             //i assume i include this; ive not started trying to edit drivers details yet..
                             //enr = null;
                             //book = null;
@@ -472,7 +472,7 @@ public class UserInfo extends AppCompatActivity {
 //                            } else {
 //                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 //                            }
-                            writeNewAdmin(n, e, doLa, doLo, ad, ci, po);
+                            UpdateAdmin(n, e, doLa, doLo, ad, ci, po);
                         }
 
                     }
@@ -510,7 +510,8 @@ public class UserInfo extends AppCompatActivity {
 //
 //    }
 
-    private void writeNewCustomer(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
+    //poor name
+    private void UpdateCustomer(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
         Customer cus = new Customer(name, email, latitude, longitude, address, city, postcode);
 
@@ -527,7 +528,8 @@ public class UserInfo extends AppCompatActivity {
 
     }
 
-    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
+    //poor name
+    private void UpdateDriver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
         Driver dri = new Driver(name, email, latitude, longitude, enroute, bookable);
@@ -543,7 +545,8 @@ public class UserInfo extends AppCompatActivity {
 
     }
 
-    private void writeNewAdmin(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
+    ////poor name
+    private void UpdateAdmin(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
         Admin ad = new Admin(name, email, latitude, longitude, address, city, postcode);
         //without this, the id drops off the child in firebase
