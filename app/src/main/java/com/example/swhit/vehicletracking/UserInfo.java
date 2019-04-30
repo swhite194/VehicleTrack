@@ -49,7 +49,7 @@ public class UserInfo extends AppCompatActivity {
     DatabaseReference myRef = database.getReference("Location");
 
 
-    EditText uname, uemail, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uBookable;
+    EditText uname, uemail, uphonenumber, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uBookable;
     EditText utest;
     Button submit_button;
 //    FirebaseAuth firebaseAuth;
@@ -85,6 +85,7 @@ public class UserInfo extends AppCompatActivity {
 
         uname = findViewById(R.id.txtName);
         uemail = findViewById(R.id.txtEmail);
+        uphonenumber = findViewById(R.id.txtPhoneNumber);
         uaddress = findViewById(R.id.txtAddress);
         ucity = findViewById(R.id.txtCity);
         upostcode = findViewById(R.id.txtPostcode);
@@ -204,6 +205,7 @@ public class UserInfo extends AppCompatActivity {
 
                     uname.setText(customer.getName());
                     uemail.setText(customer.getEmail());
+                    uphonenumber.setText(customer.getPhoneNumber());
                     uaddress.setText(customer.getAddress());
                     ucity.setText(customer.getCity());
                     upostcode.setText(customer.getPostcode());
@@ -256,6 +258,7 @@ public class UserInfo extends AppCompatActivity {
 
                     uname.setText(driver.getName());
                     uemail.setText(driver.getEmail());
+                    uphonenumber.setText(driver.getPhoneNumber());
                     ulatitude.setText(String.valueOf(driver.getLatitude()));
                     ulongitude.setText(String.valueOf(driver.getLongitude()));
                     uEnroute.setText(String.valueOf(driver.isEnroute()));
@@ -274,6 +277,7 @@ public class UserInfo extends AppCompatActivity {
 
                     uname.setText(admin.getName());
                     uemail.setText(admin.getEmail());
+                    uphonenumber.setText(admin.getPhoneNumber());
                     uaddress.setText(admin.getAddress());
                     ucity.setText(admin.getCity());
                     upostcode.setText(admin.getPostcode());
@@ -410,6 +414,7 @@ public class UserInfo extends AppCompatActivity {
                 currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                     String n = uname.getText().toString();
                     String e = uemail.getText().toString();
+                    String p = uphonenumber.getText().toString();
                     String ad = uaddress.getText().toString();
                     String ci = ucity.getText().toString();
                     String po = upostcode.getText().toString();
@@ -446,14 +451,14 @@ public class UserInfo extends AppCompatActivity {
 //                            } else {
 //                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 //                            }
-                            UpdateCustomer(n, e, doLa, doLo, ad, ci, po);
+                            UpdateCustomer(n, e, p, doLa, doLo, ad, ci, po);
                         }
                         if (dataSnapshot.child("Drivers").hasChild(id)) {
 
                             Double driverLat =  dataSnapshot.child("Drivers").child(id).child("latitude").getValue(Double.class);
                             Double driverLong = dataSnapshot.child("Drivers").child(id).child("longitude").getValue(Double.class);
 
-                            UpdateDriver(n, e, driverLat, driverLong, boEnr, book);
+                            UpdateDriver(n, e, p, driverLat, driverLong, boEnr, book);
                             //i assume i include this; ive not started trying to edit drivers details yet..
                             //enr = null;
                             //book = null;
@@ -472,7 +477,7 @@ public class UserInfo extends AppCompatActivity {
 //                            } else {
 //                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 //                            }
-                            UpdateAdmin(n, e, doLa, doLo, ad, ci, po);
+                            UpdateAdmin(n, e, p, doLa, doLo, ad, ci, po);
                         }
 
                     }
@@ -511,9 +516,9 @@ public class UserInfo extends AppCompatActivity {
 //    }
 
     //poor name
-    private void UpdateCustomer(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
+    private void UpdateCustomer(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Customer cus = new Customer(name, email, latitude, longitude, address, city, postcode);
+        Customer cus = new Customer(name, email, phoneNumber, latitude, longitude, address, city, postcode);
 
         //without this, the id drops off the child in firebase
         cus.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -529,10 +534,10 @@ public class UserInfo extends AppCompatActivity {
     }
 
     //poor name
-    private void UpdateDriver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
+    private void UpdateDriver(String name, String email, String phoneNumber, double latitude, double longitude, boolean enroute, String bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver dri = new Driver(name, email, latitude, longitude, enroute, bookable);
+        Driver dri = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable);
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
@@ -546,9 +551,9 @@ public class UserInfo extends AppCompatActivity {
     }
 
     ////poor name
-    private void UpdateAdmin(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
+    private void UpdateAdmin(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Admin ad = new Admin(name, email, latitude, longitude, address, city, postcode);
+        Admin ad = new Admin(name, email, phoneNumber, latitude, longitude, address, city, postcode);
         //without this, the id drops off the child in firebase
         ad.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 

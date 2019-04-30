@@ -6,8 +6,8 @@ public class Admin extends Customer{
 
     }
 
-    public Admin(String name, String email, double latitude, double longitude, String address,String city, String postcode){
-        super(name, email, latitude, longitude, address, city, postcode);
+    public Admin(String name, String email, String phoneNumber, double latitude, double longitude, String address,String city, String postcode){
+        super(name, email, phoneNumber, latitude, longitude, address, city, postcode);
     }
 
 }

@@ -167,7 +167,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       if (chkDriver.isChecked()){
                                                                           checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
-                                                                          writeNewDriver(null, e, 0, 0, false, "available");
+                                                                          writeNewDriver(null, e, null, 0, 0, false, "available");
 
                                                                           Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
                                                                           startActivity(intent);
@@ -176,7 +176,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       if (chkAdmin.isChecked()){
                                                                           checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
-                                                                          writeNewAdmin(null, e, 0, 0, "place", null, null);
+                                                                          writeNewAdmin(null, e, null, 0, 0, "place", null, null);
 
                                                                           Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
                                                                           startActivity(intent);
@@ -186,7 +186,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                           checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
 //                                                                          writeNewCustomer(null, e, 0, 0, null);
-                                                                          writeNewCustomer(null, e, 0, 0, "place", null, null);
+                                                                          writeNewCustomer(null, e, null, 0, 0, "place", null, null);
 
                                                                           Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
                                                                           startActivity(intent);
@@ -298,9 +298,9 @@ public class LoginOrRegister extends AppCompatActivity {
 //
 //    }
 
-    private void writeNewCustomer(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
+    private void writeNewCustomer(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Customer customer = new Customer(name, email, latitude, longitude, address, city, postcode);
+        Customer customer = new Customer(name, email, phoneNumber, latitude, longitude, address, city, postcode);
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
@@ -314,10 +314,10 @@ public class LoginOrRegister extends AppCompatActivity {
 
     }
 
-    private void writeNewDriver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
+    private void writeNewDriver(String name, String email, String phoneNumber, double latitude, double longitude, boolean enroute, String bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver driver = new Driver(name, email, latitude, longitude, enroute, bookable);
+        Driver driver = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable);
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
@@ -330,9 +330,9 @@ public class LoginOrRegister extends AppCompatActivity {
 
     }
 
-    private void writeNewAdmin(String name, String email, double latitude, double longitude, String address, String city, String postcode) {
+    private void writeNewAdmin(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Admin admin = new Admin(name, email, latitude, longitude, address, city, postcode);
+        Admin admin = new Admin(name, email, phoneNumber, latitude, longitude, address, city, postcode);
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap

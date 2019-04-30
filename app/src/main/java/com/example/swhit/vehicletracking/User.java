@@ -31,6 +31,7 @@ public class User {
     public String id;
 
     public String name;
+    public String phoneNumber;
     public String email;
     public double latitude;
     public double longitude;
@@ -49,9 +50,10 @@ public class User {
 
 //https://www.geksforgeeks.org/inheritance-in-java/
     //leaving id out?
-    public User(String name, String email, double latitude, double longitude) {
+    public User(String name, String email, String phoneNumber, double latitude, double longitude) {
         this.name = name;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -70,6 +72,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public double getLatitude() {

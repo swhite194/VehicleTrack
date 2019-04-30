@@ -12,9 +12,9 @@ public class Customer extends User{
         //
     }
 //https://www.geeksforgeeks.org/inheritance-in-java/https://www.geeksforgeeks.org/inheritance-in-java/https://www.geeksforgeeks.org/inheritance-in-java/
-    public Customer(String name, String email, double latitude, double longitude, String address, String city, String postcode){
+    public Customer(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode){
         //is that fine, or needs this?
-        super(name, email, latitude, longitude);
+        super(name, email, phoneNumber, latitude, longitude);
         this.address = address;
         this.city = city;
         this.postcode = postcode;

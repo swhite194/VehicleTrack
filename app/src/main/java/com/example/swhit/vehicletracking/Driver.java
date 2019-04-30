@@ -10,8 +10,8 @@ public class Driver extends User {
     }
 
     //https://www.geeksforgeeks.org/inheritance-in-java/
-    public Driver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
-        super(name, email, latitude, longitude);
+    public Driver(String name, String email, String phoneNumber, double latitude, double longitude, boolean enroute, String bookable) {
+        super(name, email, phoneNumber, latitude, longitude);
         this.enroute = enroute;
         this.bookable = bookable;
     }

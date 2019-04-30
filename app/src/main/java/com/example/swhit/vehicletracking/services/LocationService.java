@@ -89,7 +89,7 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(getApplicationContext(), "GO", Toast.LENGTH_SHORT).show();
         getLocation();
-        updateOrder();
+//        updateOrder();
         return START_NOT_STICKY;
 
     }
@@ -229,7 +229,7 @@ public class LocationService extends Service {
 //            }
 //        });
 //    }
-
+//--------------------------------------------------------------------------------------------------
 
 //    private void updateOrder() {
 //
@@ -363,10 +363,10 @@ public class LocationService extends Service {
 ////            }
 ////        });
 //    }
-
-    private void checkDistance{
-
-    }
+//-------------------------------------------------------------------------------------------------
+//    private void checkDistance{
+//
+//    }
 //
 //    private void updateOrder(){
 //        orders.addValueEventListener(new ValueEventListener() {
@@ -507,21 +507,21 @@ public class LocationService extends Service {
 //
 //
 //    }
-    private void UpdateDriver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
-
-        //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver dri = new Driver(name, email, latitude, longitude, enroute, bookable);
-
-        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
-        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
-        //without this, the id drops off the child in firebase
-//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        dri.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        //is this needed?
-        myRef.child("users").child("Drivers").child(id).setValue(dri);
-
-
-    }
+//    private void UpdateDriver(String name, String email, double latitude, double longitude, boolean enroute, String bookable) {
+//
+//        //this shouldnt be here because its not really making use of it (atleast not setter/getter)
+//        Driver dri = new Driver(name, email, latitude, longitude, enroute, bookable);
+//
+//        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+//        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+//        //without this, the id drops off the child in firebase
+////        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        dri.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        //is this needed?
+//        myRef.child("users").child("Drivers").child(id).setValue(dri);
+//
+//
+//    }
 
 }
 
