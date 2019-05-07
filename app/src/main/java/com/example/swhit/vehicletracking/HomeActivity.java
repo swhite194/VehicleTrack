@@ -493,6 +493,7 @@ public class HomeActivity extends AppCompatActivity {
     private void informDriverWhenToLeave() {
         //https://www.youtube.com/watch?v=Z28s39brZJM
         System.out.println("Running inform driver method");
+        //why have i called it customerUser
         phoneNumber = customerUser.getPhoneNumber();
         message = "Yeet";
         SmsManager smsManager = SmsManager.getDefault();

@@ -99,6 +99,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+    LatLng warehouse = new LatLng(54.58, -5.93);
+
 
 //    customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 //    driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -297,6 +299,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         /////////THIS WORKS FOR SHOWING EVERYONE BUT ITS SUPER INEFFICIENT
         //ITD BE BEST IMPLEMENTING THIS INTO THE CHILD LISTENER
+        uMarker = mMap.addMarker(new MarkerOptions().position(warehouse).title("warehouse").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
 
         mMap.setOnMarkerClickListener(this);
 
