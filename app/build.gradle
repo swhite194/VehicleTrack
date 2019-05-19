@@ -5,7 +5,8 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.swhit.vehicletracking"
-        minSdkVersion 15
+        //changed this to 16 because current version of firebaseui wouldnt work if lower than 16
+        minSdkVersion 16
         targetSdkVersion 28
         multiDexEnabled true
         versionCode 1
@@ -36,6 +37,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.1.0'
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
+
+    //https://www.youtube.com/watch?v=PYYguWAzX_o to know how to actually figure out how id incorporate
+    //firebaselistadapter
+    implementation 'com.firebaseui:firebase-ui-database:4.3.2'
 
     //www.northborder-software.com/location_provider_client_1.html
     implementation 'com.google.android.gms:play-services-location:16.0.0'

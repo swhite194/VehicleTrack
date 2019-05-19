@@ -1,109 +1,250 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/TitleSection"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="GPS Delivery Tracking System"
+                android:textSize="28dp" />
+
+        </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="402dp"
-        android:layout_height="60dp"
+    </LinearLayout>
 
-        android:gravity="center"
-        android:text="GPS Delivery Tracking System"
-        android:textSize="28dp"
-        tools:layout_editor_absoluteX="5dp"
-        tools:layout_editor_absoluteY="102dp" />
 
-    <Button
-        android:id="@+id/bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open Map"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="198dp" />
+    <LinearLayout
+        android:id="@+id/AllUsersSection"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnDel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete Locations from Firebase"
-        tools:layout_editor_absoluteX="74dp"
-        tools:layout_editor_absoluteY="406dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnLoginPage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log In/Register"
-        tools:layout_editor_absoluteX="136dp"
-        tools:layout_editor_absoluteY="527dp" />
+            <Button
+                android:id="@+id/btnLoginPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Login / Register" />
 
-    <Button
-        android:id="@+id/btnUserInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User Info"
-        tools:layout_editor_absoluteX="156dp"
-        tools:layout_editor_absoluteY="350dp" />
+            <Button
+                android:id="@+id/btnOpenMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Open Map" />
 
-    <Button
-        android:id="@+id/btnUserRecord"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Go to User's Record"
-        tools:layout_editor_absoluteX="128dp"
-        tools:layout_editor_absoluteY="467dp" />
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Logout" />
 
-    <Button
-        android:id="@+id/btnOrderPage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Place an Order"
-        tools:layout_editor_absoluteX="128dp"
-        tools:layout_editor_absoluteY="262dp" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btnTestPage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test Page"
-        tools:layout_editor_absoluteX="288dp"
-        tools:layout_editor_absoluteY="23dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnTestPage2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test Page 2"
-        tools:layout_editor_absoluteX="165dp"
-        tools:layout_editor_absoluteY="23dp" />
+            <TextView
+                android:id="@+id/textView29"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/btnRunService"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Run Service"
-        tools:layout_editor_absoluteX="27dp"
-        tools:layout_editor_absoluteY="655dp" />
+            <Button
+                android:id="@+id/btnUserInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit Your Profile" />
 
-    <Button
-        android:id="@+id/btnStopService"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Service"
-        tools:layout_editor_absoluteX="257dp"
-        tools:layout_editor_absoluteY="655dp" />
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btnEnroute"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Travel to User"
-        tools:layout_editor_absoluteX="136dp"
-        tools:layout_editor_absoluteY="583dp" />
 
-</android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/CurrentCustomersOrdersSection"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView35"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnOrderPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Place an Order" />
+
+            <TextView
+                android:id="@+id/textView36"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView37"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnYourOrders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="See Your Orders" />
+
+            <TextView
+                android:id="@+id/textView38"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/DriverStatusSection"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnRunService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Start Tracking Location" />
+
+            <Button
+                android:id="@+id/btnStopService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Stop Tracking Location" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnEnroute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Travel to User" />
+
+            <Button
+                android:id="@+id/btnParcelDelivered"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Parcel Delivered" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/AdminSection"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnSearchUserId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit Other User's Profile" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

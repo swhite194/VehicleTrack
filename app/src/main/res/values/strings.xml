@@ -16,4 +16,5 @@
     </string>
     <string name="title_activity_login_register">LoginRegisterActivity</string>
     <string name="title_activity_login_or_register">LoginOrRegister</string>
+    <string name="title_activity_search_for_user_info">SearchForUserInfo</string>
 </resources>

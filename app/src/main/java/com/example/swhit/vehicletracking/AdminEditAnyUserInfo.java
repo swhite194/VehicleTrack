@@ -23,7 +23,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.text.TextUtils;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,14 +44,12 @@ import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Locale;
 
-public class UserInfo extends AppCompatActivity {
-
+public class AdminEditAnyUserInfo extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
     DatabaseReference myRef = database.getReference("Location");
 
 
-    //    EditText uname, uemail, uphonenumber, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uBookable;
     EditText uname, uemail, uphonenumber, uaddress, ucity, upostcode;
     TextView ulatitude, ulongitude, uEnroute, uBookable;
     EditText utest;
@@ -60,35 +57,45 @@ public class UserInfo extends AppCompatActivity {
 
     LinearLayout userContactDetailsSection, custAndAdminAddressSection, userLatLongSection, driverStatusSection, submitButtonSection;
 
-//    FirebaseAuth firebaseAuth;
-
     Customer customer = new Customer();
     Driver driver = new Driver();
     Admin admin = new Admin();
 
     DatabaseReference currentUser = myRef.child("users");
 
+//    Bundle intentExtras = getIntent().getExtras();
+
+    String id;
+
 //    DatabaseReference currentCustomer = myRef.child("users").child("Customers").child(customer.id);
 //    DatabaseReference currentDriver = myRef.child("users").child("Drivers").child(driver.id);
 
-    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+//https://stackoverflow.com/questions/2091465/how-do-i-pass-data-between-activities-in-android-application - THUNDER? used?
+//https://stackoverflow.com/questions/6707900/pass-a-string-from-one-activity-to-another-activity-in-android
+
+
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info);
-
+        setContentView(R.layout.activity_admin_edit_any_user_info);
 
         //        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 
+        //https://www.reddit.com/r/androiddev/comments/25hs6d/intent_getextras_method_returning_null/
+        id = getIntent().getExtras().getString("userId");
+        Toast.makeText(getApplicationContext(), "USER ID : " + id, Toast.LENGTH_LONG).show();
 
-//
 //
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //why does it ask for these to be final?
+
+
         userContactDetailsSection = (LinearLayout) findViewById(R.id.UserContactDetailsSection);
         custAndAdminAddressSection = (LinearLayout) findViewById(R.id.CustAndAdminAddressSection);
         userLatLongSection = (LinearLayout) findViewById(R.id.UserLatLongSection);
@@ -542,7 +549,7 @@ public class UserInfo extends AppCompatActivity {
 
                 //not making use of getters to plug those values in.. instead im parsing in the text fields? is that all i can do?
 
-                Intent intent = new Intent(UserInfo.this, HomeActivity.class);
+                Intent intent = new Intent(AdminEditAnyUserInfo.this, HomeActivity.class);
                 startActivity(intent);
 
             }
@@ -579,7 +586,7 @@ public class UserInfo extends AppCompatActivity {
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //is this needed?
-        myRef.child("users").child("Customers").child(id).setValue(cus);
+        myRef.child("users").child("Customers").child(customer.id).setValue(cus);
 
 
     }
@@ -655,4 +662,3 @@ public class UserInfo extends AppCompatActivity {
 //        return p1;
 //
 //    }
-

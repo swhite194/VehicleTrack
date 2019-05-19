@@ -94,7 +94,7 @@ public class PlaceOrder extends AppCompatActivity {
     double posTime;
     double negTime;
 
-    //equivalent of 30 miles/hr
+    //equivalent of 30 miles/hr which we assume
     double metresPerMinute = 804.67;
 
     double timeToTravelToCustomerInMinutes;
@@ -116,6 +116,8 @@ public class PlaceOrder extends AppCompatActivity {
     String driverPhoneNumber;
     String messageToDriver;
 
+    String requestedTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +128,8 @@ public class PlaceOrder extends AppCompatActivity {
         //calling it custID here instead of customer.id (the problem lies more in UserInfo's use of saying Customer customer TWICE.. THAT needs to be fixed.. this wasn't such a big deal - check fb messenger)
         //this is what id prefer for UserInfo.
 
-        warehouse.setLatitude(54.58);
-        warehouse.setLongitude(-5.93);
+        warehouse.setLatitude(54.79);
+        warehouse.setLongitude(-7.45);
 
 //        utime = findViewById(R.id.txtDeliveryTime);
 
@@ -187,7 +189,8 @@ public class PlaceOrder extends AppCompatActivity {
                 System.out.println("Time requested in minutes: " + customerPickedTimeInMinutes);
                 System.out.println("-----------------------------------------");
 
-
+                //weird place to go maybe the rest needs fixed up; but either way this is used in placeorder method and in the text msg method
+                requestedTime = String.format(Locale.UK, "%d:%02d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE));
 
                 //WHAT THE CURRENT TIME IS
                 currentHourInMinutes = currentTime.get(Calendar.HOUR_OF_DAY) * 60;
@@ -635,7 +638,8 @@ public class PlaceOrder extends AppCompatActivity {
             public void onClick(View v) {
                 if (checkPermission(Manifest.permission.SEND_SMS)) {
                     if (available) {
-                        writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), aDriver.isEnroute(), item_id, item_quantity);
+                        //just dealing with 24 hr single days atm.. not Days.
+                        writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), aDriver.isEnroute(), item_id, item_quantity, requestedTime, null);
 //                aDriver.setBookable(false);
 
                         notifyDriverOnOrderPlaced();
@@ -667,10 +671,10 @@ public class PlaceOrder extends AppCompatActivity {
 
 
 
-    private void writeNewOrder(String customerid, String customername, String customeremail, String customeraddress, String customercity, String customerpostcode, String driverid, String drivername, boolean driverEnroute, String itemid, int itemquantity) {
+    private void writeNewOrder(String customerid, String customername, String customeremail, String customeraddress, String customercity, String customerpostcode, String driverid, String drivername, boolean driverEnroute, String itemid, int itemquantity, String deliveryRequestedForTime, String deliveredTime) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        order = new Order(customerid, customername, customeremail, customeraddress, customercity, customerpostcode, driverid, drivername, driverEnroute,  itemid, itemquantity);
+        order = new Order(customerid, customername, customeremail, customeraddress, customercity, customerpostcode, driverid, drivername, driverEnroute,  itemid, itemquantity, deliveryRequestedForTime, deliveredTime);
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
@@ -769,7 +773,8 @@ public class PlaceOrder extends AppCompatActivity {
 
 
 //
-        String requestedTime = String.format(Locale.UK, "%d:%02d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE));
+        //already been said in placeorder
+        //requestedTime = String.format(Locale.UK, "%d:%02d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE));
 
 
         String currentTimeCal = String.format(Locale.UK, "%d.%02d", currentTime.get(Calendar.HOUR_OF_DAY), currentTime.get(Calendar.MINUTE));

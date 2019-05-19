@@ -223,6 +223,8 @@ public class LoginOrRegister extends AppCompatActivity {
                 stopService(intent);
 
 
+//                FirebaseAuth.getInstance().signOut();
+
 //                currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
 //                    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 //                    @Override

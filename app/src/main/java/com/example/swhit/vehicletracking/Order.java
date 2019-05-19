@@ -1,5 +1,7 @@
 package com.example.swhit.vehicletracking;
 
+import java.util.Date;
+
 public class Order {
 
     public String id;
@@ -18,13 +20,16 @@ public class Order {
     public String itemID;
     public int itemQuantity;
 
+    public String deliveryRequestedForTime;
+    public String deliveredTime;
+
 
 
     public Order(){
         //
     }
 
-    public Order(String customerID, String customerName, String customerEmail, String customerAddress, String customerCity, String customerPostcode, String driverID, String driverName, boolean driverEnroute, String itemID, int itemQuantity) {
+    public Order(String customerID, String customerName, String customerEmail, String customerAddress, String customerCity, String customerPostcode, String driverID, String driverName, boolean driverEnroute, String itemID, int itemQuantity, String deliveryRequestedForTime, String deliveredTime) {
         this.customerID = customerID;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
@@ -36,6 +41,9 @@ public class Order {
         this.driverEnroute = driverEnroute;
         this.itemID = itemID;
         this.itemQuantity = itemQuantity;
+
+        this.deliveryRequestedForTime = deliveryRequestedForTime;
+        this.deliveredTime = deliveredTime;
     }
 
 
@@ -128,6 +136,22 @@ public class Order {
         this.itemQuantity = itemQuantity;
     }
 
+    public String getDeliveryRequestedForTime() {
+        return deliveryRequestedForTime;
+    }
+
+    public void setDeliveryRequestedForTime(String deliveryRequestedForTime) {
+        this.deliveryRequestedForTime = deliveryRequestedForTime;
+    }
+
+    public String getDeliveredTime() {
+        return deliveredTime;
+    }
+
+    public void setDeliveredTime(String deliveredTime) {
+        this.deliveredTime = deliveredTime;
+    }
+
     public String getId() {
         return id;
     }
@@ -135,6 +159,7 @@ public class Order {
     public void setId(String id) {
         this.id = id;
     }
+
 
 
 }

@@ -43,6 +43,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
 
 
+
     DatabaseReference myRef = database.getReference("Location");
 
     //dno if it makes a diff, but going by https://stackoverflow.com/questions/48528836/i-want-to-display-all-markers-of-the-locations-for-all-the-users-in-the-firebase?noredirect=1&lq=1
@@ -58,6 +59,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     DatabaseReference orderRef = myRef.child("orders");
 
+
+
     //https://stackoverflow.com/questions/37886301/tag-has-private-access-in-android-support-v4-app-fragmentactivity
     private static final String TAG = "GoogleMapsActivity";
 
@@ -68,6 +71,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     double longitude;
 
     String lat;
+
 
 
     Button btnTest;
@@ -398,6 +402,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                     orderRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//MIGHT BE SIMILAR CODE TO ENROUTE CHECKER
 
                         }
 
@@ -730,6 +735,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         //https://stackoverflow.com/questions/32886546/how-to-get-all-child-list-from-firebase-android
         //COULD HELP with stuff idk.
+
+
 
         locationRef.addListenerForSingleValueEvent(new
 

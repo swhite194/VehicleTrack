@@ -24,7 +24,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomeScreenAdminVersion"></activity>
+        <activity android:name=".EditCurrentOrders"></activity>
+        <activity android:name=".SearchForUser" />
+        <activity android:name=".AdminEditAnyUserInfo" />
+        <activity android:name=".HomeScreenAdminVersion" />
         <activity android:name=".ReferenceWork2" />
         <activity android:name=".DisplayUserRecord" />
         <activity android:name=".UserInfo" />
@@ -38,7 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".HomeActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
