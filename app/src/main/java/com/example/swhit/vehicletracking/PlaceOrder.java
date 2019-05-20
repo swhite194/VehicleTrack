@@ -1,8 +1,6 @@
 package com.example.swhit.vehicletracking;
 
 import android.Manifest;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -13,12 +11,10 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -116,7 +114,13 @@ public class PlaceOrder extends AppCompatActivity {
     String driverPhoneNumber;
     String messageToDriver;
 
-    String requestedTime;
+    String requestedDeliveryDate;
+    String requestedDeliveryTime;
+
+
+    //https://stackoverflow.com/questions/8745297/want-current-date-and-time-in-dd-mm-yyyy-hhmmss-ss-format
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
 
 
     @Override
@@ -142,7 +146,7 @@ public class PlaceOrder extends AppCompatActivity {
 
 
 
-        place_order = findViewById(R.id.btnOrder);
+        place_order = findViewById(R.id.btnUpdate);
 
         huawei = findViewById(R.id.imgbtnHuawei);
         pixel = findViewById(R.id.imgbtnPixel);
@@ -190,7 +194,12 @@ public class PlaceOrder extends AppCompatActivity {
                 System.out.println("-----------------------------------------");
 
                 //weird place to go maybe the rest needs fixed up; but either way this is used in placeorder method and in the text msg method
-                requestedTime = String.format(Locale.UK, "%d:%02d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE));
+                requestedDeliveryTime = String.format(Locale.UK, "%d:%02d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE));
+
+                //https://stackoverflow.com/questions/8745297/want-current-date-and-time-in-dd-mm-yyyy-hhmmss-ss-format
+                //it's called getTime, and will go to our format of dd/mm/yyyy
+                //probably a better version than above.
+                requestedDeliveryDate = dateFormat.format(time.getTime());
 
                 //WHAT THE CURRENT TIME IS
                 currentHourInMinutes = currentTime.get(Calendar.HOUR_OF_DAY) * 60;
@@ -216,6 +225,7 @@ public class PlaceOrder extends AppCompatActivity {
                 posTime = 1000000000;
                 negTime = -1000000000;
 
+                //what is this?
                 myRef.child("time").setValue(time.get(Calendar.YEAR));
 
                 drivers.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -292,7 +302,9 @@ public class PlaceOrder extends AppCompatActivity {
 //                                        System.out.println("Positive Time" + posTime);
                                         positiveTime = true;
                                         key = snapshot.getKey();
+                                        System.out.println("KEY: " + key);
                                         System.out.println("---------------------------------------------");
+                                        //bad use, driver isn't really assigned..
                                         System.out.println("Driver ID " + snapshot.child("id").getValue() + "Found a positive time");
                                         System.out.println("Customer Requests Delivery For this time: " + customerPickedTimeInMinutes);
                                         System.out.println("Duration until that time: " + durationUntilRequestedTimeInMinutes);
@@ -310,6 +322,7 @@ public class PlaceOrder extends AppCompatActivity {
 //                                        System.out.println("Negative Time" + negTime);
                                         key1 = snapshot.getKey();
                                         System.out.println("---------------------------------------------");
+                                        //^
                                         System.out.println("Driver ID " + snapshot.child("id").getValue() + "Found a negative time");
                                         System.out.println("Customer Requests Delivery For this time: " + customerPickedTimeInMinutes);
                                         System.out.println("Duration until that time: " + durationUntilRequestedTimeInMinutes);
@@ -346,7 +359,14 @@ public class PlaceOrder extends AppCompatActivity {
                                         //but it works. so whatever.
                                         //key stuff from other activities, stackoverflow was source(probably mainly idea from Google Maps activity)
                                         aDriver = dataSnapshot.child(key).getValue(Driver.class);
+
+                                        System.out.println("1 " + dataSnapshot.child(key).child("email").getValue());
+                                        System.out.println("2 " + dataSnapshot.child(key).child("email").getValue());
+                                        System.out.println("1 " + dataSnapshot.child(key).child("email").getValue());
+
+                                        System.out.println("THE KEY IS " + key);
                                         System.out.println("Your driver" + aDriver.getId());
+
 
 //                                        available = true;
                                         Toast.makeText(getApplicationContext(), "This time is okay!", Toast.LENGTH_LONG).show();
@@ -429,6 +449,10 @@ public class PlaceOrder extends AppCompatActivity {
             }
         });
 
+
+
+
+
         //for old times
 //        oldTime.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY));
 //        oldTime.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
@@ -452,6 +476,7 @@ public class PlaceOrder extends AppCompatActivity {
                 if(dataSnapshot.hasChild(custID)) {
                     //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
                     aCustomer = dataSnapshot.child(custID).getValue(Customer.class);
+
 
                     //is it bad that this is different than how driver's done?
                     customerLoc.setLatitude(aCustomer.getLatitude());
@@ -639,13 +664,15 @@ public class PlaceOrder extends AppCompatActivity {
                 if (checkPermission(Manifest.permission.SEND_SMS)) {
                     if (available) {
                         //just dealing with 24 hr single days atm.. not Days.
-                        writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), aDriver.isEnroute(), item_id, item_quantity, requestedTime, null);
+                        writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), aDriver.isEnroute(), item_id, item_quantity, requestedDeliveryDate, requestedDeliveryTime, null);
 //                aDriver.setBookable(false);
 
                         notifyDriverOnOrderPlaced();
 
                         aDriver.setBookable("unavailable");
+                        //changing availability to unavailable
                         myRef.child("users").child("Drivers").child(aDriver.getId()).setValue(aDriver);
+
 
 //                    custLatLng = (aCustomer.getLatitude(), aCustomer.getLongitude());
 
@@ -671,10 +698,10 @@ public class PlaceOrder extends AppCompatActivity {
 
 
 
-    private void writeNewOrder(String customerid, String customername, String customeremail, String customeraddress, String customercity, String customerpostcode, String driverid, String drivername, boolean driverEnroute, String itemid, int itemquantity, String deliveryRequestedForTime, String deliveredTime) {
+    private void writeNewOrder(String customerid, String customername, String customeremail, String customeraddress, String customercity, String customerpostcode, String driverid, String drivername, boolean driverEnroute, String itemid, int itemquantity, String requestedDeliveryDate, String deliveryRequestedForTime, String deliveredTime) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        order = new Order(customerid, customername, customeremail, customeraddress, customercity, customerpostcode, driverid, drivername, driverEnroute,  itemid, itemquantity, deliveryRequestedForTime, deliveredTime);
+        order = new Order(customerid, customername, customeremail, customeraddress, customercity, customerpostcode, driverid, drivername, driverEnroute,  itemid, itemquantity, requestedDeliveryDate, deliveryRequestedForTime, deliveredTime);
 
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
@@ -682,13 +709,19 @@ public class PlaceOrder extends AppCompatActivity {
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
+        //way of figuring out the key for this order, and adding it to the database in one go
 
+        //should really be implemented as ID in classes.
+
+        String pushID = orderRef.push().getKey();
+        //giving class this id
+        order.setId(pushID);
 
         //is this needed?
         //is push the best option?
         //id still like to categorise them by CUSTOMER id WITHIN FIREBASE ITSELF, for ease of access instead of sorting
         //SHOULD i consider that if their address changes.. should it affect the orders table in Firebase? (considering that archived might be diff)
-        orderRef.push().setValue(order);
+        orderRef.child(pushID).setValue(order);
 
 
     }
@@ -810,7 +843,7 @@ public class PlaceOrder extends AppCompatActivity {
 
 
         messageToDriver = "Current time + " + currentTimeCal + "\n" + " Hi driver " + aDriver.getId() +"\n" + ". An order has been placed for " + order.getItemQuantity() + " " +
-                order.getItemID() + " at " + requestedTime +"\n" + ". The address" +
+                order.getItemID() + " at " + requestedDeliveryTime +"\n" + ". The address" +
                 "is " + aCustomer.getAddress() + ", " + aCustomer.getCity() + ", " + aCustomer.getPostcode() +"\n" +
                 ". You have " + ((driverLoc.distanceTo(warehouse)/metresPerMinute) + posTime) + " minutes to be at the warehouse aka "
                 + amountOfTimeToGetToWarehouse + " in hours and minutes\n " +

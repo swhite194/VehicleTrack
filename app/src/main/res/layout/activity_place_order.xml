@@ -7,7 +7,7 @@
     tools:context=".PlaceOrder">
 
     <Button
-        android:id="@+id/btnOrder"
+        android:id="@+id/btnUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="140dp"
@@ -33,7 +33,7 @@
         android:layout_marginTop="23dp"
         android:padding="50dp"
         android:timePickerMode="clock"
-        app:layout_constraintBottom_toTopOf="@+id/btnOrder"
+        app:layout_constraintBottom_toTopOf="@+id/btnUpdate"
         app:layout_constraintTop_toBottomOf="@+id/imgbtnHuawei"
         tools:layout_editor_absoluteX="0dp" />
 

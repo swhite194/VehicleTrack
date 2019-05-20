@@ -569,9 +569,22 @@ public class UserInfo extends AppCompatActivity {
     //poor name
     private void UpdateCustomer(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Customer cus = new Customer(name, email, phoneNumber, latitude, longitude, address, city, postcode);
+//        Customer cus = new Customer(name, email, phoneNumber, latitude, longitude, address, city, postcode);
+
+        customer.setName(name);
+        customer.setEmail(email);
+        customer.setPhoneNumber(phoneNumber);
+        customer.setLatitude(latitude);
+        customer.setLongitude(longitude);
+        customer.setAddress(address);
+        customer.setCity(city);
+        customer.setPostcode(postcode);
+
+        myRef.child("users").child("Customers").child(id).setValue(customer);
 
         //without this, the id drops off the child in firebase
+        //this isn't the "same" is the String declared at start.
+        //".id" here is recognised from User class.
 //        cus.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
@@ -579,7 +592,7 @@ public class UserInfo extends AppCompatActivity {
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //is this needed?
-        myRef.child("users").child("Customers").child(id).setValue(cus);
+//        myRef.child("users").child("Customers").child(id).setValue(cus);
 
 
     }
@@ -588,7 +601,22 @@ public class UserInfo extends AppCompatActivity {
     private void UpdateDriver(String name, String email, String phoneNumber, double latitude, double longitude, boolean enroute, String bookable) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver dri = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable);
+//        Driver dri = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable);
+
+        driver.setName(name);
+        driver.setEmail(email);
+        driver.setPhoneNumber(phoneNumber);
+        driver.setLatitude(latitude);
+        driver.setLongitude(longitude);
+        driver.setEnroute(enroute);
+        driver.setBookable(bookable);
+
+        myRef.child("users").child("Drivers").child(id).setValue(driver);
+
+        //without this, the id drops off the child in firebase
+        //this isn't the "same" is the String declared at start.
+        //".id" here is recognised from User class.
+//        dri.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
@@ -596,7 +624,7 @@ public class UserInfo extends AppCompatActivity {
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 //        dri.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         //is this needed?
-        myRef.child("users").child("Drivers").child(id).setValue(dri);
+
 
 
     }
@@ -604,16 +632,28 @@ public class UserInfo extends AppCompatActivity {
     ////poor name
     private void UpdateAdmin(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Admin ad = new Admin(name, email, phoneNumber, latitude, longitude, address, city, postcode);
-        //without this, the id drops off the child in firebase
-//        ad.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        Admin ad = new Admin(name, email, phoneNumber, latitude, longitude, address, city, postcode);
+//        //without this, the id drops off the child in firebase
+////        ad.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+//        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+////        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//        //is this needed?
+//        myRef.child("users").child("Admins").child(id).setValue(ad);
 
-        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
-        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
-//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        //is this needed?
-        myRef.child("users").child("Admins").child(id).setValue(ad);
+        admin.setName(name);
+        admin.setEmail(email);
+        admin.setPhoneNumber(phoneNumber);
+        admin.setLatitude(latitude);
+        admin.setLongitude(longitude);
+        admin.setAddress(address);
+        admin.setCity(city);
+        admin.setPostcode(postcode);
+
+        myRef.child("users").child("Admins").child(id).setValue(admin);
 
 
     }

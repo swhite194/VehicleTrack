@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".EditOrder">
+
+    <Button
+        android:id="@+id/btnUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="140dp"
+        android:layout_marginRight="140dp"
+        android:layout_marginBottom="60dp"
+        android:text="Update Order"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+<TextView
+    android:id="@+id/textView6"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Delivery Time"
+    tools:layout_editor_absoluteX="53dp"
+    tools:layout_editor_absoluteY="166dp" />
+
+<TimePicker
+    android:id="@+id/simpleTimePicker"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="23dp"
+    android:padding="50dp"
+    android:timePickerMode="clock"
+    app:layout_constraintBottom_toTopOf="@+id/btnUpdate"
+    app:layout_constraintTop_toBottomOf="@+id/imgbtnHuawei"
+    tools:layout_editor_absoluteX="0dp" />
+
+<ImageButton
+    android:id="@+id/imgbtnHuawei"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="44dp"
+    android:layout_marginEnd="14dp"
+    android:layout_marginRight="14dp"
+    android:layout_marginBottom="170dp"
+    android:scaleType="fitXY"
+    app:layout_constraintBottom_toTopOf="@+id/textView6"
+    app:layout_constraintEnd_toStartOf="@+id/imgbtnPixel"
+    app:layout_constraintHorizontal_bias="0.518"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.189"
+    app:srcCompat="@mipmap/huawei"
+    tools:srcCompat="@mipmap/huawei" />
+
+<ImageButton
+    android:id="@+id/imgbtnPixel"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="164dp"
+    android:layout_marginRight="164dp"
+    android:scaleType="fitXY"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@mipmap/pixel"
+    tools:srcCompat="@mipmap/pixel" />
+
+<ImageButton
+    android:id="@+id/imgbtnIphone"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="48dp"
+    android:layout_marginRight="48dp"
+    android:scaleType="fitXY"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@mipmap/iphone"
+    tools:srcCompat="@mipmap/iphone" />
+
+<TextView
+    android:id="@+id/textView14"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="TextView"
+    tools:layout_editor_absoluteX="220dp"
+    tools:layout_editor_absoluteY="483dp" />
+
+</android.support.constraint.ConstraintLayout>

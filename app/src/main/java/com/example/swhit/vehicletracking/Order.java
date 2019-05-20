@@ -20,6 +20,7 @@ public class Order {
     public String itemID;
     public int itemQuantity;
 
+    public String deliveryRequestedForDate;
     public String deliveryRequestedForTime;
     public String deliveredTime;
 
@@ -29,7 +30,7 @@ public class Order {
         //
     }
 
-    public Order(String customerID, String customerName, String customerEmail, String customerAddress, String customerCity, String customerPostcode, String driverID, String driverName, boolean driverEnroute, String itemID, int itemQuantity, String deliveryRequestedForTime, String deliveredTime) {
+    public Order(String customerID, String customerName, String customerEmail, String customerAddress, String customerCity, String customerPostcode, String driverID, String driverName, boolean driverEnroute, String itemID, int itemQuantity, String deliveryRequestedForDate, String deliveryRequestedForTime, String deliveredTime) {
         this.customerID = customerID;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
@@ -42,6 +43,7 @@ public class Order {
         this.itemID = itemID;
         this.itemQuantity = itemQuantity;
 
+        this.deliveryRequestedForDate = deliveryRequestedForDate;
         this.deliveryRequestedForTime = deliveryRequestedForTime;
         this.deliveredTime = deliveredTime;
     }
@@ -134,6 +136,14 @@ public class Order {
 
     public void setItemQuantity(int itemQuantity) {
         this.itemQuantity = itemQuantity;
+    }
+
+    public String getDeliveryRequestedForDate() {
+        return deliveryRequestedForDate;
+    }
+
+    public void setDeliveryRequestedForDate(String deliveryRequestedForDate) {
+        this.deliveryRequestedForDate = deliveryRequestedForDate;
     }
 
     public String getDeliveryRequestedForTime() {

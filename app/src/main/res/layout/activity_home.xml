@@ -141,24 +141,20 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView37"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
             <Button
-                android:id="@+id/btnYourOrders"
+                android:id="@+id/btnEditYourCurrentOrders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="See Your Orders" />
+                android:text="Edit Your Current Orders" />
 
-            <TextView
-                android:id="@+id/textView38"
+            <Button
+                android:id="@+id/btnSeeYourCompleteOrders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="See Your Complete Orders" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -240,6 +236,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Edit Other User's Profile" />
+
+            <Button
+                android:id="@+id/btnSearchCustomerCurrentOrders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Search Customer Current Orders" />
         </LinearLayout>
 
 

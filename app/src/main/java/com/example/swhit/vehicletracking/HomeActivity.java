@@ -1,7 +1,6 @@
 package com.example.swhit.vehicletracking;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -11,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -19,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.swhit.vehicletracking.services.LocationService;
-import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,10 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
-
-import java.sql.SQLOutput;
 
 public class HomeActivity extends AppCompatActivity {
 //https://developer.android.com/studio/write/layout-editor
@@ -57,7 +50,9 @@ public class HomeActivity extends AppCompatActivity {
 
     Button btnSearchUserId;
 
-    Button btnYourOrders;
+    Button btnEditYourCurrentOrders;
+
+    Button btnSearchCustomerCurrentOrders;
 
     Button logout;
 
@@ -126,7 +121,9 @@ public class HomeActivity extends AppCompatActivity {
 
         btnSearchUserId = (Button) findViewById(R.id.btnSearchUserId);
 
-        btnYourOrders = (Button) findViewById(R.id.btnYourOrders);
+        btnEditYourCurrentOrders = (Button) findViewById(R.id.btnEditYourCurrentOrders);
+
+        btnSearchCustomerCurrentOrders = (Button) findViewById(R.id.btnSearchCustomerCurrentOrders);
 
         logout = (Button) findViewById(R.id.btnLogout);
 
@@ -208,6 +205,9 @@ public class HomeActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, LoginOrRegister.class);
+                startActivity(intent);
+                //does this work
                 FirebaseAuth.getInstance().signOut();
             }
         });
@@ -279,10 +279,27 @@ public class HomeActivity extends AppCompatActivity {
 //            }
 //        });
 
-        btnYourOrders.setOnClickListener(new View.OnClickListener() {
+//        btnYourOrders.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(HomeActivity.this, CustomerOrders.class);
+//                startActivity(intent);
+//            }
+//        });
+
+        btnEditYourCurrentOrders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, EditCurrentOrders.class);
+                Intent intent = new Intent(HomeActivity.this, CustomerOrders.class);
+                startActivity(intent);
+            }
+        });
+
+
+        btnSearchCustomerCurrentOrders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, AdminEditCustomersCurrentOrders.class);
                 startActivity(intent);
             }
         });

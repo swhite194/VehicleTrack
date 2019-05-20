@@ -51,6 +51,8 @@ public class LoginOrRegister extends AppCompatActivity {
 
     boolean checked = false;
 
+    String id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -304,14 +306,15 @@ public class LoginOrRegister extends AppCompatActivity {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
         Customer customer = new Customer(name, email, phoneNumber, latitude, longitude, address, city, postcode);
 
+        id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        customer.setId(id);
 
         //is this needed?
-        myRef.child("users").child("Customers").child(customer.id).setValue(customer);
+        myRef.child("users").child("Customers").child(id).setValue(customer);
 
 
     }
@@ -320,14 +323,14 @@ public class LoginOrRegister extends AppCompatActivity {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
         Driver driver = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable);
-
+        id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        driver.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        driver.setId(id);
 
         //is this needed?
-        myRef.child("users").child("Drivers").child(driver.id).setValue(driver);
+        myRef.child("users").child("Drivers").child(id).setValue(driver);
 
 
     }
@@ -336,14 +339,16 @@ public class LoginOrRegister extends AppCompatActivity {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
         Admin admin = new Admin(name, email, phoneNumber, latitude, longitude, address, city, postcode);
 
+        id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        admin.setId(id);
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        admin.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        admin.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //is this needed?
-        myRef.child("users").child("Admins").child(admin.id).setValue(admin);
+        myRef.child("users").child("Admins").child(id).setValue(admin);
 
 
     }

@@ -65,7 +65,7 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
 
 //    Bundle intentExtras = getIntent().getExtras();
 
-    String id;
+    String idFromSearch;
 
 //    DatabaseReference currentCustomer = myRef.child("users").child("Customers").child(customer.id);
 //    DatabaseReference currentDriver = myRef.child("users").child("Drivers").child(driver.id);
@@ -87,8 +87,8 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
         //        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 
         //https://www.reddit.com/r/androiddev/comments/25hs6d/intent_getextras_method_returning_null/
-        id = getIntent().getExtras().getString("userId");
-        Toast.makeText(getApplicationContext(), "USER ID : " + id, Toast.LENGTH_LONG).show();
+        idFromSearch = getIntent().getExtras().getString("userId");
+        Toast.makeText(getApplicationContext(), "USER ID : " + idFromSearch, Toast.LENGTH_LONG).show();
 
 //
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -214,12 +214,12 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
                 //https://stackoverflow.com/questions/40066901/check-if-child-exists-in-firebase
                 //im scared of looking like a cheat
 
-                if (dataSnapshot.child("Customers").hasChild(id)) {
+                if (dataSnapshot.child("Customers").hasChild(idFromSearch)) {
 
                     driverStatusSection.setVisibility(View.GONE);
 
                     //is this fruitless? whats the point in transforming it into a class? i dont use it anywhere else.
-                    customer = dataSnapshot.child("Customers").child(id).getValue(Customer.class);
+                    customer = dataSnapshot.child("Customers").child(idFromSearch).getValue(Customer.class);
 
 
                     //shouldn't need to repeat this should I
@@ -233,6 +233,8 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
                     upostcode.setText(customer.getPostcode());
                     ulatitude.setText(String.valueOf(customer.getLatitude()));
                     ulongitude.setText(String.valueOf(customer.getLongitude()));
+
+
 
 //                    utest.setText(getLocationFromAddress(context, aCustomer.getAddress()));
 
@@ -270,13 +272,13 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
 
 
                 }
-                if (dataSnapshot.child("Drivers").hasChild(id)) {
+                if (dataSnapshot.child("Drivers").hasChild(idFromSearch)) {
 
                     custAndAdminAddressSection.setVisibility(View.GONE);
 
                     //did i kind of use this?
                     //https://stackoverflow.com/questions/45173499/retrieve-and-display-firebase-data-in-edittext-and-edit-content-save-again
-                    driver = dataSnapshot.child("Drivers").child(id).getValue(Driver.class);
+                    driver = dataSnapshot.child("Drivers").child(idFromSearch).getValue(Driver.class);
 
 //                    isDriver = true;
 
@@ -291,12 +293,12 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
 
                 }
 
-                if (dataSnapshot.child("Admins").hasChild(id)) {
+                if (dataSnapshot.child("Admins").hasChild(idFromSearch)) {
 
                     driverStatusSection.setVisibility(View.GONE);
 
                     //is this fruitless? whats the point in transforming it into a class? i dont use it anywhere else.
-                    admin = dataSnapshot.child("Admins").child(id).getValue(Admin.class);
+                    admin = dataSnapshot.child("Admins").child(idFromSearch).getValue(Admin.class);
 
 
                     //shouldn't need to repeat this should I
@@ -495,7 +497,7 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child("Customers").hasChild(id)) {
+                        if (dataSnapshot.child("Customers").hasChild(idFromSearch)) {
                             //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
                             //could this all be made more efficient
                             //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
@@ -508,22 +510,29 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
 //                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 //                            }
                             UpdateCustomer(n, e, p, doLa, doLo, ad, ci, po);
+
+
+
                         }
-                        if (dataSnapshot.child("Drivers").hasChild(id)) {
+                        if (dataSnapshot.child("Drivers").hasChild(idFromSearch)) {
 
                             //care about what the snapshot says at the exact time of clicking that button.. rather than updating firebase with
                             //what your page MAY have said at the start.
-                            Double driverLat = dataSnapshot.child("Drivers").child(id).child("latitude").getValue(Double.class);
-                            Double driverLong = dataSnapshot.child("Drivers").child(id).child("longitude").getValue(Double.class);
+                            Double driverLat = dataSnapshot.child("Drivers").child(idFromSearch).child("latitude").getValue(Double.class);
+                            Double driverLong = dataSnapshot.child("Drivers").child(idFromSearch).child("longitude").getValue(Double.class);
 
                             UpdateDriver(n, e, p, driverLat, driverLong, boEnr, book);
+
+
+
+
                             //i assume i include this; ive not started trying to edit drivers details yet..
                             //enr = null;
                             //book = null;
                             //
                         }
 
-                        if (dataSnapshot.child("Admins").hasChild(id)) {
+                        if (dataSnapshot.child("Admins").hasChild(idFromSearch)) {
                             //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
                             //could this all be made more efficient
                             //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
@@ -536,6 +545,8 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
 //                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 //                            }
                             UpdateAdmin(n, e, p, doLa, doLo, ad, ci, po);
+
+
                         }
 
                     }
@@ -576,17 +587,41 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
     //poor name
     private void UpdateCustomer(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Customer cus = new Customer(name, email, phoneNumber, latitude, longitude, address, city, postcode);
 
-        //without this, the id drops off the child in firebase
-//        cus.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        customer.setName(name);
+        customer.setEmail(email);
+        customer.setPhoneNumber(phoneNumber);
+        customer.setLatitude(latitude);
+        customer.setLongitude(longitude);
+        customer.setAddress(address);
+        customer.setCity(city);
+        customer.setPostcode(postcode);
 
-        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
-        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
-//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        myRef.child("users").child("Customers").child(idFromSearch).setValue(customer);
 
-        //is this needed?
-        myRef.child("users").child("Customers").child(customer.id).setValue(cus);
+//
+//
+//
+//        Customer cus = new Customer(name, email, phoneNumber, latitude, longitude, address, city, postcode);
+//
+//        //without this, the id drops off the child in firebase
+////        cus.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+//        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+////        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//
+//
+//
+////retains the key. my Update/WriteNew...'s methods up to now have removed the ID's.
+//        //should really fix my Class structure to keep id maintained? if i know how?
+//        //might be as easy as just creating an ID field but for now im doing this
+//        cus.id = idFromSearch;
+//
+//        //is this needed?
+//        myRef.child("users").child("Customers").child(idFromSearch).setValue(cus);
+
 
 
     }
@@ -594,16 +629,35 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
     //poor name
     private void UpdateDriver(String name, String email, String phoneNumber, double latitude, double longitude, boolean enroute, String bookable) {
 
-        //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver dri = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable);
 
-        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
-        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
-        //without this, the id drops off the child in firebase
-//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//        dri.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        //is this needed?
-        myRef.child("users").child("Drivers").child(id).setValue(dri);
+        driver.setName(name);
+        driver.setEmail(email);
+        driver.setPhoneNumber(phoneNumber);
+        driver.setLatitude(latitude);
+        driver.setLongitude(longitude);
+        driver.setEnroute(enroute);
+        driver.setBookable(bookable);
+
+
+        myRef.child("users").child("Drivers").child(idFromSearch).setValue(driver);
+
+//        //this shouldnt be here because its not really making use of it (atleast not setter/getter)
+//        Driver dri = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable);
+//
+//
+//
+////retains the key. my Update/WriteNew...'s methods up to now have removed the ID's.
+//        //should really fix my Class structure to keep id maintained? if i know how?
+//        //might be as easy as just creating an ID field but for now im doing this
+//        dri.id = idFromSearch;
+//
+//        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+//        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+//        //without this, the id drops off the child in firebase
+////        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+////        dri.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        //is this needed?
+//        myRef.child("users").child("Drivers").child(idFromSearch).setValue(dri);
 
 
     }
@@ -611,16 +665,37 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
     ////poor name
     private void UpdateAdmin(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
         //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
-        Admin ad = new Admin(name, email, phoneNumber, latitude, longitude, address, city, postcode);
-        //without this, the id drops off the child in firebase
-//        ad.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
-        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
-//        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        admin.setName(name);
+        admin.setEmail(email);
+        admin.setPhoneNumber(phoneNumber);
+        admin.setLatitude(latitude);
+        admin.setLongitude(longitude);
+        admin.setAddress(address);
+        admin.setCity(city);
+        admin.setPostcode(postcode);
 
-        //is this needed?
-        myRef.child("users").child("Admins").child(id).setValue(ad);
+        myRef.child("users").child("Admins").child(idFromSearch).setValue(admin);
+
+
+//        Admin ad = new Admin(name, email, phoneNumber, latitude, longitude, address, city, postcode);
+//        //without this, the id drops off the child in firebase
+////        ad.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//
+//
+////retains the key. my Update/WriteNew...'s methods up to now have removed the ID's.
+//        //should really fix my Class structure to keep id maintained? if i know how?
+//        //might be as easy as just creating an ID field but for now im doing this
+//        ad.id = idFromSearch;
+//
+//
+//        //im switching it up and making it like GoogleMap's activity layout in the clickonmap
+//        //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
+////        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//        //is this needed?
+//        myRef.child("users").child("Admins").child(idFromSearch).setValue(ad);
 
 
     }
