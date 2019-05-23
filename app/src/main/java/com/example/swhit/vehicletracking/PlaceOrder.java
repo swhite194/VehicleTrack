@@ -1,6 +1,7 @@
 package com.example.swhit.vehicletracking;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -57,7 +58,7 @@ public class PlaceOrder extends AppCompatActivity {
     String custID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     //used to check availability status of driver
-    boolean available = true;
+    boolean available;
 
 //    LatLng custLatLng;
 //    LatLng driverLatLng;
@@ -118,8 +119,17 @@ public class PlaceOrder extends AppCompatActivity {
     String requestedDeliveryTime;
 
 
+    //purpose of this is so that if you select a time, but someone else beats you to it and gets that driver (from another phone),
+    //that driver can be double checked when you click on the placeorder (via searching firebase for this driverId), if they're suddenly booked by someone else, it will trigger a restart
+    //of this place order page, reinitialising the variables and bool conditions i use throughout the page at certain points which i was using to allow things
+    String driverId;
+
+
     //https://stackoverflow.com/questions/8745297/want-current-date-and-time-in-dd-mm-yyyy-hhmmss-ss-format
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+    boolean driverStillBookable = true;
+
 
 
 
@@ -151,6 +161,14 @@ public class PlaceOrder extends AppCompatActivity {
         huawei = findViewById(R.id.imgbtnHuawei);
         pixel = findViewById(R.id.imgbtnPixel);
         iphone = findViewById(R.id.imgbtnIphone);
+
+
+
+
+
+            place_order.setEnabled(false);
+
+
 
         //https://www.c-sharpcorner.com/article/create-timepicker-android-app-using-android-studio/
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
@@ -226,44 +244,28 @@ public class PlaceOrder extends AppCompatActivity {
                 negTime = -1000000000;
 
                 //what is this?
-                myRef.child("time").setValue(time.get(Calendar.YEAR));
+//                myRef.child("time").setValue(time.get(Calendar.YEAR));
 
                 drivers.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
 
                             //
-                            if(snapshot.child("bookable").exists()){
-                                if(snapshot.child("bookable").getValue().equals("available")){
-
+                            if (snapshot.child("bookable").exists()) {
+                                if (snapshot.child("bookable").getValue().equals("available")) {
 
                                     available = true;
+                                    place_order.setEnabled(true);
 
                                     //https://stackoverflow.com/questions/2741403/get-the-distance-between-two-geo-points
-                                    //should i make them classes first like i did for custLoc? cheaty?
                                     driverLoc.setLatitude(snapshot.child("latitude").getValue(Double.class));
                                     driverLoc.setLongitude(snapshot.child("longitude").getValue(Double.class));
 
-
                                     //estimated travel from driver's location to warehouse to customer's location
-
-                                    distanceOfTravelToCustomer = (driverLoc.distanceTo(warehouse))+(warehouse.distanceTo(customerLoc));
-
-
-
-//                            if(distanceOfTravel >= 0){
-//
-//                            }
-
-                                    //value in minutes for driver (it's not exactly a "time")... whereas customertime is based off an actual 24 hour clock
-                                    //consider that if the difference was like -1000 minutes, but the customer time was around 10pm, you can't do that because we're dealing with a 24 hour
-                                    //TIME only event, the days aren't factored in..
-                                    timeToTravelToCustomerInMinutes = distanceOfTravelToCustomer/metresPerMinute;
-
-
-
+                                    distanceOfTravelToCustomer = (driverLoc.distanceTo(warehouse)) + (warehouse.distanceTo(customerLoc));
+                                    timeToTravelToCustomerInMinutes = distanceOfTravelToCustomer / metresPerMinute;
                                     differenceInTimes = durationUntilRequestedTimeInMinutes - timeToTravelToCustomerInMinutes;
 
 
@@ -275,8 +277,6 @@ public class PlaceOrder extends AppCompatActivity {
                                     //the idea here is that we select the driver with the difference in times closest to 0
                                     //what this means is that if the customer were to pick a generous time, we'd allocate a driver who is perhaps currently further away, so as to reserve
                                     //a closer driver for requests that are maybe more immediate.
-
-
 
 
 //                                    System.out.println("ID of Customer " + aCustomer.getId());
@@ -297,9 +297,8 @@ public class PlaceOrder extends AppCompatActivity {
 
 // looks for the FARTHEST car that can do it in the right time.. seems strange, but its in the hopes that we will have someone who can attend a nearby person more readily (without going in negatives we hope!)
 
-                                    if(((differenceInTimes)<= posTime)&&(differenceInTimes>=0)){
+                                    if (((differenceInTimes) <= posTime) && (differenceInTimes >= 0)) {
                                         posTime = differenceInTimes;
-//                                        System.out.println("Positive Time" + posTime);
                                         positiveTime = true;
                                         key = snapshot.getKey();
                                         System.out.println("KEY: " + key);
@@ -316,7 +315,11 @@ public class PlaceOrder extends AppCompatActivity {
 
                                     //if the child's calculated difference between times is less than 0, meaning that that driver can't be there in time
                                     //then it considers a tally of the negative times, and ultimately selects the best negative time - i.e. the one closest 0 (whilst trying to find the largest positive time too)
-                                    else if(((differenceInTimes>=negTime)&&(differenceInTimes)<0)){
+
+                                    //THIS ISNT TRUE. ^
+
+
+                                    else if (((differenceInTimes >= negTime) && (differenceInTimes) < 0)) {
                                         negTime = differenceInTimes;
 //                                        System.out.println("Difference" + differenceInTimes);
 //                                        System.out.println("Negative Time" + negTime);
@@ -333,71 +336,84 @@ public class PlaceOrder extends AppCompatActivity {
                                     }
 
 
-
 //not sure what this else is really for.
 
-                                    else{
+//                                    else {
 //                                        Toast.makeText(getApplicationContext(), "Can't be done", Toast.LENGTH_LONG).show();
-                                        System.out.println("---------------------------------------------");
-                                        System.out.println("Customer Requests Delivery For this time: " + customerPickedTimeInMinutes);
-                                        System.out.println("Duration until that time: " + durationUntilRequestedTimeInMinutes);
-                                        System.out.println("Driver's travel distance to get to customer: " + timeToTravelToCustomerInMinutes);
-                                        System.out.println("Driver ID " + snapshot.child("id").getValue() + " ----Can't be done");
-                                        System.out.println("Difference" + differenceInTimes);
+//                                        System.out.println("---------------------------------------------");
+//                                        System.out.println("Customer Requests Delivery For this time: " + customerPickedTimeInMinutes);
+//                                        System.out.println("Duration until that time: " + durationUntilRequestedTimeInMinutes);
+//                                        System.out.println("Driver's travel distance to get to customer: " + timeToTravelToCustomerInMinutes);
+//                                        System.out.println("Driver ID " + snapshot.child("id").getValue() + " ----Can't be done");
+//                                        System.out.println("Difference" + differenceInTimes);
+//
+//                                    }
 
-                                    }
+                                }
+                            }
 
+                        }
 
-
-
-                                    if(positiveTime){
+                        if(positiveTime){
 //                                aDriver = snapshot.getValue(Driver.class);
 //                                aDriver = drivers.child(key)
 
-                                        //Yes, this class does change multiple times during iteration, i.e. if a positive time is found
-                                        //then the next is smaller, then the next etc etc.
-                                        //but it works. so whatever.
-                                        //key stuff from other activities, stackoverflow was source(probably mainly idea from Google Maps activity)
-                                        aDriver = dataSnapshot.child(key).getValue(Driver.class);
+                            //Yes, this class does change multiple times during iteration, i.e. if a positive time is found
+                            //then the next is smaller, then the next etc etc.
+                            //but it works. so whatever.
+                            //key stuff from other activities, stackoverflow was source(probably mainly idea from Google Maps activity)
+                            aDriver = dataSnapshot.child(key).getValue(Driver.class);
 
-                                        System.out.println("1 " + dataSnapshot.child(key).child("email").getValue());
-                                        System.out.println("2 " + dataSnapshot.child(key).child("email").getValue());
-                                        System.out.println("1 " + dataSnapshot.child(key).child("email").getValue());
+                            Toast.makeText(getApplicationContext(), "We're assinging you " + aDriver.getEmail(), Toast.LENGTH_LONG).show();
 
-                                        System.out.println("THE KEY IS " + key);
-                                        System.out.println("Your driver" + aDriver.getId());
+                            //as described before onCreate
+                            driverId = aDriver.getId();
+
+                            System.out.println("1 " + dataSnapshot.child(key).child("email").getValue());
+                            System.out.println("2 " + dataSnapshot.child(key).child("email").getValue());
+                            System.out.println("1 " + dataSnapshot.child(key).child("email").getValue());
+
+                            System.out.println("THE KEY IS " + key);
+                            System.out.println("Your driver" + aDriver.getId());
 
 
 //                                        available = true;
-                                        Toast.makeText(getApplicationContext(), "This time is okay!", Toast.LENGTH_LONG).show();
-                                    }
+                            Toast.makeText(getApplicationContext(), "This time is okay!", Toast.LENGTH_LONG).show();
+                        }
 
-                                    //consider the negative value.. currently no drivers are able to take the customer in that elected time, so we suggest a time that by our predictions will allow for that negative driver to
-                                    //be with the customer in time
+                        //consider the negative value.. currently no drivers are able to take the customer in that elected time, so we suggest a time that by our predictions will allow for that negative driver to
+                        //be with the customer in time
 
-                                    //not else if?
-                                    else if(!positiveTime){
+                        //not else if?
+                        else{
 //                                aDriver = snapshot.getValue(Driver.class);
 
 //                                        double differenceBetweenNegativeand0 = Math.max(0, negTime);
-                                        double durationUntilOK = negTime * -1;
+
+                            place_order.setEnabled(false);
+                            double durationUntilOK = negTime * -1;
 
 //                                     value in minutes for driver (it's not exactly a "time")... whereas customertime is based off an actual 24 hour clock
 //                                                                        consider that if the difference was like -1000 minutes, but the customer time was around 10pm, you can't do that because we're dealing with a 24 hour
 //                                                                        TIME only event, the days aren't factored in.. might want to think about changing terminology of "time" for the driverTime stuff
 
 //                                        Toast.makeText(getApplicationContext(), "Please book " + differenceBetweenNegativeand0 + " minutes from this time!", Toast.LENGTH_LONG).show();
-                                        Toast.makeText(getApplicationContext(), "Please book " + durationUntilOK + " minutes from this time!", Toast.LENGTH_LONG).show();
 
+                            if(!available){
+                                Toast.makeText(getApplicationContext(), "There are no drivers available on the system right now, please try again later", Toast.LENGTH_LONG).show();
+                            }else {
 
-                                    }
-                                    //is that even callable
-                                    //what if something happens to either my customer/driver's child? like they get deleted..
-                                    //that's what this was FOR
-                                    //but i think the "else" bit is in reference to the boolean and not any other condition, so it's not considering anything else and as a result this wont be called..
-                                    else{
-                                        Toast.makeText(getApplicationContext(), "No child key", Toast.LENGTH_LONG).show();
-                                    }
+                                Toast.makeText(getApplicationContext(), "Please book " + durationUntilOK + " minutes from this time!", Toast.LENGTH_LONG).show();
+
+                            }
+                        }
+//                                    //is that even callable
+//                                    //what if something happens to either my customer/driver's child? like they get deleted..
+//                                    //that's what this was FOR
+//                                    //but i think the "else" bit is in reference to the boolean and not any other condition, so it's not considering anything else and as a result this wont be called..
+//                                    else{
+//                                        Toast.makeText(getApplicationContext(), "No child key", Toast.LENGTH_LONG).show();
+//                                    }
 
 
 
@@ -408,35 +424,24 @@ public class PlaceOrder extends AppCompatActivity {
 
 //                            System.out.println(aDriver.getId() + " " + driverLoc + " distance to warehouse: " + distanceOfTravel);
 //                            available = true;
-                                    //not bad practice?
+                        //not bad practice?
 //                            break;
 
 //should this be a break?
 
-                                }
-                                //this gets called after i press Place Order..
-                                else if(snapshot.child("bookable").getValue().equals("unavailable")){
-                                    if(available = false)
-                                        System.out.println("WHAT WHAT WHAT");
-//                                    available = false;
-                                }
-                            }
-                            if(!(snapshot.child("bookable").exists())){
-                                //https://stackoverflow.com/questions/11160952/goto-next-iteration-in-for-loop-in-java
-                                continue;
-                            }
 //
-//
-// check = snapshot.child("bookable").getValue(String.class);
-                            //works backwards but is fine... or is it the submit/writeorder stuff that does?
-//                    if (check.equals("available")){
-//                        aDriver = snapshot.getValue(Driver.class);
-//                        System.out.println(check);
-//                    }
+//                                    //without this, any unavailable drivers make it available = false for everyone.. and nobody can book anything.
+//                                    //break out so you don't keep iterating, as the next one says if it sees unavailable it will make available false, which affects Place Order's check for the overall availability boolean
+//                                    break;
 
 
-                            //NEED TO SAY ELSE HERE.
-                        }
+                        //this gets called after i press Place Order..
+//                                else if(snapshot.child("bookable").getValue().equals("unavailable")){
+//                                    if(available = false)
+//                                        System.out.println("WHAT WHAT WHAT");
+////                                    available = false;
+//                                }
+
                     }
 
                     @Override
@@ -447,6 +452,7 @@ public class PlaceOrder extends AppCompatActivity {
 
 
             }
+            //end of timechangedlistener
         });
 
 
@@ -474,7 +480,7 @@ public class PlaceOrder extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(custID)) {
-                    //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
+
                     aCustomer = dataSnapshot.child(custID).getValue(Customer.class);
 
 
@@ -642,7 +648,7 @@ public class PlaceOrder extends AppCompatActivity {
 
 
                 item_id = "Pixel";
-                System.out.println(aDriver.getEmail());
+
 
             }
         });
@@ -662,24 +668,51 @@ public class PlaceOrder extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkPermission(Manifest.permission.SEND_SMS)) {
+
                     if (available) {
-                        //just dealing with 24 hr single days atm.. not Days.
-                        writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), aDriver.isEnroute(), item_id, item_quantity, requestedDeliveryDate, requestedDeliveryTime, null);
+
+                        //double check that they've not since been booked by someone else
+                        drivers.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.child(driverId).child("bookable").getValue().equals("unavailable")){
+                                    driverStillBookable = false;
+                                    Toast.makeText(getApplicationContext(), "Sorry looks like someone else beat you to it and got your driver before you, restarting page!", Toast.LENGTH_LONG).show();
+                                    //https://stackoverflow.com/questions/2486934/programmatically-relaunch-recreate-an-activity
+                                    //recreates the activity (good way of getting rid of variables that have been changed; which is a problem with pressing back for other screens..
+                                    recreate();
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        if(driverStillBookable) {
+                            //just dealing with 24 hr single days atm.. not Days.
+                            writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), aDriver.isEnroute(), item_id, item_quantity, requestedDeliveryDate, requestedDeliveryTime, null);
 //                aDriver.setBookable(false);
 
-                        notifyDriverOnOrderPlaced();
+                            notifyDriverOnOrderPlaced();
 
-                        aDriver.setBookable("unavailable");
-                        //changing availability to unavailable
-                        myRef.child("users").child("Drivers").child(aDriver.getId()).setValue(aDriver);
+                            aDriver.setBookable("unavailable");
+                            //changing availability to unavailable
+                            myRef.child("users").child("Drivers").child(aDriver.getId()).setValue(aDriver);
 
+
+                            Intent intent = new Intent(PlaceOrder.this, HomeActivity.class);
+                            startActivity(intent);
 
 //                    custLatLng = (aCustomer.getLatitude(), aCustomer.getLongitude());
-
+                        }
                     }
-                    if (!available) {
-                        Toast.makeText(getApplicationContext(), "Sorry no drivers are available on the system!", Toast.LENGTH_LONG).show();
-                    }
+//                    if (!available) {
+//
+//                        Toast.makeText(getApplicationContext(), "Sorry no drivers are available on the system!", Toast.LENGTH_LONG).show();
+//                    }
                     //should i have an else?
                 }else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -855,31 +888,10 @@ public class PlaceOrder extends AppCompatActivity {
         System.out.println(messageToDriver);
 
 
-////on its own this is too long
-//        messageToDriver = "Hi driver " + aDriver.getId() + ". An order has been placed for " + order.getItemQuantity() + " " + order.getItemID() + " at " + requestedTime + ". The address" +
-//                "is " + aCustomer.getAddress() + ", " + aCustomer.getCity() + ", " + aCustomer.getPostcode() + ". The time requested is " + time.get(Calendar.HOUR_OF_DAY) + ":" +
-//                time.get(Calendar.MINUTE) + " so please be at the warehouse " + amountOfTimeToGetToWarehouse + " from now which means you should be there for " + timeToBeAtWarehouse + ". At " + (warehouse.distanceTo(customerLoc)/metresPerMinute) + " minutes to be there "+
-//                "aka " + timeToLeaveWarehouse + " so you should arrive at " + timeYouArrive;
-//
-//
-//
-//
-//
-//                SmsManager smsManager = SmsManager.getDefault();
-//
-//        smsManager.sendTextMessage(driverPhoneNumber, null, messageToDriver, null, null);
-
-        //on its own this is too long but a shorter message works fine
-
-
-
 
         ArrayList<String> msgList = smsManager.divideMessage(messageToDriver);
 
         smsManager.sendMultipartTextMessage(driverPhoneNumber, null, msgList, null, null);
-
-
-
 
         smsManager.sendTextMessage(driverPhoneNumber, null, messageToDriver, null, null);
 

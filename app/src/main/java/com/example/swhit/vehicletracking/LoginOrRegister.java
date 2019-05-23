@@ -133,7 +133,7 @@ public class LoginOrRegister extends AppCompatActivity {
 
                                               @Override
                                               public void onClick(View v) {
-                                                  //made this final for "writenewuser" but idk
+
                                                   final String e = email.getText().toString();
                                                   String p = password.getText().toString();
 
@@ -169,7 +169,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       if (chkDriver.isChecked()){
                                                                           checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
-                                                                          writeNewDriver(null, e, null, 0, 0, false, "available");
+                                                                          writeNewDriver(null, e, null, 0, 0, false, "available",0);
 
                                                                           Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
                                                                           startActivity(intent);
@@ -178,7 +178,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                       if (chkAdmin.isChecked()){
                                                                           checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
-                                                                          writeNewAdmin(null, e, null, 0, 0, "place", null, null);
+                                                                          writeNewAdmin(null, e, null, 0, 0, " ", null, null);
 
                                                                           Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
                                                                           startActivity(intent);
@@ -188,7 +188,7 @@ public class LoginOrRegister extends AppCompatActivity {
                                                                           checked = true;
                                                                           Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
 //                                                                          writeNewCustomer(null, e, 0, 0, null);
-                                                                          writeNewCustomer(null, e, null, 0, 0, "place", null, null);
+                                                                          writeNewCustomer(null, e, null, 0, 0, " ", null, null);
 
                                                                           Intent intent = new Intent(LoginOrRegister.this, UserInfo.class);
                                                                           startActivity(intent);
@@ -202,7 +202,6 @@ public class LoginOrRegister extends AppCompatActivity {
 
 
                                                                   }
-                                                //THIS IS COMING UP AT THE SAME TIME AS THE 10 CHARACTER VALIDATION... needs fixed; INVISIBLE-> VISIBLE login is a cop-out atm
                                                                   else {
                                                                       Toast.makeText(getApplicationContext(), "E-mail or password poor; please ensure first time registering with this email, the email format, and that your password is 10+ characters", Toast.LENGTH_LONG).show();
                                                                   }
@@ -303,7 +302,6 @@ public class LoginOrRegister extends AppCompatActivity {
 //    }
 
     private void writeNewCustomer(String name, String email, String phoneNumber, double latitude, double longitude, String address, String city, String postcode) {
-        //this shouldnt be here because its not really making use of it (atleast not the setter/getter)
         Customer customer = new Customer(name, email, phoneNumber, latitude, longitude, address, city, postcode);
 
         id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -313,23 +311,21 @@ public class LoginOrRegister extends AppCompatActivity {
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         customer.setId(id);
 
-        //is this needed?
         myRef.child("users").child("Customers").child(id).setValue(customer);
 
 
     }
 
-    private void writeNewDriver(String name, String email, String phoneNumber, double latitude, double longitude, boolean enroute, String bookable) {
+    private void writeNewDriver(String name, String email, String phoneNumber, double latitude, double longitude, boolean enroute, String bookable, int speed) {
 
         //this shouldnt be here because its not really making use of it (atleast not setter/getter)
-        Driver driver = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable);
+        Driver driver = new Driver(name, email, phoneNumber, latitude, longitude, enroute, bookable, speed);
         id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         //im switching it up and making it like GoogleMap's activity layout in the clickonmap
         //https://www.quora.com/How-do-I-register-a-users-Detail-in-firebase
 //        user.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         driver.setId(id);
 
-        //is this needed?
         myRef.child("users").child("Drivers").child(id).setValue(driver);
 
 

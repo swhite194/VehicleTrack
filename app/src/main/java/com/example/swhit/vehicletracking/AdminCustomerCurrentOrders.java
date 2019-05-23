@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 //https://www.youtube.com/watch?v=b_tz8kbFUsU
 //used as basis in background, but supported by //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need (basically same as official doc - https://github.com/firebase/FirebaseUI-Android/tree/master/database#using-the-firebaserecycleradapter "using the firebaserecycleradapter"))
 ////and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
-public class AdminEditCustomersCurrentOrders extends AppCompatActivity {
+public class AdminCustomerCurrentOrders extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
     private DatabaseReference myRef = database.getReference("Location");
@@ -37,7 +37,7 @@ public class AdminEditCustomersCurrentOrders extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_edit_customers_current_orders);
+        setContentView(R.layout.activity_admin_customer_current_orders);
 
         searchCustId = (EditText) findViewById(R.id.txtSearchCustId);
         searchBtn = (Button) findViewById(R.id.btnSearch);
@@ -100,7 +100,7 @@ public class AdminEditCustomersCurrentOrders extends AppCompatActivity {
                     public void onClick(View v) {
                         String edit_order_by_id = getRef(position).getKey();
                         Toast.makeText(getApplicationContext(), "Key: " + edit_order_by_id, Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(AdminEditCustomersCurrentOrders.this, EditOrder.class);
+                        Intent intent = new Intent(AdminCustomerCurrentOrders.this, AdminEditCurrentOrder.class);
 //                        extras.putString("userId", strUserId);
                         intent.putExtra("orderID", edit_order_by_id);
 

@@ -52,7 +52,7 @@ public class LocationService extends Service {
 
     //its only fair to put in validation when u decipher what ref you're using.. instead of just making it 1 way to suit a use case with no validation
     DatabaseReference drivers = myRef.child("users").child("Drivers");
-    DatabaseReference orders = myRef.child("orders").child("Current Orders");
+    DatabaseReference currentOrders = myRef.child("orders").child("Current Orders");
 
 
 
@@ -159,12 +159,41 @@ public class LocationService extends Service {
 
                         driverUser.setLatitude(location.getLatitude());
                         driverUser.setLongitude(location.getLongitude());
+                        driverUser.setSpeed(Math.round(location.getSpeed()));
 
                         //overwrites it and drops the name etc (woops)
 //                        myRef.child("users").child("Drivers").child(id).setValue(driverUser);
 
-                        myRef.child("users").child("Drivers").child(id).child("latitude").setValue(driverUser.getLatitude());
-                        myRef.child("users").child("Drivers").child(id).child("longitude").setValue(driverUser.getLongitude());
+
+
+                        drivers.child(id).child("latitude").setValue(driverUser.getLatitude());
+                        drivers.child(id).child("longitude").setValue(driverUser.getLongitude());
+                        drivers.child(id).child("speed").setValue(driverUser.getSpeed());
+
+
+                        currentOrders.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                    if(ds.child("driverID").getValue().equals(id)){
+                                        order = ds.getValue(Order.class);
+                                        if(order.isDriverEnroute()){
+                                            currentOrders.child(order.getId()).child("latitude").setValue(driverUser.getLatitude());
+                                            currentOrders.child(order.getId()).child("longitude").setValue(driverUser.getLatitude());
+                                            currentOrders.child(order.getId()).child("speed").setValue(driverUser.getSpeed());
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+
                     }
                 }
             }

@@ -24,9 +24,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditOrder"></activity>
-        <activity android:name=".CustomerOrders" />
-        <activity android:name=".AdminEditCustomersCurrentOrders" />
+        <activity android:name=".t"></activity>
+        <activity android:name=".CustomerCompletedOrders" />
+        <activity android:name=".CustomerEditCurrentOrder" />
+        <activity android:name=".AdminEditCurrentOrder" />
+        <activity android:name=".CustomerCurrentOrders" />
+        <activity android:name=".AdminCustomerCurrentOrders" />
         <activity android:name=".SearchForUser" />
         <activity android:name=".AdminEditAnyUserInfo" />
         <activity android:name=".HomeScreenAdminVersion" />

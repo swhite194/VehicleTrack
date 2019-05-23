@@ -29,8 +29,11 @@ public class SearchForUser extends AppCompatActivity {
     String strUserId;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
-    DatabaseReference currentUser = database.getReference("Location").child("users");
-    DatabaseReference currentDriver = database.getReference("Location").child("users").child("Drivers");
+    DatabaseReference usersRef = database.getReference("Location").child("users");
+
+    DatabaseReference drivers = database.getReference("Location").child("users").child("Drivers");
+    DatabaseReference customers = database.getReference("Location").child("users").child("Customers");
+    DatabaseReference admins = database.getReference("Location").child("users").child("Admins");
 
 
     @Override
@@ -84,8 +87,9 @@ public class SearchForUser extends AppCompatActivity {
                 if(strUserId.trim().equals("")) {
                     Toast.makeText(getApplicationContext(), "Text Field can't be empty!", Toast.LENGTH_LONG).show();
                 }else{
-//right now im testing with drivers only.
-                    currentDriver.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                    customers.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(dataSnapshot.hasChild(strUserId)){
@@ -114,6 +118,71 @@ public class SearchForUser extends AppCompatActivity {
 
                         }
                     });
+
+                    drivers.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.hasChild(strUserId)){
+                                //https://stackoverflow.com/questions/2091465/how-do-i-pass-data-between-activities-in-android-application
+//                                Intent intent = new Intent(SearchForUser.this, AdminEditAnyUserInfo.class);
+                                //https://stackoverflow.com/questions/5265913/how-to-use-putextra-and-getextra-for-string-data
+//https://stackoverflow.com/questions/6707900/pass-a-string-from-one-activity-to-another-activity-in-android
+                                Intent intent = new Intent(SearchForUser.this, AdminEditAnyUserInfo.class);
+//                        extras.putString("userId", strUserId);
+                                intent.putExtra("userId", strUserId);
+
+                                startActivity(intent);
+//
+//
+//                                extras.putString("userId", strUserId);
+//                                intent.putExtras(extras);
+//
+//                                startActivity(intent);
+                            }else{
+                                Toast.makeText(getApplicationContext(), "No user found!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+
+
+                    admins.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.hasChild(strUserId)){
+                                //https://stackoverflow.com/questions/2091465/how-do-i-pass-data-between-activities-in-android-application
+//                                Intent intent = new Intent(SearchForUser.this, AdminEditAnyUserInfo.class);
+                                //https://stackoverflow.com/questions/5265913/how-to-use-putextra-and-getextra-for-string-data
+//https://stackoverflow.com/questions/6707900/pass-a-string-from-one-activity-to-another-activity-in-android
+                                Intent intent = new Intent(SearchForUser.this, AdminEditAnyUserInfo.class);
+//                        extras.putString("userId", strUserId);
+                                intent.putExtra("userId", strUserId);
+
+                                startActivity(intent);
+//
+//
+//                                extras.putString("userId", strUserId);
+//                                intent.putExtras(extras);
+//
+//                                startActivity(intent);
+                            }else{
+                                Toast.makeText(getApplicationContext(), "No user found!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
 
 
                 }

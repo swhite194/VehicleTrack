@@ -1,5 +1,6 @@
 package com.example.swhit.vehicletracking;
 
+        import android.content.Intent;
         import android.support.annotation.NonNull;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
@@ -11,6 +12,7 @@ package com.example.swhit.vehicletracking;
         import android.widget.Button;
         import android.widget.EditText;
         import android.widget.TextView;
+        import android.widget.Toast;
 
         import com.firebase.ui.database.FirebaseRecyclerAdapter;
         import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -20,7 +22,7 @@ package com.example.swhit.vehicletracking;
 //https://www.youtube.com/watch?v=b_tz8kbFUsU
 //used as basis in background, but supported by //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need (basically same as official doc - https://github.com/firebase/FirebaseUI-Android/tree/master/database#using-the-firebaserecycleradapter "using the firebaserecycleradapter"))
 ////and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
-public class CustomerOrders extends AppCompatActivity {
+public class CustomerCurrentOrders extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
     private DatabaseReference myRef = database.getReference("Location");
@@ -35,7 +37,7 @@ public class CustomerOrders extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_orders);
+        setContentView(R.layout.activity_customer_current_orders);
 
         searchCustId = (EditText) findViewById(R.id.txtSearchCustId);
         searchBtn = (Button) findViewById(R.id.btnSearch);
@@ -70,10 +72,23 @@ public class CustomerOrders extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull OrdersViewHolder holder, int position, @NonNull Order model) {
+            protected void onBindViewHolder(@NonNull OrdersViewHolder holder, final int position, @NonNull Order model) {
 //https://www.youtube.com/watch?v=b_tz8kbFUsU
-                holder.setDetails(model.getId(), model.getCustomerID(), model.getDeliveryRequestedForDate(), model.getDeliveryRequestedForTime(), model.getDriverID(),
+                holder.setDetails(model.getId(), model.getCustomerID(), model.getDeliveryRequestedForTime(), model.getDriverID(),
                         model.getItemID(), model.getItemQuantity());
+
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String edit_order_by_id = getRef(position).getKey();
+                        Toast.makeText(getApplicationContext(), "Key: " + edit_order_by_id, Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(CustomerCurrentOrders.this, CustomerEditCurrentOrder.class);
+//                        extras.putString("userId", strUserId);
+                        intent.putExtra("orderID", edit_order_by_id);
+
+                        startActivity(intent);
+                    }
+                });
             }
         };
         //https://www.youtube.com/watch?v=b_tz8kbFUsU
@@ -96,12 +111,11 @@ public class CustomerOrders extends AppCompatActivity {
         }
 
         //https://www.youtube.com/watch?v=b_tz8kbFUsU
-        public void setDetails(String orderId, String customerId, String requestedDeliveryDate, String requestedDeliveryTime, String driverId, String itemId, int itemQuantity) {
+        public void setDetails(String orderId, String customerId, String requestedDeliveryTime, String driverId, String itemId, int itemQuantity) {
 
             //these R.id.'s are from currentorders_list_layoutrs_list_layout.xml
             TextView order_id = (TextView) mView.findViewById(R.id.txtOrderId);
             TextView customer_id = (TextView) mView.findViewById(R.id.txtCustomerId);
-            TextView requested_delivery_date = (TextView) mView.findViewById(R.id.txtRequestedDeliveryDate);
             TextView requested_delivery_time = (TextView) mView.findViewById(R.id.txtRequestedDeliveryTime);
             TextView driver_id = (TextView) mView.findViewById(R.id.txtDriverId);
             TextView item_id = (TextView) mView.findViewById(R.id.txtItemId);
@@ -110,7 +124,6 @@ public class CustomerOrders extends AppCompatActivity {
 
             order_id.setText(orderId);
             customer_id.setText(customerId);
-            requested_delivery_date.setText(requestedDeliveryDate);
             requested_delivery_time.setText(requestedDeliveryTime);
             driver_id.setText(driverId);
             item_id.setText(itemId);

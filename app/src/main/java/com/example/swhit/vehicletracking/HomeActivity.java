@@ -30,7 +30,6 @@ public class HomeActivity extends AppCompatActivity {
 //https://developer.android.com/studio/write/layout-editor
 
     Button btnOpenMap;
-    Button btnLogin;
     Button btnEdit;
     Button btnDeleteLocationsFromFirebase;
     Button btnOrderPg;
@@ -105,7 +104,7 @@ public class HomeActivity extends AppCompatActivity {
 
         btnOpenMap = (Button) findViewById(R.id.btnOpenMap);
 //        btnDeleteLocationsFromFirebase = (Button) findViewById(R.id.btnDe);
-        btnLogin = (Button) findViewById(R.id.btnLoginPage);
+
         btnEdit = (Button) findViewById(R.id.btnUserInfo);
         btnOrderPg = (Button) findViewById(R.id.btnOrderPage);
 
@@ -201,7 +200,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,13 +228,6 @@ public class HomeActivity extends AppCompatActivity {
 //            }
 //        });
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, LoginOrRegister.class);
-                startActivity(intent);
-            }
-        });
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,7 +273,7 @@ public class HomeActivity extends AppCompatActivity {
 //        btnYourOrders.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(HomeActivity.this, CustomerOrders.class);
+//                Intent intent = new Intent(HomeActivity.this, CustomerCurrentOrders.class);
 //                startActivity(intent);
 //            }
 //        });
@@ -290,7 +281,7 @@ public class HomeActivity extends AppCompatActivity {
         btnEditYourCurrentOrders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, CustomerOrders.class);
+                Intent intent = new Intent(HomeActivity.this, CustomerCurrentOrders.class);
                 startActivity(intent);
             }
         });
@@ -299,7 +290,7 @@ public class HomeActivity extends AppCompatActivity {
         btnSearchCustomerCurrentOrders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, AdminEditCustomersCurrentOrders.class);
+                Intent intent = new Intent(HomeActivity.this, AdminCustomerCurrentOrders.class);
                 startActivity(intent);
             }
         });
@@ -339,12 +330,10 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-
         btnGoEnroute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //northgate but I changed this to HomeActivity.this (the line below this comment)
-
 
 
                 drivers.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -354,8 +343,6 @@ public class HomeActivity extends AppCompatActivity {
                         if (dataSnapshot.hasChild(id)) {
                             //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
                             driverUser = dataSnapshot.child(id).getValue(Driver.class);
-
-                            //how do i then make use of this data???
 
 
                         }
@@ -403,6 +390,10 @@ public class HomeActivity extends AppCompatActivity {
                                     drID = (String) ds.child("driverID").getValue();
                                     cuID = (String) ds.child("customerID").getValue();
 
+                                    System.out.println("why");
+                                    System.out.println(drID);
+                                    System.out.println(driverUser.getId());
+
 
                                     if (driverUser.getId().equals(drID)) {
                                         System.out.println("MATCHED DRIVER WITH ORDER!");
@@ -437,8 +428,7 @@ public class HomeActivity extends AppCompatActivity {
                                                 }
 
 
-
-                                                }
+                                            }
 
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -476,7 +466,7 @@ public class HomeActivity extends AppCompatActivity {
 
                                     }
 
-                                //end of enclosing for loop (goes through the Orders)
+                                    //end of enclosing for loop (goes through the Orders)
                                 }
 
                                 if (orderHasDriver = false) {
@@ -572,7 +562,19 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+//        btnDeleteUser.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+        //if(!orders.hasChild(orders)){
 
+//                customer.delete();
+//    }
+//    else
+//
+//    {
+//    }
+//            }
+//        });
 
 
         btnParcelDelivered.setOnClickListener(new View.OnClickListener() {

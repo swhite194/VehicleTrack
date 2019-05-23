@@ -3,13 +3,11 @@ package com.example.swhit.vehicletracking;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class EditOrder extends AppCompatActivity {
-
-
+public class CustomerEditCurrentOrder extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_order);
+        setContentView(R.layout.activity_customer_edit_current_order);
     }
 }

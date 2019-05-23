@@ -3,9 +3,6 @@ package com.example.swhit.vehicletracking;
 public class User {
 
 
-
-
-
 //
     //   //andy gave me idea to do this but also
     //    //https://firebase.google.com/docs/database/android/read-and-write

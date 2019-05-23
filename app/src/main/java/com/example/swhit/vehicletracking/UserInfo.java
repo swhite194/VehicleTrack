@@ -414,7 +414,7 @@ public class UserInfo extends AppCompatActivity {
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+            //https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
                 Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
                 String address = uaddress.getText() + " " + ucity.getText() + " " + upostcode.getText();
@@ -429,16 +429,12 @@ public class UserInfo extends AppCompatActivity {
                         a.getLatitude();
                         a.getLongitude();
 
-//                            p1 = new LatLng(a.getLatitude(), a.getLongitude());
 
                         String lat = String.valueOf(a.getLatitude());
                         String lon = String.valueOf(a.getLongitude());
 
                         ulatitude.setText(lat);
                         ulongitude.setText(lon);
-//                            utest.setText(a.getLatitude() + "," + a.getLongitude());
-//                            a = null;
-//                            fromLocationName = null;
 
                     }
                 } catch (IOException e) {

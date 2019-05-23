@@ -47,26 +47,26 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btnLoginPage"
+            <TextView
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Login / Register" />
+                android:text="TextView" />
 
             <Button
                 android:id="@+id/btnOpenMap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Open Map" />
+                android:text="Track Order On Map" />
 
-            <Button
-                android:id="@+id/btnLogout"
+            <TextView
+                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Logout" />
+                android:text="TextView" />
 
         </LinearLayout>
 
@@ -77,12 +77,6 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView29"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
             <Button
                 android:id="@+id/btnUserInfo"
                 android:layout_width="wrap_content"
@@ -90,11 +84,13 @@
                 android:layout_weight="1"
                 android:text="Edit Your Profile" />
 
-            <TextView
-                android:id="@+id/textView32"
+            <Button
+                android:id="@+id/btnLogout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Logout" />
+
         </LinearLayout>
 
 
@@ -202,7 +198,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Travel to User" />
+                android:text="Go Enroute to User" />
 
             <Button
                 android:id="@+id/btnParcelDelivered"
@@ -228,21 +224,28 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/btnSearchUserId"
-                android:layout_width="wrap_content"
+                android:layout_width="286dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Edit Other User's Profile" />
 
             <Button
                 android:id="@+id/btnSearchCustomerCurrentOrders"
-                android:layout_width="wrap_content"
+                android:layout_width="288dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Search Customer Current Orders" />
+
+            <Button
+                android:id="@+id/btnSearchCustomerCompleteOrders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Search Customer Complete Orders" />
         </LinearLayout>
 
 
