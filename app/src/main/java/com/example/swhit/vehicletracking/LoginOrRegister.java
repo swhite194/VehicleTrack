@@ -203,7 +203,7 @@ public class LoginOrRegister extends AppCompatActivity {
 
                                                                   }
                                                                   else {
-                                                                      Toast.makeText(getApplicationContext(), "E-mail or password poor; please ensure first time registering with this email, the email format, and that your password is 10+ characters", Toast.LENGTH_LONG).show();
+                                                                      Toast.makeText(getApplicationContext(), "Please ensure first time registering with this email", Toast.LENGTH_LONG).show();
                                                                   }
                                                               }
                                                           });

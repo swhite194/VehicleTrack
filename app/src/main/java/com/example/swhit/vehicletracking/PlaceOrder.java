@@ -694,6 +694,11 @@ public class PlaceOrder extends AppCompatActivity {
                         if(driverStillBookable) {
                             //just dealing with 24 hr single days atm.. not Days.
                             writeNewOrder(aCustomer.getId(), aCustomer.getName(), aCustomer.getEmail(), aCustomer.getAddress(), aCustomer.getCity(), aCustomer.getPostcode(), aDriver.getId(), aDriver.getName(), aDriver.isEnroute(), item_id, item_quantity, requestedDeliveryDate, requestedDeliveryTime, null);
+
+                            //pushing lat/long/speed instead of putting these in an order class
+                            orderRef.child(order.getId()).child("latitude").setValue(aDriver.getLatitude());
+                            orderRef.child(order.getId()).child("longitude").setValue(aDriver.getLongitude());
+                            orderRef.child(order.getId()).child("speed").setValue(aDriver.getSpeed());
 //                aDriver.setBookable(false);
 
                             notifyDriverOnOrderPlaced();

@@ -112,6 +112,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     String ordersDriverID;
     String ordersCustID;
+    String orderID;
 
 
 //    customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -426,22 +427,23 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for(DataSnapshot ds : dataSnapshot.getChildren()){
 
-                                if(ds.child("customerID").getValue().equals(id)){
+                                if(ds.child("customerID").getValue().equals(id)) {
                                     currentOrder = ds.getValue(Order.class);
 
 
-                                    if(currentOrder.isDriverEnroute()){
+                                    if (currentOrder.isDriverEnroute()) {
                                         ordersDriverID = ds.child("driverID").getValue(String.class);
-
+                                        orderID = currentOrder.getId();
 
                                         latitude = ds.child("latitude").getValue(Double.class);
                                         longitude = ds.child("longitude").getValue(Double.class);
 
-                                        driversRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        driversRef.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 driver = dataSnapshot.child(ordersDriverID).getValue(Driver.class);
-                                                Toast.makeText(getApplicationContext(), driver.getId(), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getApplicationContext(), driver.getId() + " " + driver.getEmail() + " " + ordersDriverID, Toast.LENGTH_LONG).show();
+                                                drivers.put(ordersDriverID, driver);
                                             }
 
                                             @Override
@@ -450,18 +452,25 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                                             }
                                         });
 //
-                                        LatLng location = new LatLng(latitude, longitude);
+                                        LatLng location1 = new LatLng(latitude, longitude);
+//                                        drivers.put(ordersDriverID, driver);
 
-                                        uMarker = mMap.addMarker(new MarkerOptions().position(location).title(ordersDriverID).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                        uMarker = mMap.addMarker(new MarkerOptions().position(location1).title(ordersDriverID).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
-                                        markers.put(ordersDriverID, uMarker);
+                                        Toast.makeText(getApplicationContext(), location1.toString(), Toast.LENGTH_LONG).show();
 
-                                        if (markers.containsKey(ordersDriverID)) {
+
+
+//
+//
+//                                        }
+                                    }
+                                    if (markers.containsKey(ordersDriverID)) {
                                             Marker marker = markers.get(ordersDriverID);
                                             marker.remove();
-
-                                        }
                                     }
+
+                                    markers.put(ordersDriverID, uMarker);
                                 }
                             }
                         }
@@ -476,80 +485,80 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 }
 
 
-                if (dataSnapshot.child("Drivers").hasChild(id)) {
-
-
-                    //assign this current user to the Customer Class
-                    driver = dataSnapshot.child("Drivers").child(id).getValue(Driver.class);
-
-//                    Toast.makeText(getApplicationContext(), "Chec" + customer.getEmail(), Toast.LENGTH_LONG).show();
-
-                    latitude = driver.getLatitude();
-                    longitude = driver.getLongitude();
-
-
-//                    Toast.makeText(getApplicationContext(), "Found customer, their location is " + latitude + " " + longitude, Toast.LENGTH_LONG).show();
-
-                    LatLng location = new LatLng(latitude, longitude);
-
-                    drivers.put(driver.getId(), driver);
-                    uMarker = mMap.addMarker(new MarkerOptions().position(location).title(customer.getId()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-
-
-                    markers.put(driver.getId(), uMarker);
-
-
-                    currentOrderRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for(DataSnapshot ds : dataSnapshot.getChildren()){
-
-                                if(ds.child("driverID").getValue().equals(id)){
-                                    currentOrder = ds.getValue(Order.class);
-
-                                    ordersCustID = ds.child("driverID").getValue(String.class);
-
-
-                                        latitude = ds.child("latitude").getValue(Double.class);
-                                        longitude = ds.child("longitude").getValue(Double.class);
-
-                                        driversRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                customer = dataSnapshot.child(ordersCustID).getValue(Customer.class);
-                                                Toast.makeText(getApplicationContext(), customer.getId(), Toast.LENGTH_LONG).show();
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
+//                if (dataSnapshot.child("Drivers").hasChild(id)) {
 //
-                                        LatLng location = new LatLng(latitude, longitude);
-
-                                        uMarker = mMap.addMarker(new MarkerOptions().position(location).title(ordersDriverID).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-
-                                        markers.put(ordersCustID, uMarker);
-
-                                        if (markers.containsKey(ordersCustID)) {
-                                            Marker marker = markers.get(ordersCustID);
-                                            marker.remove();
-
-                                        }
-
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-
-                }
+//
+//                    //assign this current user to the Customer Class
+//                    driver = dataSnapshot.child("Drivers").child(id).getValue(Driver.class);
+//
+////                    Toast.makeText(getApplicationContext(), "Chec" + customer.getEmail(), Toast.LENGTH_LONG).show();
+//
+//                    latitude = driver.getLatitude();
+//                    longitude = driver.getLongitude();
+//
+//
+////                    Toast.makeText(getApplicationContext(), "Found customer, their location is " + latitude + " " + longitude, Toast.LENGTH_LONG).show();
+//
+//                    LatLng location = new LatLng(latitude, longitude);
+//
+//                    drivers.put(driver.getId(), driver);
+//                    uMarker = mMap.addMarker(new MarkerOptions().position(location).title(customer.getId()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+//
+//
+//                    markers.put(driver.getId(), uMarker);
+//
+//
+//                    currentOrderRef.addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+//
+//                                if(ds.child("driverID").getValue().equals(id)){
+//                                    currentOrder = ds.getValue(Order.class);
+//
+//                                    ordersCustID = ds.child("driverID").getValue(String.class);
+//
+//
+//                                        latitude = ds.child("latitude").getValue(Double.class);
+//                                        longitude = ds.child("longitude").getValue(Double.class);
+//
+//                                        driversRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                            @Override
+//                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                                customer = dataSnapshot.child(ordersCustID).getValue(Customer.class);
+//                                                Toast.makeText(getApplicationContext(), customer.getId(), Toast.LENGTH_LONG).show();
+//                                            }
+//
+//                                            @Override
+//                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                            }
+//                                        });
+////
+//                                        LatLng location = new LatLng(latitude, longitude);
+//
+//                                        uMarker = mMap.addMarker(new MarkerOptions().position(location).title(ordersDriverID).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+//
+//                                        markers.put(ordersCustID, uMarker);
+//
+//                                        if (markers.containsKey(ordersCustID)) {
+//                                            Marker marker = markers.get(ordersCustID);
+//                                            marker.remove();
+//
+//                                        }
+//
+//                                }
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//
+//
+//                }
 
 
 
@@ -1055,38 +1064,48 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         }
         if (drivers.containsKey(markerId)) {
             dri = (Driver) drivers.get(markerId);
+
+            Toast.makeText(getApplicationContext(), dri.getId(), Toast.LENGTH_LONG).show();
+
             lat = String.valueOf(dri.getLatitude());
             lon = String.valueOf(dri.getLongitude());
             speed = String.valueOf(dri.getSpeed() + "m/s");
 
-            LatLng loc = new LatLng(dri.getLatitude(), dri.getLongitude());
-            LatLng locCus = new LatLng(cus.getLatitude(), cus.getLongitude());
-
-            float total_distance = loc.distanceTo(locCus);
-            float Ttime = total_distance/speed;
-
-            int hr = Math.round(time%60);
-            int mins = Math.round();
-
-            Calendar c = new Calendar;
-            c.setTime(00:00);
-
-            hourInMinutes = time.get(Calendar.HOUR_OF_DAY) * 60;
-            minutes = time.get(Calendar.MINUTE);
+            txtSpeed.setText(speed);
+            txtLocation.setText(lat  +"," + lon);
+            txtETA.setText(" ");
 
 
 
-            c.set(Calendar.HOUR_OF_DAY, requestedHour + hr);
-            c.set(Calendar.MINUTE, requestedHourInMinutes + mins)
 
-            String timeOfArrival = String.format(Locale.UK, "%d:%02d", c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
+//            LatLng loc = new LatLng(dri.getLatitude(), dri.getLongitude());
+//            LatLng locCus = new LatLng(cus.getLatitude(), cus.getLongitude());
 
-
-            etaInHoursAncMins = ;
+//            float total_distance = loc.distanceTo(locCus);
+//            float Ttime = total_distance/speed;
+//
+//            int hr = Math.round(time%60);
+//            int mins = Math.round();
+//
+//            Calendar c = new Calendar;
+//            c.setTime(00:00);
+//
+//            hourInMinutes = time.get(Calendar.HOUR_OF_DAY) * 60;
+//            minutes = time.get(Calendar.MINUTE);
+//
+//
+//
+//            c.set(Calendar.HOUR_OF_DAY, requestedHour + hr);
+//            c.set(Calendar.MINUTE, requestedHourInMinutes + mins)
+//
+//            String timeOfArrival = String.format(Locale.UK, "%d:%02d", c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
+//
+//
+//            etaInHoursAncMins = ;
 
             txtSpeed.setText(speed);
             txtLocation.setText(lat  +"," + lon);
-            txtETA.setText(timeOfArrival);
+//            txtETA.setText(timeOfArrival);
 
             userRef.child("Drivers").child(markerId).addValueEventListener(new ValueEventListener() {
                 @Override

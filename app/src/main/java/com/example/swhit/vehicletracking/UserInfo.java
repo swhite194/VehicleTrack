@@ -66,6 +66,10 @@ public class UserInfo extends AppCompatActivity {
     Driver driver = new Driver();
     Admin admin = new Admin();
 
+    String oldAddress, oldCity, oldPostcode;
+
+    boolean okAddress;
+
     DatabaseReference currentUser = myRef.child("users");
 
 //    DatabaseReference currentCustomer = myRef.child("users").child("Customers").child(customer.id);
@@ -227,6 +231,10 @@ public class UserInfo extends AppCompatActivity {
                     ulatitude.setText(String.valueOf(customer.getLatitude()));
                     ulongitude.setText(String.valueOf(customer.getLongitude()));
 
+                    oldAddress = customer.getAddress();
+                    oldCity = customer.getCity();
+                    oldPostcode = customer.getPostcode();
+
 //                    utest.setText(getLocationFromAddress(context, aCustomer.getAddress()));
 
                     //a combination of: https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
@@ -304,6 +312,10 @@ public class UserInfo extends AppCompatActivity {
                     ulatitude.setText(String.valueOf(admin.getLatitude()));
                     ulongitude.setText(String.valueOf(admin.getLongitude()));
 
+
+                    oldAddress = customer.getAddress();
+                    oldCity = customer.getCity();
+                    oldPostcode = customer.getPostcode();
 //                    utest.setText(getLocationFromAddress(context, aCustomer.getAddress()));
 
                     //a combination of: https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
@@ -414,133 +426,176 @@ public class UserInfo extends AppCompatActivity {
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            //https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
-                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                //https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
 
-                String address = uaddress.getText() + " " + ucity.getText() + " " + upostcode.getText();
-                List<Address> fromLocationName = null;
-                //perhaps weirdly done because, considering this textbox is at the bottom, it makes it look like it automatically updates when you finish typing in the address; which isn't the case (it updates on submit)
+                if ((uaddress.getText().toString().trim().length() == 0) || (ucity.getText().toString().trim().length() == 0) || (upostcode.getText().toString().trim().length() == 0)) {
+                    Toast.makeText(getApplicationContext(), "Address cannot be empty!", Toast.LENGTH_SHORT).show();
+                }
+                else if ((uaddress.getText().toString().trim().length() > 0) && (ucity.getText().toString().trim().length() > 0) && (upostcode.getText().toString().trim().length() > 0)) {
 
-                //THIS SEEMS TO CAUSE USERINFO TO EITHER CRASH IF ITS FROM A COLD BOOT OR ONLY SHOW THE DETAILS FOR customers@gmail.com.. custpassword IF THEY'VE BEEN LOGGED IN PRIOR
-                try {
-                    fromLocationName = geocoder.getFromLocationName(address, 1);
-                    if (fromLocationName != null && fromLocationName.size() > 0) {
-                        Address a = fromLocationName.get(0);
-                        a.getLatitude();
-                        a.getLongitude();
+                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
 
-                        String lat = String.valueOf(a.getLatitude());
-                        String lon = String.valueOf(a.getLongitude());
+                    String address = uaddress.getText() + " " + ucity.getText() + " " + upostcode.getText();
 
-                        ulatitude.setText(lat);
-                        ulongitude.setText(lon);
+                    Toast.makeText(getApplicationContext(), "Address: " + address, Toast.LENGTH_SHORT).show();
+
+                    List<Address> fromLocationName = null;
+                    //perhaps weirdly done because, considering this textbox is at the bottom, it makes it look like it automatically updates when you finish typing in the address; which isn't the case (it updates on submit)
+
+                    //THIS SEEMS TO CAUSE USERINFO TO EITHER CRASH IF ITS FROM A COLD BOOT OR ONLY SHOW THE DETAILS FOR customers@gmail.com.. custpassword IF THEY'VE BEEN LOGGED IN PRIOR
+                    try {
+                        fromLocationName = geocoder.getFromLocationName(address, 1);
+                        if (fromLocationName != null && fromLocationName.size() > 0) {
+                            Address a = fromLocationName.get(0);
+                            a.getLatitude();
+                            a.getLongitude();
+
+                            okAddress = true;
+
+                            String lat = String.valueOf(a.getLatitude());
+                            String lon = String.valueOf(a.getLongitude());
+
+                            ulatitude.setText(lat);
+                            ulongitude.setText(lon);
+
+
+//                            Toast.makeText(getApplicationContext(), "Seems to go through", Toast.LENGTH_SHORT).show();
+//                            System.out.println("seems to go through");
+
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Couldn't find this address/city/postcode. Cannot save record until valid!", Toast.LENGTH_SHORT).show();
+
+                            uaddress.setText(oldAddress);
+                            ucity.setText(oldCity);
+                            upostcode.setText(oldPostcode);
+
+
+
+
+
+                        }
+
+                        //never gets called?
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "Couldn't find this address/city/postcode! Cannot save record until valid!", Toast.LENGTH_SHORT).show();
+
+
 
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                //this works (but obviously needs condition statements)
+
+                    //this works (but obviously needs condition statements)
 //               writeNewDriver(n, e, doLa, doLo, boEnr);
 
-                //if im continuing to use this... then https://firebase.google.com/docs/database/android/read-and-write amongst other sources.
+                    //if im continuing to use this... then https://firebase.google.com/docs/database/android/read-and-write amongst other sources.
 
-                //THIS STUFF DOESNT WORK
-                //https://stackoverflow.com/questions/37629346/can-i-get-value-without-using-event-listeners-in-firebase-on-android
-                //this is still a really interesting point https://stackoverflow.com/questions/35929691/retrieving-arraylistobject-from-firebase-inner-class/35942782#35942782
-                //because i was having issue changing data on button press but i think i was accidentally calling it customer and not driver.
-                //also good, https://stackoverflow.com/questions/40184797/retrieve-data-from-firebase-database-on-button-click but he makes use of blah.Class a lot and i dont
-                //annoys me that the first reference refers to something which wasnt my issue.
+                    //THIS STUFF DOESNT WORK
+                    //https://stackoverflow.com/questions/37629346/can-i-get-value-without-using-event-listeners-in-firebase-on-android
+                    //this is still a really interesting point https://stackoverflow.com/questions/35929691/retrieving-arraylistobject-from-firebase-inner-class/35942782#35942782
+                    //because i was having issue changing data on button press but i think i was accidentally calling it customer and not driver.
+                    //also good, https://stackoverflow.com/questions/40184797/retrieve-data-from-firebase-database-on-button-click but he makes use of blah.Class a lot and i dont
+                    //annoys me that the first reference refers to something which wasnt my issue.
 
 //IMPORTANT: SEE MY FACEBOOK NOTEPAD MSG FOR THE KIND OF THINGS THIS WAS CAUSING WHEN THE OTHER WAY ROUND.
 //set this to SingleValue; ValueEventListener causes a bug where new accounts will be reverted to the same details as the account which you originally press Submit on
-                //I WANT TO SAY THAT THIS WILL HAVE NO IMPACT ON A DRIVERS LOCATION WHEN IT COMES TO LOGGING INTO OTHER DRIVER ACCOUNTS OR WHENEVER THEY GO FROM STATIC TO MOVING?
-                currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                    String n = uname.getText().toString();
-                    String e = uemail.getText().toString();
-                    String p = uphonenumber.getText().toString();
-                    String ad = uaddress.getText().toString();
-                    String ci = ucity.getText().toString();
-                    String po = upostcode.getText().toString();
-                    String la = ulatitude.getText().toString();
-                    String lo = ulongitude.getText().toString();
+                    //I WANT TO SAY THAT THIS WILL HAVE NO IMPACT ON A DRIVERS LOCATION WHEN IT COMES TO LOGGING INTO OTHER DRIVER ACCOUNTS OR WHENEVER THEY GO FROM STATIC TO MOVING?
 
-                    String book = uBookable.getText().toString();
 
-                    //should this be the case, its a boolean? will it work
-                    String enr = uEnroute.getText().toString();
+                    if(okAddress) {
+
+                        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                            String n = uname.getText().toString();
+                            String e = uemail.getText().toString();
+                            String p = uphonenumber.getText().toString();
+                            String ad = uaddress.getText().toString();
+                            String ci = ucity.getText().toString();
+                            String po = upostcode.getText().toString();
+                            String la = ulatitude.getText().toString();
+                            String lo = ulongitude.getText().toString();
+
+                            String book = uBookable.getText().toString();
+
+                            //should this be the case, its a boolean? will it work
+                            String enr = uEnroute.getText().toString();
 //
 //                    String book = uBookable.getText().toString();
 
 //                    //combination of address, city and postcode
 //                    String completeAddress = ad + " " + ci + " " + po;
 
-                    //https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
-                    double doLa = Double.parseDouble(la);
-                    double doLo = Double.parseDouble(lo);
-                    boolean boEnr = Boolean.parseBoolean(enr);
+                            //https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+                            double doLa = Double.parseDouble(la);
+                            double doLo = Double.parseDouble(lo);
+                            boolean boEnr = Boolean.parseBoolean(enr);
 
 
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child("Customers").hasChild(id)) {
-                            //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
-                            //could this all be made more efficient
-                            //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.child("Customers").hasChild(id)) {
+                                    //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
+                                    //could this all be made more efficient
+                                    //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
 
-                            //THIS DOESNT DO ANYTHING; I NEED VALIDATION CHECKS.
+                                    //THIS DOESNT DO ANYTHING; I NEED VALIDATION CHECKS.
 //                            if(n.equals("")||e.equals("")||ad.equals("")||ci.equals("")||po.equals(""))
 //                            {
 //                                Toast.makeText(getApplicationContext(), "Please fill in all values before submitting", Toast.LENGTH_SHORT).show();
 //                            } else {
 //                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 //                            }
-                            UpdateCustomer(n, e, p, doLa, doLo, ad, ci, po);
-                        }
-                        if (dataSnapshot.child("Drivers").hasChild(id)) {
+                                    UpdateCustomer(n, e, p, doLa, doLo, ad, ci, po);
+                                }
+                                if (dataSnapshot.child("Drivers").hasChild(id)) {
 
-                            //care about what the snapshot says at the exact time of clicking that button.. rather than updating firebase with
-                            //what your page MAY have said at the start.
-                            Double driverLat = dataSnapshot.child("Drivers").child(id).child("latitude").getValue(Double.class);
-                            Double driverLong = dataSnapshot.child("Drivers").child(id).child("longitude").getValue(Double.class);
+                                    //care about what the snapshot says at the exact time of clicking that button.. rather than updating firebase with
+                                    //what your page MAY have said at the start.
+                                    Double driverLat = dataSnapshot.child("Drivers").child(id).child("latitude").getValue(Double.class);
+                                    Double driverLong = dataSnapshot.child("Drivers").child(id).child("longitude").getValue(Double.class);
 
-                            UpdateDriver(n, e, p, driverLat, driverLong, boEnr, book);
-                            //i assume i include this; ive not started trying to edit drivers details yet..
-                            //enr = null;
-                            //book = null;
-                            //
-                        }
+                                    UpdateDriver(n, e, p, driverLat, driverLong, boEnr, book);
+                                    //i assume i include this; ive not started trying to edit drivers details yet..
+                                    //enr = null;
+                                    //book = null;
+                                    //
+                                }
 
-                        if (dataSnapshot.child("Admins").hasChild(id)) {
-                            //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
-                            //could this all be made more efficient
-                            //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
+                                if (dataSnapshot.child("Admins").hasChild(id)) {
+                                    //does calling this method make up for the fact that i'm not calling those textfields directly into classes?
+                                    //could this all be made more efficient
+                                    //i feel bad about using classes if im barely using them and instead doing stuff like "to string" rather than class.
 
-                            //THIS DOESNT DO ANYTHING; I NEED VALIDATION CHECKS.
+                                    //THIS DOESNT DO ANYTHING; I NEED VALIDATION CHECKS.
 //                            if(n.equals("")||e.equals("")||ad.equals("")||ci.equals("")||po.equals(""))
 //                            {
 //                                Toast.makeText(getApplicationContext(), "Please fill in all values before submitting", Toast.LENGTH_SHORT).show();
 //                            } else {
 //                                writeNewCustomer(n, e, doLa, doLo, ad, ci, po);
 //                            }
-                            UpdateAdmin(n, e, p, doLa, doLo, ad, ci, po);
-                        }
+                                    UpdateAdmin(n, e, p, doLa, doLo, ad, ci, po);
+                                }
 
-                    }
+                            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
+                            }
 
-                });
+                        });
 
-                //not making use of getters to plug those values in.. instead im parsing in the text fields? is that all i can do?
 
-                Intent intent = new Intent(UserInfo.this, HomeActivity.class);
-                startActivity(intent);
+                    //not making use of getters to plug those values in.. instead im parsing in the text fields? is that all i can do?
 
+                    Intent intent = new Intent(UserInfo.this, HomeActivity.class);
+                    startActivity(intent);
+
+                }
+                }
+                //defaulting it back!
+                okAddress = false;
             }
 
         });
