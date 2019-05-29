@@ -334,6 +334,12 @@ public class ListenToFirebase extends Service {
 
 
 
+
+
+
+
+
+
                                     hours = timeToTravelToCustomerInWholeMinutes / 60; //since both are ints, you get an int
                                     minutes = timeToTravelToCustomerInWholeMinutes % 60;
 
@@ -342,7 +348,7 @@ public class ListenToFirebase extends Service {
                                     timeToLeave.add(Calendar.HOUR, hours);
                                     timeToLeave.add(Calendar.MINUTE, minutes);
 
-
+                                    System.out.println("Requested Time: " + requestedTimeCal.get(Calendar.HOUR) + ":" + timeToLeave.get(Calendar.MINUTE));
                                     System.out.println("Distance to travel: " + distanceOfTravelToCustomer);
                                     System.out.println("Time to Leave: " + timeToLeave.get(Calendar.HOUR) + ":" + timeToLeave.get(Calendar.MINUTE));
 
@@ -357,7 +363,7 @@ public class ListenToFirebase extends Service {
 //                                        currentTimeString = currentTime
 
 
-                                        startAlarm(requestedTimeCal);
+                                        startAlarm(timeToLeave);
 
 
 
