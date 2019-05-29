@@ -236,39 +236,6 @@ public class AdminEditAnyUserInfo extends AppCompatActivity {
 
 
 
-//                    utest.setText(getLocationFromAddress(context, aCustomer.getAddress()));
-
-                    //a combination of: https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
-                    //and https://stackoverflow.com/questions/24352192/android-google-maps-add-marker-by-address (devgrg's answer)
-//                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-//
-//                    String address = uaddress.getText() + " " + ucity.getText() + " " + upostcode.getText();
-//                    List<Address> fromLocationName = null;
-//                    //perhaps weirdly done because, considering this textbox is at the bottom, it makes it look like it automatically updates when you finish typing in the address; which isn't the case (it updates on submit)
-//
-//                    //THIS SEEMS TO CAUSE USERINFO TO EITHER CRASH IF ITS FROM A COLD BOOT OR ONLY SHOW THE DETAILS FOR customers@gmail.com.. custpassword IF THEY'VE BEEN LOGGED IN PRIOR
-//                    try {
-//                        fromLocationName = geocoder.getFromLocationName(address, 1);
-//                        if (fromLocationName != null && fromLocationName.size() > 0) {
-//                            Address a = fromLocationName.get(0);
-//                            a.getLatitude();
-//                            a.getLongitude();
-//
-////                            p1 = new LatLng(a.getLatitude(), a.getLongitude());
-//
-//                            String lat = String.valueOf(a.getLatitude());
-//                            String lon = String.valueOf(a.getLongitude());
-//
-//                            ulatitude.setText(lat);
-//                            ulongitude.setText(lon);
-////                            utest.setText(a.getLatitude() + "," + a.getLongitude());
-////                            a = null;
-////                            fromLocationName = null;
-//
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
 
 
                 }

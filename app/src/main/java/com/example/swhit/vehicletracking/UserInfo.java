@@ -53,8 +53,8 @@ public class UserInfo extends AppCompatActivity {
 
 
     //    EditText uname, uemail, uphonenumber, uaddress, ucity, upostcode, ulatitude, ulongitude, uEnroute, uBookable;
-    EditText uname, uemail, uphonenumber, uaddress, ucity, upostcode;
-    TextView ulatitude, ulongitude, uEnroute, uBookable;
+    EditText uname, uphonenumber, uaddress, ucity, upostcode;
+    TextView uEmail, ulatitude, ulongitude, uEnroute, uBookable;
     EditText utest;
     Button submit_button;
 
@@ -100,7 +100,7 @@ public class UserInfo extends AppCompatActivity {
         submitButtonSection = (LinearLayout) findViewById(R.id.SubmitButtonSection);
 
         uname = findViewById(R.id.txtName);
-        uemail = findViewById(R.id.txtEmail);
+        uEmail = findViewById(R.id.txtEmail);
         uphonenumber = findViewById(R.id.txtPhoneNumber);
         uaddress = findViewById(R.id.txtAddress);
         ucity = findViewById(R.id.txtCity);
@@ -223,7 +223,7 @@ public class UserInfo extends AppCompatActivity {
 //                    isDriver = false;
 
                     uname.setText(customer.getName());
-                    uemail.setText(customer.getEmail());
+                    uEmail.setText(customer.getEmail());
                     uphonenumber.setText(customer.getPhoneNumber());
                     uaddress.setText(customer.getAddress());
                     ucity.setText(customer.getCity());
@@ -282,7 +282,7 @@ public class UserInfo extends AppCompatActivity {
 //                    isDriver = true;
 
                     uname.setText(driver.getName());
-                    uemail.setText(driver.getEmail());
+                    uEmail.setText(driver.getEmail());
                     uphonenumber.setText(driver.getPhoneNumber());
                     ulatitude.setText(String.valueOf(driver.getLatitude()));
                     ulongitude.setText(String.valueOf(driver.getLongitude()));
@@ -304,7 +304,7 @@ public class UserInfo extends AppCompatActivity {
 //                    isDriver = false;
 
                     uname.setText(admin.getName());
-                    uemail.setText(admin.getEmail());
+                    uEmail.setText(admin.getEmail());
                     uphonenumber.setText(admin.getPhoneNumber());
                     uaddress.setText(admin.getAddress());
                     ucity.setText(admin.getCity());
@@ -508,7 +508,7 @@ public class UserInfo extends AppCompatActivity {
 
                         currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                             String n = uname.getText().toString();
-                            String e = uemail.getText().toString();
+                            String e = uEmail.getText().toString();
                             String p = uphonenumber.getText().toString();
                             String ad = uaddress.getText().toString();
                             String ci = ucity.getText().toString();

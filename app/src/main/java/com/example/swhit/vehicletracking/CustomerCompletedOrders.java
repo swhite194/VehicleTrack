@@ -1,36 +1,36 @@
-package com.example.swhit.vehicletracking;
-
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-public class CustomerCompletedOrders extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_completed_orders);
-    }
-}
-
-//copy paste because i removed Date from Current, so need to make another layout xml etc.
-
-
+//package com.example.swhit.vehicletracking;
+//
+//import android.content.Intent;
+//import android.support.annotation.NonNull;
+//import android.support.v7.app.AppCompatActivity;
+//import android.os.Bundle;
+//import android.support.v7.widget.LinearLayoutManager;
+//import android.support.v7.widget.RecyclerView;
+//import android.view.LayoutInflater;
+//import android.view.View;
+//import android.view.ViewGroup;
+//import android.widget.Button;
+//import android.widget.EditText;
+//import android.widget.TextView;
+//import android.widget.Toast;
+//
+//import com.firebase.ui.database.FirebaseRecyclerAdapter;
+//import com.firebase.ui.database.FirebaseRecyclerOptions;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//
+//public class CustomerCompletedOrders extends AppCompatActivity {
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_customer_completed_orders);
+//    }
+//}
+//
+//
+//
+//
 //package com.example.swhit.vehicletracking;
 //
 //        import android.content.Intent;
@@ -45,17 +45,17 @@ public class CustomerCompletedOrders extends AppCompatActivity {
 //        import android.widget.Button;
 //        import android.widget.EditText;
 //        import android.widget.TextView;
-//        import android.widget.Toast;
-//
-//        import com.firebase.ui.database.FirebaseRecyclerAdapter;
-//        import com.firebase.ui.database.FirebaseRecyclerOptions;
+////        import android.widget.Toast;
+////
+////        import com.firebase.ui.database.FirebaseRecyclerAdapter;
+////        import com.firebase.ui.database.FirebaseRecyclerOptions;
 //        import com.google.firebase.database.DatabaseReference;
-//        import com.google.firebase.database.FirebaseDatabase;
-//
-////https://www.youtube.com/watch?v=b_tz8kbFUsU
-////used as basis in background, but supported by //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need (basically same as official doc - https://github.com/firebase/FirebaseUI-Android/tree/master/database#using-the-firebaserecycleradapter "using the firebaserecycleradapter"))
-//////and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
-//public class CustomerCurrentOrders extends AppCompatActivity {
+////        import com.google.firebase.database.FirebaseDatabase;
+////
+//////https://www.youtube.com/watch?v=b_tz8kbFUsU
+//////used as basis in background, but supported by //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need (basically same as official doc - https://github.com/firebase/FirebaseUI-Android/tree/master/database#using-the-firebaserecycleradapter "using the firebaserecycleradapter"))
+////////and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
+////public class CustomerCurrentOrders extends AppCompatActivity {
 //
 //    private FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
 //    private DatabaseReference myRef = database.getReference("Location");
@@ -85,10 +85,10 @@ public class CustomerCompletedOrders extends AppCompatActivity {
 //    }
 //
 //    private void firebaseCurrentOrderSearch() {
-//
-//        //spec changed slightly since 3.x+, use FirebaseRecyclerOptions now
-//        //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need
-////and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
+////
+////        //spec changed slightly since 3.x+, use FirebaseRecyclerOptions now
+////        //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need
+//////and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
 //        //after the first half of this being by https://www.youtube.com/watch?v=b_tz8kbFUsU (slightly outdated, only in cases like this, principle still applies)
 //
 //        FirebaseRecyclerOptions<Order> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Order>().setQuery(currentOrderRef, Order.class).build();
@@ -136,32 +136,25 @@ public class CustomerCompletedOrders extends AppCompatActivity {
 //    public class OrdersViewHolder extends RecyclerView.ViewHolder {
 //
 //        View mView;
-//
+////
 //        public OrdersViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//            mView = itemView;
+//            super(itemView); mView = itemView;
 //
-//        }
+//       }
 //
-//        //https://www.youtube.com/watch?v=b_tz8kbFUsU
-//        public void setDetails(String orderId, String customerId, String requestedDeliveryDate, String requestedDeliveryTime, String driverId, String itemId, int itemQuantity) {
-//
-//            //these R.id.'s are from currentorders_list_layoutrs_list_layout.xml
-//            TextView order_id = (TextView) mView.findViewById(R.id.txtOrderId);
-//            TextView customer_id = (TextView) mView.findViewById(R.id.txtCustomerId);
-//            TextView requested_delivery_date = (TextView) mView.findViewById(R.id.txtRequestedDeliveryDate);
-//            TextView requested_delivery_time = (TextView) mView.findViewById(R.id.txtRequestedDeliveryTime);
-//            TextView driver_id = (TextView) mView.findViewById(R.id.txtDriverId);
-//            TextView item_id = (TextView) mView.findViewById(R.id.txtItemId);
-//            TextView item_quantity = (TextView) mView.findViewById(R.id.txtItemQuantity);
-//
-//
-//            order_id.setText(orderId);
-//            customer_id.setText(customerId);
-//            requested_delivery_date.setText(requestedDeliveryDate);
-//            requested_delivery_time.setText(requestedDeliveryTime);
-//            driver_id.setText(driverId);
-//            item_id.setText(itemId);
+//        //https://www.youtube.com/watch?v=b_tz8kbFUsU public void setDetails(String orderId, String customerId, String requestedDeliveryDate, String requestedDeliveryTime, String driverId, String itemId, int itemQuantity) {
+// //these R.id.'s are from currentorders_list_layoutrs_list_layout.xml/            TextView order_id = (TextView) mView.findViewById(R.id.txtOrderId);
+////            TextView customer_id = (TextView) mView.findViewById(R.id.txtCustomerId); TextView requested_delivery_date = (TextView) mView.findViewById(R.id.txtRequestedDeliveryDate);
+////            TextView requested_delivery_time = (TextView) mView.findViewById(R.id.txtRequestedDeliveryTime);
+//           TextView driver_id = (TextView) mView.findViewById(R.id.txtDriverId);
+//           TextView item_id = (TextView) mView.findViewById(R.id.txtItemId);
+////            TextView item_quantity = (TextView) mView.findViewById(R.id.txtItemQuantity);
+////
+////            order_id.setText(orderId);
+////            customer_id.setText(customerId);
+////            requested_delivery_date.setText(requestedDeliveryDate); requested_delivery_time.setText(requestedDeliveryTime);
+////            driver_id.setText(driverId);
+//           item_id.setText(itemId);
 //            //https://stackoverflow.com/questions/4105331/how-do-i-convert-from-int-to-string
 //            item_quantity.setText(String.valueOf(itemQuantity));
 //        }

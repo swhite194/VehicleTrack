@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.swhit.vehicletracking.services.ListenToFirebase;
 import com.example.swhit.vehicletracking.services.LocationService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -100,7 +101,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
-
+        startService(new Intent(this, ListenToFirebase.class));
 
         btnOpenMap = (Button) findViewById(R.id.btnOpenMap);
 //        btnDeleteLocationsFromFirebase = (Button) findViewById(R.id.btnDe);
