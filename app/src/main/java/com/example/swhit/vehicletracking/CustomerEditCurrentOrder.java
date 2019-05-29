@@ -708,7 +708,7 @@ public class CustomerEditCurrentOrder extends AppCompatActivity {
                             myRef.child("users").child("Drivers").child(aDriver.getId()).setValue(aDriver);
 
 
-                            Intent intent = new Intent(PlaceOrder.this, HomeActivity.class);
+                            Intent intent = new Intent(CustomerEditCurrentOrder.this, HomeActivity.class);
                             startActivity(intent);
 
 //                    custLatLng = (aCustomer.getLatitude(), aCustomer.getLongitude());
