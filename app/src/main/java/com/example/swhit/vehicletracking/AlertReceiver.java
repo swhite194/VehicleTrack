@@ -13,7 +13,8 @@ public class AlertReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
+        //14:10
+        NotificationCompat.Builder nb = notificationHelper.getChannelNotification1();
         notificationHelper.getManager().notify(1, nb.build());
 
     }

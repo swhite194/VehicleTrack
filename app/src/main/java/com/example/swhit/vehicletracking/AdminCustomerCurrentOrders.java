@@ -16,8 +16,12 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 //https://www.youtube.com/watch?v=b_tz8kbFUsU
 //used as basis in background, but supported by //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need (basically same as official doc - https://github.com/firebase/FirebaseUI-Android/tree/master/database#using-the-firebaserecycleradapter "using the firebaserecycleradapter"))
@@ -29,10 +33,16 @@ public class AdminCustomerCurrentOrders extends AppCompatActivity {
 
     private DatabaseReference currentOrderRef = myRef.child("orders").child("Current Orders");
 
+    DatabaseReference orderRef = myRef.child("orders").child("Current Orders");
+    DatabaseReference customers = myRef.child("users").child("Customers");
+
     private EditText searchCustId;
     private Button searchBtn;
 
     private RecyclerView resultList;
+
+    String criteria;
+    String custID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +84,28 @@ public class AdminCustomerCurrentOrders extends AppCompatActivity {
 //and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
         //after the first half of this being by https://www.youtube.com/watch?v=b_tz8kbFUsU (slightly outdated, only in cases like this, principle still applies)
 
-        FirebaseRecyclerOptions<Order> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Order>().setQuery(currentOrderRef, Order.class).build();
+        criteria = searchCustId.getText().toString();
+        customers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(ds.child("email").getValue().equals(criteria)){
+                        System.out.println("FOUND IT");
+                        custID = ds.getKey();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        Query query = orderRef.orderByChild("customerID").equalTo(custID);
+
+        FirebaseRecyclerOptions<Order> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Order>().setQuery(query, Order.class).build();
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Order, OrdersViewHolder>(firebaseRecyclerOptions) {
 

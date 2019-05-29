@@ -24,10 +24,10 @@
 
         <TextView
             android:id="@+id/textView12"
-            android:layout_width="48dp"
+            android:layout_width="5dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Speed of Driver:"
+            android:text="Speed:"
             android:textSize="20dp"
             android:textStyle="bold|italic" />
 
@@ -50,22 +50,22 @@
 
         <TextView
             android:id="@+id/txtETA"
-            android:layout_width="15dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/textView27"
-            android:layout_width="21dp"
+            android:layout_width="11dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="LatLng:"
+            android:text="Loc:"
             android:textSize="20dp"
             android:textStyle="bold|italic" />
 
         <TextView
             android:id="@+id/txtLocation"
-            android:layout_width="wrap_content"
+            android:layout_width="41dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 

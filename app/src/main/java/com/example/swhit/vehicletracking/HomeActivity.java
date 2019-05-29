@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Calendar;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 //https://developer.android.com/studio/write/layout-editor
@@ -52,9 +56,11 @@ public class HomeActivity extends AppCompatActivity {
 
     Button btnEditYourCurrentOrders;
 
-    Button btnSearchCustomerCurrentOrders;
+    Button btnSearchCustomerCurrentOrders, btnSearchCustomerCompleteOrders;
 
     Button logout;
+
+    String ETA;
 
     LinearLayout titleSection, allUsersSection, currentCustomersOrdersSection, driverStatusSection, adminSection;
 
@@ -79,6 +85,8 @@ public class HomeActivity extends AppCompatActivity {
 
     boolean orderHasDriver = false;
     boolean orderHasDriverandCustomer = false;
+
+    Calendar currentTime = Calendar.getInstance();
 
 
 
@@ -124,6 +132,8 @@ public class HomeActivity extends AppCompatActivity {
         btnEditYourCurrentOrders = (Button) findViewById(R.id.btnEditYourCurrentOrders);
 
         btnSearchCustomerCurrentOrders = (Button) findViewById(R.id.btnSearchCustomerCurrentOrders);
+
+        btnSearchCustomerCompleteOrders = (Button) findViewById(R.id.btnSearchCustomerCompleteOrders);
 
         logout = (Button) findViewById(R.id.btnLogout);
 
@@ -208,6 +218,12 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
                 //does this work
                 FirebaseAuth.getInstance().signOut();
+
+                Intent intent1 = new Intent(HomeActivity.this, LocationService.class);
+                stopService(intent1);
+
+                Intent intent2 = new Intent(HomeActivity.this, ListenToFirebase.class);
+                stopService(intent2);
             }
         });
 
@@ -296,6 +312,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        btnSearchCustomerCompleteOrders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, AdminCustomerCurrentOrders.class);
+                startActivity(intent);
+            }
+        });
+
         //https://stackoverflow.com/questions/16876538/android-stop-start-service-created-in-oncreate slightly different but yeah
         //find a better source because they're different.
 
@@ -317,6 +341,8 @@ public class HomeActivity extends AppCompatActivity {
         btnStopService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent1 = new Intent(HomeActivity.this, LocationService.class);
+                stopService(intent1);
                 Intent intent = new Intent(HomeActivity.this, LocationService.class);
                 stopService(intent);
             }
@@ -344,6 +370,8 @@ public class HomeActivity extends AppCompatActivity {
                         if (dataSnapshot.hasChild(id)) {
                             //this is good, but in other classes, customer is being made redundant , and the use of customer.id is cheaty
                             driverUser = dataSnapshot.child(id).getValue(Driver.class);
+
+
 
 
                         }
@@ -391,9 +419,11 @@ public class HomeActivity extends AppCompatActivity {
                                     drID = (String) ds.child("driverID").getValue();
                                     cuID = (String) ds.child("customerID").getValue();
 
-                                    System.out.println("why");
-                                    System.out.println(drID);
-                                    System.out.println(driverUser.getId());
+//                                    System.out.println("why");
+//                                    System.out.println(drID);
+//                                    System.out.println(driverUser.getId());
+
+
 
 
                                     if (driverUser.getId().equals(drID)) {
@@ -401,6 +431,8 @@ public class HomeActivity extends AppCompatActivity {
                                         //feel like its insecure to put these here?
                                         order = ds.getValue(Order.class);
                                         key = ds.getKey();
+
+                                        ETA = ds.child(key).child("ETA").getValue(String.class);
 
                                         orderHasDriver = true;
 
@@ -414,14 +446,19 @@ public class HomeActivity extends AppCompatActivity {
                                                         driverUser.setEnroute(true);
                                                         order.setDriverEnroute(true);
 
-                                                        drivers.child(id).setValue(driverUser);
-                                                        currentOrders.child(key).setValue(order);
+//                                                        drivers.child(id).setValue(driverUser);
+//                                                        currentOrders.child(key).setValue(order);
+
+                                                        drivers.child(id).child("enroute").setValue(true);
+                                                        currentOrders.child(key).child("driverEnroute").setValue(true);
 
                                                         //i'm just re-using cuID because they should be the same according to that check; is that okay?
                                                         //its all a bit convoluted so im worried about that looking sneaky.
 //                                                        customers.child(cuID).setValue(customerUser);
                                                         customerUser = dataS.getValue(Customer.class);
                                                         orderHasDriverandCustomer = true;
+
+
 
                                                         informDriverWhenToLeave();
                                                     }
@@ -658,6 +695,14 @@ public class HomeActivity extends AppCompatActivity {
                                                     drivers.child(id).child("enroute").setValue(false);
                                                     currentOrders.child(key).child("driverEnroute").setValue(false);
 
+                                                    String deliveredTime = String.format(Locale.UK, "%d:%02d", currentTime.get(Calendar.HOUR_OF_DAY), currentTime.get(Calendar.MINUTE));
+
+                                                    currentOrders.child(key).child("Delivered Time").setValue(currentTime);
+                                                    currentOrders.child(key).child("latitude").removeValue();
+                                                    currentOrders.child(key).child("longitude").removeValue();
+                                                    currentOrders.child(key).child("speed").removeValue();
+
+
                                                     moveRecord(currentOrders.child(key), completedOrders.child(key));
 
                                                 }
@@ -855,8 +900,8 @@ public class HomeActivity extends AppCompatActivity {
         //https://www.youtube.com/watch?v=Z28s39brZJM
         System.out.println("Running inform driver method");
         //why have i called it customerUser
-        phoneNumber = driverUser.getPhoneNumber();
-        message = "Yeet";
+        phoneNumber = customerUser.getPhoneNumber();
+        message = "Hi, your driver has just went enroute to you; you can check their progress on the Tracker Map!";
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(phoneNumber, null, message, null, null);
     }
@@ -948,6 +993,9 @@ public class HomeActivity extends AppCompatActivity {
         }
 
     }
+
+
+
 
 
 //    @Override

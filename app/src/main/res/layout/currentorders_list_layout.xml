@@ -56,7 +56,6 @@
         android:layout_marginStart="17dp"
         android:layout_marginLeft="17dp"
         android:layout_marginTop="27dp"
-        android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/lblItemId"
         app:layout_constraintTop_toBottomOf="@+id/txtDriverId" />
 
@@ -78,7 +77,6 @@
         android:layout_marginStart="17dp"
         android:layout_marginLeft="17dp"
         android:layout_marginTop="29dp"
-        android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/lblRequestedDeliveryTime"
         app:layout_constraintTop_toBottomOf="@+id/txtRequestedDeliveryDate" />
 

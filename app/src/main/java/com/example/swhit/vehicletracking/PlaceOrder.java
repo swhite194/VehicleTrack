@@ -761,6 +761,9 @@ public class PlaceOrder extends AppCompatActivity {
         //SHOULD i consider that if their address changes.. should it affect the orders table in Firebase? (considering that archived might be diff)
         orderRef.child(pushID).setValue(order);
 
+        orderRef.child(pushID).child("customerLat").setValue(aCustomer.getLatitude());
+        orderRef.child(pushID).child("customerLong").setValue(aCustomer.getLongitude());
+
 
     }
 
@@ -879,26 +882,26 @@ public class PlaceOrder extends AppCompatActivity {
         SmsManager smsManager = SmsManager.getDefault();
 
 
-
-        messageToDriver = "Current time + " + currentTimeCal + "\n" + " Hi driver " + aDriver.getId() +"\n" + ". An order has been placed for " + order.getItemQuantity() + " " +
-                order.getItemID() + " at " + requestedDeliveryTime +"\n" + ". The address" +
-                "is " + aCustomer.getAddress() + ", " + aCustomer.getCity() + ", " + aCustomer.getPostcode() +"\n" +
-                ". You have " + ((driverLoc.distanceTo(warehouse)/metresPerMinute) + posTime) + " minutes to be at the warehouse aka "
-                + amountOfTimeToGetToWarehouse + " in hours and minutes\n " +
-                "Which means you should be there  " + timeBeAtWarehouse +" oclock\n" + ". You have " +
-                (warehouse.distanceTo(customerLoc)/metresPerMinute) + " minutes to get from the warehouse to the customer "+
-                "aka " + hourandminutebetweenwarehouseandcustomer + " hours and minutes\n " +
-                "All in all this journey takes " + totalDurationMins + " aka " + totalDurationOfJourney + " in hhmm\n " + "So you should arrive there for " + timeOfArrival;
-
-        System.out.println(messageToDriver);
-
-
-
-        ArrayList<String> msgList = smsManager.divideMessage(messageToDriver);
-
-        smsManager.sendMultipartTextMessage(driverPhoneNumber, null, msgList, null, null);
-
-        smsManager.sendTextMessage(driverPhoneNumber, null, messageToDriver, null, null);
+//
+//        messageToDriver = "Current time + " + currentTimeCal + "\n" + " Hi driver " + aDriver.getId() +"\n" + ". An order has been placed for " + order.getItemQuantity() + " " +
+//                order.getItemID() + " at " + requestedDeliveryTime +"\n" + ". The address" +
+//                "is " + aCustomer.getAddress() + ", " + aCustomer.getCity() + ", " + aCustomer.getPostcode() +"\n" +
+//                ". You have " + ((driverLoc.distanceTo(warehouse)/metresPerMinute) + posTime) + " minutes to be at the warehouse aka "
+//                + amountOfTimeToGetToWarehouse + " in hours and minutes\n " +
+//                "Which means you should be there  " + timeBeAtWarehouse +" oclock\n" + ". You have " +
+//                (warehouse.distanceTo(customerLoc)/metresPerMinute) + " minutes to get from the warehouse to the customer "+
+//                "aka " + hourandminutebetweenwarehouseandcustomer + " hours and minutes\n " +
+//                "All in all this journey takes " + totalDurationMins + " aka " + totalDurationOfJourney + " in hhmm\n " + "So you should arrive there for " + timeOfArrival;
+//
+//        System.out.println(messageToDriver);
+//
+//
+//
+//        ArrayList<String> msgList = smsManager.divideMessage(messageToDriver);
+//
+//        smsManager.sendMultipartTextMessage(driverPhoneNumber, null, msgList, null, null);
+//
+//        smsManager.sendTextMessage(driverPhoneNumber, null, messageToDriver, null, null);
 
 
     }

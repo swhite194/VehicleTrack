@@ -33,6 +33,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
+
 
 public class LocationService extends Service {
 
@@ -156,9 +158,12 @@ public class LocationService extends Service {
                     //update UI with location data
                     if (location != null) {
 
+
+
                         driverUser.setLatitude(location.getLatitude());
                         driverUser.setLongitude(location.getLongitude());
                         driverUser.setSpeed(Math.round(location.getSpeed()));
+
 
                         //overwrites it and drops the name etc (woops)
 //                        myRef.child("users").child("Drivers").child(id).setValue(driverUser);
@@ -176,9 +181,40 @@ public class LocationService extends Service {
                                     if (ds.child("driverID").getValue().equals(id)) {
                                         order = ds.getValue(Order.class);
                                         if (order.isDriverEnroute()) {
+
+                                            Location custLoc = new Location("");
+                                            Location driverLoc = new Location("");
+                                            Location whouse = new Location("");
+
+                                            whouse.setLatitude(54.58);
+                                            whouse.setLongitude(-5.93);
+
+                                            custLoc.setLatitude(ds.child("customerLat").getValue(Double.class));
+                                            custLoc.setLongitude(ds.child("customerLong").getValue(Double.class));
+
+                                            driverLoc.setLatitude(ds.child("latitude").getValue(Double.class));
+                                            driverLoc.setLongitude(ds.child("longitude").getValue(Double.class));
+
+                                            double distance = ((driverLoc.distanceTo(whouse))+(whouse.distanceTo(custLoc)));
+                                            double time = distance/804.67;
+                                            int t = (int) Math.round(time);
+
+                                            int tHr = t/60;
+                                            int tMin = t%60;
+
+                                            Calendar c = Calendar.getInstance();
+
+                                            c.add(Calendar.HOUR_OF_DAY, tHr);
+                                            c.add(Calendar.MINUTE, tMin);
+
+                                            String ETA = String.valueOf(c.get(Calendar.HOUR_OF_DAY)) + ":" + String.valueOf(c.get(Calendar.MINUTE));
+
+
                                             currentOrders.child(order.getId()).child("latitude").setValue(driverUser.getLatitude());
-                                            currentOrders.child(order.getId()).child("longitude").setValue(driverUser.getLatitude());
+                                            currentOrders.child(order.getId()).child("longitude").setValue(driverUser.getLongitude());
                                             currentOrders.child(order.getId()).child("speed").setValue(driverUser.getSpeed());
+
+                                            currentOrders.child(order.getId()).child("ETA").setValue(ETA);
                                         }
                                     }
                                 }

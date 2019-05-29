@@ -19,6 +19,19 @@ public class NotificationHelper extends ContextWrapper {
     public static final String channelID = "channelID";
     public static final String channelName = "channel name";
 
+    public static final String channelID2 = "channelID2";
+    public static final String channelName2 = "channel name2";
+
+    public static final String channelID3 = "channelID3";
+    public static final String channelName3 = "channel name3";
+
+    public static final String channelID4 = "channelID4";
+    public static final String channelName4 = "channel name4";
+
+    public static final String channelID5 = "channelID5";
+    public static final String channelName5 = "channel name5";
+
+
     //13:00
 
 
@@ -51,8 +64,17 @@ public class NotificationHelper extends ContextWrapper {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createChannel() {
         NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
+        NotificationChannel channel2 = new NotificationChannel(channelID2, channelName, NotificationManager.IMPORTANCE_HIGH);
+        NotificationChannel channel3 = new NotificationChannel(channelID3, channelName, NotificationManager.IMPORTANCE_HIGH);
+        NotificationChannel channel4 = new NotificationChannel(channelID4, channelName, NotificationManager.IMPORTANCE_HIGH);
+
+        NotificationChannel channel5 = new NotificationChannel(channelID5, channelName, NotificationManager.IMPORTANCE_HIGH);
 
         getManager().createNotificationChannel(channel);
+        getManager().createNotificationChannel(channel2);
+        getManager().createNotificationChannel(channel3);
+        getManager().createNotificationChannel(channel4);
+        getManager().createNotificationChannel(channel5);
     }
 
 
@@ -71,7 +93,7 @@ public class NotificationHelper extends ContextWrapper {
 //                .setContentText(message);
 //    }
 
-    public NotificationCompat.Builder getChannelNotification() {
+    public NotificationCompat.Builder getChannelNotification1() {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("Alarm!")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
@@ -86,4 +108,62 @@ public class NotificationHelper extends ContextWrapper {
 //    }
 
     }
+
+//    public NotificationCompat.Builder getChannelNotification2() {
+//        return new NotificationCompat.Builder(getApplicationContext(), channelID2)
+//                .setContentTitle("Attention!")
+//                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+//                .setContentText("You have no orders nice!");
+//
+//
+////    }
+//
+//    }
+
+    public NotificationCompat.Builder getChannelNotification2(String title, String message) {
+        return new NotificationCompat.Builder(getApplicationContext(), channelID2)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentText(message);
+
+
+//    }
+
+    }
+
+    public NotificationCompat.Builder getChannelNotification3(String title, String message) {
+        return new NotificationCompat.Builder(getApplicationContext(), channelID3)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentText(message);
+
+
+//    }
+
+    }
+
+    public NotificationCompat.Builder getChannelNotification4(String title, String message) {
+        return new NotificationCompat.Builder(getApplicationContext(), channelID4)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentText(message);
+
+
+//    }
+
+    }
+
+
+    public NotificationCompat.Builder getChannelNotification5(String title, String message) {
+        return new NotificationCompat.Builder(getApplicationContext(), channelID5)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentText(message);
+
+
+//    }
+
+    }
+
+
 }

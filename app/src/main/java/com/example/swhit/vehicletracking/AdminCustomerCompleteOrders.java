@@ -13,36 +13,42 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.firebase.auth.FirebaseAuth;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 //https://www.youtube.com/watch?v=b_tz8kbFUsU
 //used as basis in background, but supported by //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need (basically same as official doc - https://github.com/firebase/FirebaseUI-Android/tree/master/database#using-the-firebaserecycleradapter "using the firebaserecycleradapter"))
 ////and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
-public class CustomerCompletedOrders extends AppCompatActivity {
+public class AdminCustomerCompleteOrders extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://vehicletracking-899f3.firebaseio.com/");
     private DatabaseReference myRef = database.getReference("Location");
 
     private DatabaseReference currentOrderRef = myRef.child("orders").child("Current Orders");
-    private DatabaseReference completedOrderRef = myRef.child("orders").child("Completed Orders");
+
+    DatabaseReference customers = myRef.child("users").child("Customers");
+
+    DatabaseReference completedOrders = myRef.child("orders").child("Completed Orders");
 
     private EditText searchCustId;
     private Button searchBtn;
 
     private RecyclerView resultList;
 
-    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    String criteria;
+    String custID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_current_orders);
+        setContentView(R.layout.activity_admin_customer_completed_orders);
 
         searchCustId = (EditText) findViewById(R.id.txtSearchCustId);
         searchBtn = (Button) findViewById(R.id.btnSearch);
@@ -53,7 +59,23 @@ public class CustomerCompletedOrders extends AppCompatActivity {
 
         resultList.setLayoutManager(new LinearLayoutManager(this));
 
-        firebaseCurrentOrderSearch();
+
+
+
+
+
+
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firebaseCurrentOrderSearch();
+            }
+
+
+        });
+
+
     }
 
     private void firebaseCurrentOrderSearch() {
@@ -63,7 +85,26 @@ public class CustomerCompletedOrders extends AppCompatActivity {
 //and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
         //after the first half of this being by https://www.youtube.com/watch?v=b_tz8kbFUsU (slightly outdated, only in cases like this, principle still applies)
 
-        Query query = completedOrderRef.orderByChild("customerID").equalTo(id);
+        criteria = searchCustId.getText().toString();
+        customers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(ds.child("email").getValue().equals(criteria)){
+                        System.out.println("FOUND IT");
+                        custID = ds.getKey();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        Toast.makeText(getApplicationContext(), custID,  Toast.LENGTH_LONG).show();
+        Query query = completedOrders.orderByChild("customerID").equalTo(custID);
 
         FirebaseRecyclerOptions<Order> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Order>().setQuery(query, Order.class).build();
 
@@ -84,12 +125,14 @@ public class CustomerCompletedOrders extends AppCompatActivity {
                 holder.setDetails(model.getId(), model.getCustomerID(), model.getDeliveryRequestedForDate(), model.getDeliveryRequestedForTime(), model.getDriverID(),
                         model.getItemID(), model.getItemQuantity());
 
+                //https://www.youtube.com/watch?v=vlXZ287Sf9A
+                //capturing the key of the record when pressed
                 holder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String edit_order_by_id = getRef(position).getKey();
                         Toast.makeText(getApplicationContext(), "Key: " + edit_order_by_id, Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(CustomerCompletedOrders.this, CompleteOrders.class);
+                        Intent intent = new Intent(AdminCustomerCompleteOrders.this, CompleteOrders.class);
 //                        extras.putString("userId", strUserId);
                         intent.putExtra("orderID", edit_order_by_id);
 

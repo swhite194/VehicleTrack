@@ -1,6 +1,7 @@
 package com.example.swhit.vehicletracking;
 
 import android.content.Intent;
+import android.location.Location;
 import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -70,6 +72,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     Double[] latArray;
     Double[] longArray;
 
+    double custLat, custLong, driLat, driLong;
+
     double latitude;
     double longitude;
 
@@ -80,6 +84,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     TextView txtSpeed, txtETA, txtLocation;
 
     Map<String, Marker> markers = new HashMap();
+
+    String ETA;
 
 //    Map<String, Admin> admins = new HashMap();
 //    Map<String, Customer> customers = new HashMap();
@@ -109,10 +115,15 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     LatLng warehouse = new LatLng(54.58, -5.93);
 
+    Location whouse = new Location("");
+
+
 
     String ordersDriverID;
     String ordersCustID;
     String orderID;
+
+    String test;
 
 
 //    customer.id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -123,6 +134,9 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_maps);
+
+        whouse.setLatitude(54.58);
+        whouse.setLongitude(-5.93);
 
         txtSpeed = (TextView) findViewById(R.id.txtSpeed);
         txtLocation = (TextView) findViewById(R.id.txtLocation);
@@ -429,9 +443,13 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
                                 if(ds.child("customerID").getValue().equals(id)) {
                                     currentOrder = ds.getValue(Order.class);
+                                    System.out.println("Current Order FOUND");
+                                     test = String.valueOf(ds.child("driverEnroute").getValue(Boolean.class));
 
+                                    System.out.println(test);
 
-                                    if (currentOrder.isDriverEnroute()) {
+                                    if (test.equals("true")) {
+                                        System.out.println("Current Order ENROUTE");
                                         ordersDriverID = ds.child("driverID").getValue(String.class);
                                         orderID = currentOrder.getId();
 
@@ -1064,16 +1082,66 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         }
         if (drivers.containsKey(markerId)) {
             dri = (Driver) drivers.get(markerId);
-
             Toast.makeText(getApplicationContext(), dri.getId(), Toast.LENGTH_LONG).show();
 
-            lat = String.valueOf(dri.getLatitude());
-            lon = String.valueOf(dri.getLongitude());
+            double la = (dri.getLatitude());
+            double lo = (dri.getLongitude());
+
+            System.out.println(la + " " + lo);
+
+            DecimalFormat df = new DecimalFormat("#.00");
+            String laFormatted = df.format(la);
+            String loFormatted = df.format(lo);
+
+
+            currentOrderRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if(ds.child("driverID").getValue().equals(dri.getId())){
+                            Location custLoc = new Location("");
+                            Location driverLoc = new Location("");
+
+                            custLoc.setLatitude(ds.child("customerLat").getValue(Double.class));
+                            custLoc.setLongitude(ds.child("customerLong").getValue(Double.class));
+
+                            driverLoc.setLatitude(ds.child("latitude").getValue(Double.class));
+                            driverLoc.setLongitude(ds.child("longitude").getValue(Double.class));
+
+                            double distance = ((driverLoc.distanceTo(whouse))+(whouse.distanceTo(custLoc)));
+                            double time = distance/804.67;
+                            int t = (int) Math.round(time);
+
+                            int tHr = t/60;
+                            int tMin = t%60;
+
+                            Calendar c = Calendar.getInstance();
+
+                            c.add(Calendar.HOUR_OF_DAY, tHr);
+                            c.add(Calendar.MINUTE, tMin);
+
+                            ETA = String.valueOf(c.get(Calendar.HOUR_OF_DAY)) + ":" + String.valueOf(c.get(Calendar.MINUTE));
+                            System.out.println(ETA);
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+//            lat = String.valueOf(dri.getLatitude());
+//            lon = String.valueOf(dri.getLongitude());
+
+
             speed = String.valueOf(dri.getSpeed() + "m/s");
 
             txtSpeed.setText(speed);
-            txtLocation.setText(lat  +"," + lon);
-            txtETA.setText(" ");
+            txtLocation.setText(laFormatted  +"," + loFormatted);
+            txtETA.setText(ETA);
 
 
 

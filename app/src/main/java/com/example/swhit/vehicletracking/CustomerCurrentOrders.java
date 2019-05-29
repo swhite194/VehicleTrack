@@ -13,11 +13,13 @@ package com.example.swhit.vehicletracking;
         import android.widget.EditText;
         import android.widget.TextView;
         import android.widget.Toast;
+        import com.google.firebase.auth.FirebaseAuth;
 
         import com.firebase.ui.database.FirebaseRecyclerAdapter;
         import com.firebase.ui.database.FirebaseRecyclerOptions;
         import com.google.firebase.database.DatabaseReference;
         import com.google.firebase.database.FirebaseDatabase;
+        import com.google.firebase.database.Query;
 
 //https://www.youtube.com/watch?v=b_tz8kbFUsU
 //used as basis in background, but supported by //https://stackoverflow.com/questions/49616900/firebaserecycleradapter-forcing-me-to-implement-methods-that-i-dont-want-need (basically same as official doc - https://github.com/firebase/FirebaseUI-Android/tree/master/database#using-the-firebaserecycleradapter "using the firebaserecycleradapter"))
@@ -33,6 +35,8 @@ public class CustomerCurrentOrders extends AppCompatActivity {
     private Button searchBtn;
 
     private RecyclerView resultList;
+
+    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +62,9 @@ public class CustomerCurrentOrders extends AppCompatActivity {
 //and //https://medium.com/android-grid/how-to-use-firebaserecycleradpater-with-latest-firebase-dependencies-in-android-aff7a33adb8b
         //after the first half of this being by https://www.youtube.com/watch?v=b_tz8kbFUsU (slightly outdated, only in cases like this, principle still applies)
 
-        FirebaseRecyclerOptions<Order> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Order>().setQuery(currentOrderRef, Order.class).build();
+        Query query = currentOrderRef.orderByChild("customerID").equalTo(id);
+
+        FirebaseRecyclerOptions<Order> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Order>().setQuery(query, Order.class).build();
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Order, OrdersViewHolder>(firebaseRecyclerOptions) {
 
@@ -74,7 +80,7 @@ public class CustomerCurrentOrders extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull OrdersViewHolder holder, final int position, @NonNull Order model) {
 //https://www.youtube.com/watch?v=b_tz8kbFUsU
-                holder.setDetails(model.getId(), model.getCustomerID(), model.getDeliveryRequestedForTime(), model.getDriverID(),
+                holder.setDetails(model.getId(), model.getCustomerID(), model.getDeliveryRequestedForDate(), model.getDeliveryRequestedForTime(), model.getDriverID(),
                         model.getItemID(), model.getItemQuantity());
 
                 holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -111,11 +117,12 @@ public class CustomerCurrentOrders extends AppCompatActivity {
         }
 
         //https://www.youtube.com/watch?v=b_tz8kbFUsU
-        public void setDetails(String orderId, String customerId, String requestedDeliveryTime, String driverId, String itemId, int itemQuantity) {
+        public void setDetails(String orderId, String customerId, String requestedDeliveryDate, String requestedDeliveryTime, String driverId, String itemId, int itemQuantity) {
 
             //these R.id.'s are from currentorders_list_layoutrs_list_layout.xml
             TextView order_id = (TextView) mView.findViewById(R.id.txtOrderId);
             TextView customer_id = (TextView) mView.findViewById(R.id.txtCustomerId);
+            TextView requested_delivery_date = (TextView) mView.findViewById(R.id.txtRequestedDeliveryDate);
             TextView requested_delivery_time = (TextView) mView.findViewById(R.id.txtRequestedDeliveryTime);
             TextView driver_id = (TextView) mView.findViewById(R.id.txtDriverId);
             TextView item_id = (TextView) mView.findViewById(R.id.txtItemId);
@@ -124,6 +131,7 @@ public class CustomerCurrentOrders extends AppCompatActivity {
 
             order_id.setText(orderId);
             customer_id.setText(customerId);
+            requested_delivery_date.setText(requestedDeliveryDate);
             requested_delivery_time.setText(requestedDeliveryTime);
             driver_id.setText(driverId);
             item_id.setText(itemId);

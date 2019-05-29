@@ -66,6 +66,8 @@ public class UserInfo extends AppCompatActivity {
     Driver driver = new Driver();
     Admin admin = new Admin();
 
+    boolean checkDriver;
+
     String oldAddress, oldCity, oldPostcode;
 
     boolean okAddress;
@@ -273,6 +275,7 @@ public class UserInfo extends AppCompatActivity {
                 }
                 if (dataSnapshot.child("Drivers").hasChild(id)) {
 
+
                     custAndAdminAddressSection.setVisibility(View.GONE);
 
                     //did i kind of use this?
@@ -428,10 +431,11 @@ public class UserInfo extends AppCompatActivity {
             public void onClick(View v) {
                 //https://stackoverflow.com/questions/13698556/convert-street-address-to-coordinates-android
 
-                if ((uaddress.getText().toString().trim().length() == 0) || (ucity.getText().toString().trim().length() == 0) || (upostcode.getText().toString().trim().length() == 0)) {
-                    Toast.makeText(getApplicationContext(), "Address cannot be empty!", Toast.LENGTH_SHORT).show();
-                }
-                else if ((uaddress.getText().toString().trim().length() > 0) && (ucity.getText().toString().trim().length() > 0) && (upostcode.getText().toString().trim().length() > 0)) {
+
+//                if ((uaddress.getText().toString().trim().length() == 0) || (ucity.getText().toString().trim().length() == 0) || (upostcode.getText().toString().trim().length() == 0)) {
+//                    Toast.makeText(getApplicationContext(), "Address cannot be empty!", Toast.LENGTH_SHORT).show();
+//                }
+//                else if ((uaddress.getText().toString().trim().length() > 0) && (ucity.getText().toString().trim().length() > 0) && (upostcode.getText().toString().trim().length() > 0)) {
 
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
@@ -504,7 +508,7 @@ public class UserInfo extends AppCompatActivity {
                     //I WANT TO SAY THAT THIS WILL HAVE NO IMPACT ON A DRIVERS LOCATION WHEN IT COMES TO LOGGING INTO OTHER DRIVER ACCOUNTS OR WHENEVER THEY GO FROM STATIC TO MOVING?
 
 
-                    if(okAddress) {
+//                    if(okAddress) {
 
                         currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                             String n = uname.getText().toString();
@@ -592,8 +596,8 @@ public class UserInfo extends AppCompatActivity {
                     Intent intent = new Intent(UserInfo.this, HomeActivity.class);
                     startActivity(intent);
 
-                }
-                }
+//                }
+//                }
                 //defaulting it back!
                 okAddress = false;
             }
